@@ -85,16 +85,8 @@ const editLP = asyncHandler(async (req, res) => {
             res.status(403)
             throw new Error('Permission denied')
         }
-        lp.label = req.body.label
-        lp.releaseYear = req.body.releaseYear
-        lp.genre = req.body.genre
-        lp.condition = req.body.condition
-        lp.channel = req.body.channel
-        lp.channel = req.body.channel
-        lp.isPublic = req.body.isPublic
-        lp.numDiscs = req.body.numDiscs
-        lp.weight = req.body.weight
-        lp.review = req.body.review
+        const updates = Object.keys(req.body)
+        updates.forEach((update) => lp[update] = req.body[update])
         await lp.save(req.body)
         res.send(lp)
     } else {

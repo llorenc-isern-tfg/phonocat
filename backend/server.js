@@ -24,6 +24,16 @@ app.use(passport.initialize())
 passport.use(JwtStrategy)
 passport.use(GoogleStrategy)
 
+passport.serializeUser((user, done) => {
+  done(null, user.id);
+});
+
+passport.deserializeUser((id, done) => {
+  User.findById(id).then(user => {
+    done(null, user);
+  });
+});
+
 app.use(userRoutes)
 app.use(lpRoutes)
 

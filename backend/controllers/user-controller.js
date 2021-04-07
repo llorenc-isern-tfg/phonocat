@@ -1,6 +1,6 @@
 import asyncHandler from 'express-async-handler'
 import User from '../models/user-model.js'
-import jwt from 'jsonwebtoken'
+import * as utils from '../utils/utils.js'
 
 /**
  * @description Register user
@@ -34,11 +34,28 @@ const authUserJWT = asyncHandler(async (req, res) => {
   const user = await User.findOne({ email })
 
   if (user && (await user.comparePassword(password))) {
-    const token = createToken(user._id)
+    const token = utils.createToken(user._id)
     res.send({ user, token })
   } else {
     res.status(401)
     throw new Error('Invalid email or password')
+  }
+})
+
+/**
+ * @description Auth user and get JWT token
+ * @route POST /users/login
+ * @access Public
+ */
+const authUserGoogle = asyncHandler(async (req, res) => {
+  const user = await User.findOne({ googleId: req.user.googleId })
+
+  if (user) {
+    const token = utils.createToken(user._id)
+    res.send({ user, token })
+  } else {
+    res.status(401)
+    throw new Error('Unauthorized')
   }
 })
 
@@ -86,15 +103,5 @@ const editUserProfile = asyncHandler(async (req, res) => {
   }
 })
 
-/**
- * Creates a JWT token based on user id
- * @param {*} id user Id
- * @returns JWT token
- */
-const createToken = (id) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET, {
-    expiresIn: process.env.JWT_EXPIRATION_TIME,
-  })
-}
 
-export { registerUser, authUserJWT, getUserProfile, editUserProfile }
+export { registerUser, authUserJWT, authUserGoogle, getUserProfile, editUserProfile }

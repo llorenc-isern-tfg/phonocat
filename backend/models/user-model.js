@@ -46,6 +46,11 @@ const userSchema = mongoose.Schema({
         required: true,
         immutable: true
     },
+    googleId: {
+        type: String,
+        unique: true,
+        immutable: true
+    },
     password: {
         type: String,
         minLength: 7

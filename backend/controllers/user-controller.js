@@ -35,15 +35,21 @@ const authUserJWT = asyncHandler(async (req, res) => {
 
   if (user && (await user.comparePassword(password))) {
     const token = utils.createToken(user._id)
-    res.send({ user, token })
+
+    res.send({
+      username: user.username,
+      email: user.email,
+      profilePic: user.profilePictureUrl,
+      token: token
+    })
   } else {
     res.status(401)
-    throw new Error('Invalid email or password')
+    throw new Error('Invalid credentials')
   }
 })
 
 /**
- * @description Auth user and get JWT token
+ * @description Auth user with google and get JWT token
  * @route POST /users/login
  * @access Public
  */
@@ -92,6 +98,7 @@ const editUserProfile = asyncHandler(async (req, res) => {
         'language',
         'address',
       ]
+      //TODO: Desar usuari
       res.send(user)
     } else {
       res.status(403)

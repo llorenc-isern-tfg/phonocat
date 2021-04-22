@@ -34,8 +34,8 @@ passport.deserializeUser((id, done) => {
   });
 });
 
-app.use(userRoutes)
-app.use(lpRoutes)
+app.use('/api', userRoutes)
+app.use('/api', lpRoutes)
 
 app.use(notFoundHandler)
 app.use(errorHandler)

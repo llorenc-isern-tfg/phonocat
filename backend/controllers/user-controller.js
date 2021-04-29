@@ -8,7 +8,7 @@ import * as utils from '../utils/utils.js'
  * @access Public
  */
 const registerUser = asyncHandler(async (req, res) => {
-  const { username, email, password } = req.body
+  const { email } = req.body
   const emailExists = await User.findOne({ email })
   if (emailExists) {
     res.status(400)
@@ -71,7 +71,6 @@ const authUserGoogle = asyncHandler(async (req, res) => {
  * @access Authenticated. If not logged in as requested user, only public data is returned
  */
 const getUserProfile = asyncHandler(async (req, res) => {
-
   const paramUser = await User.findOne({ username: req.params.username })
   if (paramUser) {
     res.send(req.user.id !== paramUser.id ? paramUser.publicProfile() : paramUser)

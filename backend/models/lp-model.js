@@ -32,10 +32,13 @@ const lpSchema = mongoose.Schema({
     releaseYear: {
         type: Number
     },
+    releaseCountry: {
+        type: String
+    },
     genre: {
         type: String,
         required: true,
-        enum: ['blues', 'brass&military', 'childrens', 'classical', 'electronic', 'folk', 'funk', 'soul', 'hiphop', 'jazz', 'latin', 'pop', 'reggae', 'rock', 'metal', 'other'],
+        enum: ['blues', 'classical', 'electronic', 'folk', 'funk', 'soul', 'hiphop', 'jazz', 'latin', 'pop', 'reggae', 'rock', 'metal', 'childrens', 'other'],
     },
     condition: {
         type: String,

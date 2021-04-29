@@ -21,5 +21,5 @@ export const getConfig = (needsAuth, contentType) => {
 }
 
 export const api = axios.create({
-    baseURL: '/api'
+    baseURL: '/api/'
 })

@@ -3,10 +3,12 @@ import thunk from 'redux-thunk'
 import { composeWithDevTools } from 'redux-devtools-extension'
 import { lpCollectionReducer } from './reducers/lpReducers'
 import { userLoginReducer } from './reducers/userReducers'
+import { alertReducer } from './reducers/alertReducers'
 
 const reducers = combineReducers({
     auth: userLoginReducer,
-    lpCollection: lpCollectionReducer
+    lpCollection: lpCollectionReducer,
+    alerts: alertReducer
 })
 
 

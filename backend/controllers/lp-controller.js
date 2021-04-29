@@ -1,5 +1,8 @@
+import axios from 'axios'
 import asyncHandler from 'express-async-handler'
 import jwt from 'jsonwebtoken'
+import { getCode } from 'country-list'
+
 import Lp from '../models/lp-model.js'
 import User from '../models/user-model.js';
 
@@ -117,5 +120,64 @@ const deleteLP = asyncHandler(async (req, res) => {
 })
 
 
+/**
+ * @description Get external album data
+ * @route DELETE /album/search
+ * @access Authenticated 
+ */
+const getExternalData = asyncHandler(async (req, res) => {
+    const filters = req.query;
+    console.log(req.query)
+    if (filters.title) {
+        const searchData = await axios.get(`${process.env.DISCOGS_API_URL}/database/search`, {
+            params: {
+                key: process.env.DISCOGS_API_KEY,
+                secret: process.env.DISCOGS_API_SECRET,
+                release_title: filters.title,
+                artist: filters.artist,
+                format: 'Vinyl',
+                type: 'release',
+                per_page: 50,
+                page: 1
+            }
+        })
 
-export { addLP, getLPs, getLP, editLP, deleteLP }
+        if (searchData.data.results.length > 0) {
+
+            //agafem el resultat més popular
+            const topRelease = searchData.data.results.reduce(function (r1, r2) {
+                return r1.community.want > r2.community.want ? r1 : r2
+            })
+
+            //consultem el detall de la edició més popular
+            const { data } = await axios.get(`${process.env.DISCOGS_API_URL}/releases/${topRelease.id}`, {
+                params: {
+                    key: process.env.DISCOGS_API_KEY,
+                    secret: process.env.DISCOGS_API_SECRET
+                }
+            })
+
+            res.send({
+                title: filters.title,
+                artist: filters.artist ? filters.artist : data.artist[0].name,
+                label: data.labels[0].name,
+                genre: data.genres[0].toLowerCase(),
+                country: getCode(data.country) ? getCode(data.country) : data.country,
+                year: data.year,
+                numDiscs: data.format_quantity,
+                //enviem nomes el subset d'atributs de cada cançó que ens interessa
+                trackList: data.tracklist.map(({ position, title, duration }) => ({ position, title, duration }))
+            })
+        } else {
+            res.status(404)
+            throw new Error('Didn\t find any results')
+        }
+    } else {
+        res.status(401)
+        throw new Error('Inform at least the album title')
+    }
+})
+
+
+
+export { addLP, getLPs, getLP, editLP, deleteLP, getExternalData }

@@ -7,16 +7,21 @@ import Link from '@material-ui/core/Link'
 import Dialog from '@material-ui/core/Dialog'
 import DialogContent from '@material-ui/core/DialogContent'
 import Grid from '@material-ui/core/Grid'
-import LockOpenIcon from '@material-ui/icons/LockOpen';
+import LockOpenIcon from '@material-ui/icons/LockOpen'
+import IconButton from '@material-ui/core/IconButton'
+import InputAdornment from '@material-ui/core/InputAdornment'
+import Visibility from '@material-ui/icons/Visibility'
+import VisibilityOff from '@material-ui/icons/VisibilityOff'
 import { makeStyles } from '@material-ui/core/styles'
 import { useTranslation } from "react-i18next"
-import { useForm, Controller } from "react-hook-form";
-// import * as yup from "yup";
-// import { setLocale } from 'yup';
+import { useFormik } from 'formik'
+import * as yup from 'yup'
+import { setLocale } from 'yup'
 
-import ButtonSpinner from '../../components/shared/ButtonSpinner';
-import DialogTitleWithClose from '../../components/shared/DialogTitleWithClose';
-import { login } from '../../actions/userActions';
+import ButtonSpinner from '../../components/shared/ButtonSpinner'
+import DialogTitleWithClose from '../../components/shared/DialogTitleWithClose'
+import { login } from '../../actions/userActions'
+import yupMessages from '../../locales/yupMessages'
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -37,33 +42,54 @@ const useStyles = makeStyles((theme) => ({
     },
 }))
 
-// const loginSchema = yup.object().shape({
-//     email: yup.string().email(),
-//     password: yup.number().positive().integer().required(),
-// });
 
 const LoginDialog = ({ open, onClose }) => {
 
     const { t } = useTranslation();
+    setLocale(yupMessages)
 
-    // const [email, setEmail] = useState('')
-    // const [password, setPassword] = useState('')
 
     const auth = useSelector((state) => state.auth)
-    const { userInfo, loading } = auth
+    const { userInfo, loading, error } = auth
+
+    const [showPassword, setShowPassword] = useState(false)
 
     const dispatch = useDispatch()
 
-    const onSubmit = data => {
-        dispatch(login(data.email, data.password))
-    }
-
     const classes = useStyles();
 
-    const { handleSubmit, control } = useForm();
+    const loginSchema = yup.object().shape({
+        email: yup.string().email().required(),
+        password: yup.string().required().min(5)
+    });
+
+    const formik = useFormik({
+        initialValues: {
+            email: '',
+            password: '',
+        },
+        validationSchema: loginSchema,
+        onSubmit: values => dispatch(login(values.email, values.password))
+    });
+
+    const handleClose = () => {
+        onClose()
+        //timeout per evitar efecte grafic quan es resetejen els missatges d'error i encara no s'ha tancat la pantalla modal
+        setTimeout(formik.resetForm, 200)
+        //TODO: eliminar error del store
+    }
+
+    const handleClickShowPassword = () => {
+        console.log(showPassword)
+        setShowPassword(!showPassword)
+    };
+
+    const handleMouseDownPassword = (event) => {
+        event.preventDefault();
+    };
 
     return (
-        <Dialog open={open} onClose={onClose} aria-labelledby="form-dialog-title" maxWidth="xs">
+        <Dialog open={!userInfo && open} onClose={handleClose} aria-labelledby="form-dialog-title" maxWidth="xs">
             <DialogTitleWithClose id="form-dialog-title" title={t('loginForm.signin')} onClose={onClose} />
             <DialogContent dividers>
 
@@ -71,48 +97,54 @@ const LoginDialog = ({ open, onClose }) => {
                     <Avatar className={classes.avatar}>
                         <LockOpenIcon />
                     </Avatar>
-                    <form className={classes.form} noValidate onSubmit={handleSubmit(onSubmit)}>
+                    {/* Si el sistema d'alertes no funciona tornar a aquesta versió */}
+                    {/* {error && <Alert severity="error">{error}</Alert>} */}
+                    <form className={classes.form} noValidate onSubmit={formik.handleSubmit}>
 
-                        <Controller
+                        <TextField
+                            required
+                            id="email"
                             name="email"
-                            control={control}
-                            defaultValue=""
-                            render={({ field: { onChange, value }, fieldState: { error } }) => (
-                                <TextField
-                                    variant="outlined"
-                                    margin="normal"
-                                    fullWidth
-                                    label={t('loginForm.email')}
-                                    autoComplete="email"
-                                    autoFocus
-                                    value={value}
-                                    onChange={onChange}
-                                    error={!!error} //<- es el mateix que fer error ? true : false
-                                    helperText={error ? error.message : null}
-                                />
-                            )}
-                            rules={{ required: 'Email required' }}
+                            variant="outlined"
+                            margin="normal"
+                            fullWidth
+                            label={t('loginForm.email')}
+                            autoComplete="email"
+                            autoFocus
+                            value={formik.values.email}
+                            onChange={formik.handleChange}
+                            error={formik.touched.email && Boolean(formik.errors.email)}
+                            helperText={formik.touched.email && formik.errors.email}
                         />
 
-                        <Controller
+                        <TextField
+                            required
                             name="password"
-                            control={control}
-                            defaultValue=""
-                            render={({ field: { onChange, value }, fieldState: { error } }) => (
-                                <TextField
-                                    variant="outlined"
-                                    margin="normal"
-                                    fullWidth
-                                    label={t('loginForm.password')}
-                                    type="password"
-                                    autoComplete="current-password"
-                                    value={value}
-                                    onChange={onChange}
-                                    error={!!error}
-                                    helperText={error ? error.message : null}
-                                />
-                            )}
-                            rules={{ required: 'Password required' }}
+                            variant="outlined"
+                            margin="normal"
+                            fullWidth
+                            label={t('loginForm.password')}
+                            type={showPassword ? 'text' : 'password'}
+                            value={formik.values.password}
+                            onChange={formik.handleChange}
+                            error={formik.touched.password && Boolean(formik.errors.password)}
+                            helperText={formik.touched.password && formik.errors.password}
+                            InputProps={
+                                {
+                                    //Icona per mostrar/amagar password
+                                    endAdornment:
+                                        <InputAdornment position="end">
+                                            <IconButton
+                                                aria-label="toggle password visibility"
+                                                onClick={handleClickShowPassword}
+                                                onMouseDown={handleMouseDownPassword}
+                                                edge="end"
+                                            >
+                                                {showPassword ? <Visibility /> : <VisibilityOff />}
+                                            </IconButton>
+                                        </InputAdornment>
+                                }
+                            }
                         />
 
                         <Button

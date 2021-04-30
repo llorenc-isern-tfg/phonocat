@@ -20,6 +20,13 @@ import * as yup from 'yup'
 import { setLocale } from 'yup'
 import PublicIcon from '@material-ui/icons/Public'
 import VpnLockIcon from '@material-ui/icons/VpnLock'
+import SentimentVerySatisfiedIcon from '@material-ui/icons/SentimentVerySatisfied'
+import InsertEmoticonIcon from '@material-ui/icons/InsertEmoticon'
+import SentimentSatisfiedAltIcon from '@material-ui/icons/SentimentSatisfiedAlt'
+import SentimentSatisfiedIcon from '@material-ui/icons/SentimentSatisfied'
+import SentimentDissatisfiedIcon from '@material-ui/icons/SentimentDissatisfied'
+import SentimentVeryDissatisfiedIcon from '@material-ui/icons/SentimentVeryDissatisfied'
+import MoodBadIcon from '@material-ui/icons/MoodBad'
 import Rating from '@material-ui/lab/Rating'
 
 import yupMessages from '../../locales/yupMessages'
@@ -29,21 +36,43 @@ import countries from '../../constants/countries'
 const useStyles = makeStyles((theme) => ({
     publicIcon: {
         marginRight: '5px'
-    }
+    },
+    conditionIcon: {
+        color: theme.palette.text.secondary,
+        marginRight: theme.spacing(2),
+    },
 }))
+
+const renderConditionIcon = (condition, className) => {
+    switch (condition) {
+        case 'mint':
+            return <SentimentVerySatisfiedIcon fontSize="small" className={className} />
+        case 'nearMint':
+            return <InsertEmoticonIcon fontSize="small" className={className} />
+        case 'veryGood':
+            return <SentimentSatisfiedAltIcon fontSize="small" className={className} />
+        case 'good':
+            return <SentimentSatisfiedIcon fontSize="small" className={className} />
+        case 'fair':
+            return <SentimentDissatisfiedIcon fontSize="small" className={className} />
+        case 'poor':
+            return <SentimentVeryDissatisfiedIcon fontSize="small" className={className} />
+        default:
+            return null;
+    }
+}
 
 const AlbumDetailsForm = ({ preloadedData }) => {
 
     const { t } = useTranslation(['translation', 'select', 'country'])
     const classes = useStyles()
 
-    alert(preloadedData.year)
 
     const loginSchema = yup.object().shape({
         title: yup.string().required(),
         artist: yup.string().required(),
         year: yup.date().nullable(),
-        numDiscs: yup.number().min(0).max(10),
+        numDiscs: yup.number().min(1).max(15),
         score: yup.number().min(0).max(5).nullable(),
         review: yup.string().max(1500)
     })
@@ -87,6 +116,8 @@ const AlbumDetailsForm = ({ preloadedData }) => {
                             fullWidth
                             value={formik.values.title}
                             onChange={formik.handleChange}
+                            error={formik.touched.title && Boolean(formik.errors.title)}
+                            helperText={formik.touched.title && formik.errors.title}
                         />
                     </Grid>
                     <Grid item xs={12} sm={6}>
@@ -98,6 +129,8 @@ const AlbumDetailsForm = ({ preloadedData }) => {
                             fullWidth
                             value={formik.values.artist}
                             onChange={formik.handleChange}
+                            error={formik.touched.artist && Boolean(formik.errors.artist)}
+                            helperText={formik.touched.artist && formik.errors.artist}
                         />
                     </Grid>
                     <Grid item xs={12} sm={6}>
@@ -132,6 +165,7 @@ const AlbumDetailsForm = ({ preloadedData }) => {
                         <Autocomplete
                             id="country"
                             options={countries}
+                            getOptionSelected={(option, value) => option === value}
                             getOptionLabel={(option) => t(`country:${option}`)}
                             value={formik.values.country}
                             onChange={(event, value) => formik.setFieldValue("country", value)}
@@ -148,6 +182,8 @@ const AlbumDetailsForm = ({ preloadedData }) => {
                                 label={t('LPDetail.releaseYear')}
                                 value={formik.values.year}
                                 onChange={(date) => formik.setFieldValue("year", date)}
+                                error={formik.touched.year && Boolean(formik.errors.year)}
+                                helperText={formik.touched.year && formik.errors.year}
                             />
                         </MuiPickersUtilsProvider>
                     </Grid>
@@ -164,6 +200,8 @@ const AlbumDetailsForm = ({ preloadedData }) => {
                             value={formik.values.numDiscs}
                             onChange={formik.handleChange}
                             InputProps={{ inputProps: { min: 1, max: 10 } }}
+                            error={formik.touched.numDiscs && Boolean(formik.errors.numDiscs)}
+                            helperText={formik.touched.numDiscs && formik.errors.numDiscs}
                         />
                     </Grid>
                     <Grid item xs={12} sm={6}>
@@ -176,9 +214,17 @@ const AlbumDetailsForm = ({ preloadedData }) => {
                             value={formik.values.condition}
                             onChange={formik.handleChange("condition")}
                         >
-                            {albumConditions.map((key) => (
-                                <MenuItem key={key} value={key}>
-                                    {t(`select:albumCondition.${key}`)}
+                            {albumConditions.map((condition) => (
+
+                                <MenuItem key={condition} value={condition}>
+                                    <Grid container alignItems="center">
+                                        <Grid item>
+                                            {renderConditionIcon(condition, classes.conditionIcon)}
+                                        </Grid>
+                                        <Grid item xs>
+                                            {t(`select:albumCondition.${condition}`)}
+                                        </Grid>
+                                    </Grid>
                                 </MenuItem>
                             ))}
                         </TextField>
@@ -246,6 +292,8 @@ const AlbumDetailsForm = ({ preloadedData }) => {
                             multiline
                             rows={4}
                             variant="outlined"
+                            error={formik.touched.review && Boolean(formik.errors.review)}
+                            helperText={formik.touched.review && formik.errors.review}
                         />
                     </Grid>
                     <Grid item xs={12}>

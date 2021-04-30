@@ -12,7 +12,6 @@ export const TRANSLATIONS_CA = {
         signin: 'Identifícat',
         forgotPassword: 'No recordes la contrasenya?',
         signup: 'Encara no t\'has registrat?',
-        success: 'Hola {{username}}!',
         fail: 'No s\'ha trobat cap usuari amb aquest email o password'
     },
     sideMenu: {
@@ -69,12 +68,16 @@ export const TRANSLATIONS_CA = {
             unavailable: 'El servei de cerca no es troba disponible. Intenta-ho més tard'
         }
     },
+    session: {
+        welcome: 'Hola {{username}}!',
+        expired: 'La teva sessió s\'ha exhaurit. Torna a identificar-te si us plau'
+    },
     yup: {
         field_invalid: 'Valor incorrecte',
         required: 'Camp obligatori',
         email: 'Adreça de correu electrònic invàlida',
         text_field_too_short: 'El camp ha de tenir com a mínim {{min}} caracters',
-        text_field_too_big: 'El camp ha de tenir com a màxim {{text}} caracters'
+        text_field_too_big: 'El camp ha de tenir com a màxim {{max}} caracters'
 
     }
 };

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux'
 import Avatar from '@material-ui/core/Avatar'
 import Button from '@material-ui/core/Button'
@@ -69,14 +69,15 @@ const LoginDialog = ({ open, onClose }) => {
             password: '',
         },
         validationSchema: loginSchema,
-        onSubmit: values => dispatch(login(values.email, values.password))
+        onSubmit: values => {
+            dispatch(login(values.email, values.password))
+        }
     });
 
     const handleClose = () => {
         onClose()
         //timeout per evitar efecte grafic quan es resetejen els missatges d'error i encara no s'ha tancat la pantalla modal
         setTimeout(formik.resetForm, 200)
-        //TODO: eliminar error del store
     }
 
     const handleClickShowPassword = () => {

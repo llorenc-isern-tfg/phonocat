@@ -1,7 +1,8 @@
 import { loginService, registerService } from "../services/userServices"
 import {
     USER_LOGIN_FAIL, USER_LOGIN_REQUEST, USER_LOGIN_SUCCESS,
-    USER_REGISTER_REQUEST, USER_REGISTER_SUCCESS, USER_REGISTER_FAIL
+    USER_REGISTER_REQUEST, USER_REGISTER_SUCCESS, USER_REGISTER_FAIL,
+    USER_LOGOUT
 } from "../constants/userActionTypes"
 import { showAlert } from './alertActions'
 
@@ -14,7 +15,7 @@ export const login = (email, password) => async dispatch => {
         const { data } = await loginService(email, password)
 
         dispatch({ type: USER_LOGIN_SUCCESS, payload: data })
-        dispatch(showAlert('success', { messageKey: 'loginForm.success', params: { username: data.username } }))
+        dispatch(showAlert('success', { messageKey: 'session.welcome', params: { username: data.username } }))
         localStorage.setItem('userInfo', JSON.stringify(data))
         history.push('/app')
 
@@ -47,4 +48,12 @@ export const register = (email, password, userName) => async dispatch => {
                 error.response.data.message : error.message
         })
     }
+}
+
+export const logout = () => dispatch => {
+
+    localStorage.removeItem('userInfo')
+    dispatch({ type: USER_LOGOUT })
+    //TODO: Aplicar resta de clear outs del local storage
+    history.push('/app')
 }

@@ -12,6 +12,7 @@ import CircularProgress from '@material-ui/core/CircularProgress'
 import { useTranslation } from "react-i18next"
 import { useDispatch } from 'react-redux'
 import { showAlert } from '../../actions/alertActions'
+import { logout } from '../../actions/userActions'
 
 import SearchAlbum from '../../components/lps/SearchAlbum';
 import AlbumDetailsForm from '../../components/lps/AlbumDetailsForm';
@@ -71,9 +72,18 @@ const AddLpPage = () => {
         try {
             setPreloadingData(true)
             const { data } = await preloadAlbumDataService(searchResult.name, searchResult.artist)
-            dispatch(showAlert('success', { messageKey: 'searchAlbum.preloadDataComplete' }, 6000))
+            dispatch(showAlert('success', { messageKey: 'searchAlbum.preloadDataComplete' }))
             setPreloadedData(data)
         } catch (error) {
+            //TODO: centralitzar gestió d'error de les respostes al service?
+            console.log(error.response)
+            if (error.response && error.response.status === 401) {
+                dispatch(logout())
+                dispatch(showAlert('error', { messageKey: 'session.expired' }))
+                return
+            }
+
+            console.log(error)
             dispatch(showAlert('warning', { messageKey: 'searchAlbum.preloadDataNotFound' }))
             setPreloadedData({ title: searchResult.name, artist: searchResult.artist })
         }

@@ -41,7 +41,7 @@ const Header = () => {
     const classes = useStyles();
 
     const auth = useSelector((state) => state.auth)
-    const { userInfo, loading } = auth
+    const { userInfo } = auth
 
     const [openDialog, setOpenDialog] = useState(null);
 

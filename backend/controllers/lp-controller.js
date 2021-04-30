@@ -137,7 +137,7 @@ const getExternalData = asyncHandler(async (req, res) => {
                 artist: filters.artist,
                 format: 'Vinyl',
                 type: 'release',
-                per_page: 50,
+                per_page: 100,
                 page: 1
             }
         })

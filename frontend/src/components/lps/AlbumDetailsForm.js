@@ -20,63 +20,38 @@ import * as yup from 'yup'
 import { setLocale } from 'yup'
 import PublicIcon from '@material-ui/icons/Public'
 import VpnLockIcon from '@material-ui/icons/VpnLock'
-import SentimentVerySatisfiedIcon from '@material-ui/icons/SentimentVerySatisfied'
-import InsertEmoticonIcon from '@material-ui/icons/InsertEmoticon'
-import SentimentSatisfiedAltIcon from '@material-ui/icons/SentimentSatisfiedAlt'
-import SentimentSatisfiedIcon from '@material-ui/icons/SentimentSatisfied'
-import SentimentDissatisfiedIcon from '@material-ui/icons/SentimentDissatisfied'
-import SentimentVeryDissatisfiedIcon from '@material-ui/icons/SentimentVeryDissatisfied'
 import MoodBadIcon from '@material-ui/icons/MoodBad'
 import Rating from '@material-ui/lab/Rating'
+import { useDispatch } from 'react-redux'
+import _ from 'lodash'
 
 import yupMessages from '../../locales/yupMessages'
 import { musicGenres, albumConditions, albumWeights } from '../../constants/selectCodes'
 import countries from '../../constants/countries'
+import { addLP } from '../../actions/lpActions'
+import ConditionIcon from './ConditionIcon'
 
 const useStyles = makeStyles((theme) => ({
     publicIcon: {
         marginRight: '5px'
-    },
-    conditionIcon: {
-        color: theme.palette.text.secondary,
-        marginRight: theme.spacing(2),
-    },
-}))
-
-const renderConditionIcon = (condition, className) => {
-    switch (condition) {
-        case 'mint':
-            return <SentimentVerySatisfiedIcon fontSize="small" className={className} />
-        case 'nearMint':
-            return <InsertEmoticonIcon fontSize="small" className={className} />
-        case 'veryGood':
-            return <SentimentSatisfiedAltIcon fontSize="small" className={className} />
-        case 'good':
-            return <SentimentSatisfiedIcon fontSize="small" className={className} />
-        case 'fair':
-            return <SentimentDissatisfiedIcon fontSize="small" className={className} />
-        case 'poor':
-            return <SentimentVeryDissatisfiedIcon fontSize="small" className={className} />
-        default:
-            return null;
     }
-}
+}))
 
 const AlbumDetailsForm = ({ preloadedData }) => {
 
     const { t } = useTranslation(['translation', 'select', 'country'])
     const classes = useStyles()
 
+    const dispatch = useDispatch()
 
     const loginSchema = yup.object().shape({
         title: yup.string().required(),
         artist: yup.string().required(),
         year: yup.date().nullable(),
         numDiscs: yup.number().min(1).max(15),
-        score: yup.number().min(0).max(5).nullable(),
-        review: yup.string().max(1500)
+        rating: yup.number().min(0).max(5).nullable(),
+        comment: yup.string().max(1500)
     })
-
 
     const formik = useFormik({
         initialValues: {
@@ -84,19 +59,42 @@ const AlbumDetailsForm = ({ preloadedData }) => {
             artist: preloadedData.artist ? preloadedData.artist : '',
             label: preloadedData.label ? preloadedData.label : '',
             genre: preloadedData.genre ? preloadedData.genre : '',
-            country: preloadedData.country ? preloadedData.country : '',
-            year: preloadedData.year ? new Date(preloadedData.year, 0) : null,
+            country: preloadedData.country && countries.includes(preloadedData.country) ? preloadedData.country : '',
+            year: preloadedData.year ? new Date(preloadedData.year, 1) : null,
             numDiscs: preloadedData.numDiscs ? preloadedData.numDiscs : '',
             condition: preloadedData.condition ? preloadedData.condition : '',
             weight: preloadedData.weight ? preloadedData.weight : '',
-            stereo: preloadedData.stereo ? preloadedData.channel : true,
-            score: preloadedData.score ? preloadedData.score : 0,
-            review: preloadedData.review ? preloadedData.review : '',
-            public: preloadedData.public ? preloadedData.public : false
+            stereo: preloadedData.channel ? preloadedData.channel === 'stereo' : true,
+            rating: preloadedData.review && preloadedData.review.rating ? preloadedData.review.rating : 0,
+            comment: preloadedData.review && preloadedData.review.comment ? preloadedData.review.comment : '',
+            isPublic: preloadedData.isPublic ? preloadedData.isPublic : false
         },
         validationSchema: loginSchema,
         onSubmit: values => {
-            alert(JSON.stringify(values, null, 2));
+            //recuperem els camps amb valors
+            const lp = _.pickBy(values, _.identity);
+
+            //convertim les dades al format de l'API
+            if (lp.year) {
+                lp.year = new Date(values.year).getFullYear()
+            }
+
+            if (lp.rating || lp.comment) {
+                lp.review = {
+                    ratting: values.rating,
+                    comment: values.comment
+                }
+                delete (lp.rating)
+                delete (lp.comment)
+            }
+
+            lp.channel = lp.stereo ? 'stereo' : 'mono'
+            delete lp.stereo
+
+            alert(JSON.stringify(lp, null, 2))
+
+            dispatch(addLP(lp))
+
         },
     });
 
@@ -219,7 +217,7 @@ const AlbumDetailsForm = ({ preloadedData }) => {
                                 <MenuItem key={condition} value={condition}>
                                     <Grid container alignItems="center">
                                         <Grid item>
-                                            {renderConditionIcon(condition, classes.conditionIcon)}
+                                            <ConditionIcon condition={condition} />
                                         </Grid>
                                         <Grid item xs>
                                             {t(`select:albumCondition.${condition}`)}
@@ -273,27 +271,27 @@ const AlbumDetailsForm = ({ preloadedData }) => {
                         </Grid>
                     </Grid>
                     <Grid item xs={12}>
-                        <Typography component="legend">{t('LPDetail.score')}</Typography>
+                        <Typography component="legend">{t('LPDetail.rating')}</Typography>
                         <Rating
-                            id="score"
-                            name="score"
-                            value={formik.values.score}
+                            id="rating"
+                            name="rating"
+                            value={formik.values.rating}
                             onChange={(event, value) => {
-                                formik.setFieldValue("score", value)
+                                formik.setFieldValue("rating", value)
                             }}
                         />
                         <TextField
                             fullWidth
-                            id="review"
-                            name="review"
-                            value={formik.values.review}
+                            id="comment"
+                            name="comment"
+                            value={formik.values.comment}
                             onChange={formik.handleChange}
-                            placeholder={t('LPDetail.review')}
+                            placeholder={t('LPDetail.comment')}
                             multiline
                             rows={4}
                             variant="outlined"
-                            error={formik.touched.review && Boolean(formik.errors.review)}
-                            helperText={formik.touched.review && formik.errors.review}
+                            error={formik.touched.comment && Boolean(formik.errors.comment)}
+                            helperText={formik.touched.comment && formik.errors.comment}
                         />
                     </Grid>
                     <Grid item xs={12}>
@@ -302,16 +300,16 @@ const AlbumDetailsForm = ({ preloadedData }) => {
                             control={
                                 <Checkbox
                                     color="primary"
-                                    name="public"
-                                    value={formik.values.public}
+                                    name="isPublic"
+                                    value={formik.values.isPublic}
                                     onChange={(event) => {
-                                        formik.setFieldValue("public", event.target.checked ? true : false)
+                                        formik.setFieldValue("isPublic", event.target.checked ? true : false)
                                     }}
                                 />}
                             labelPlacement="start"
                             label={
                                 <React.Fragment>
-                                    {formik.values.public ? <PublicIcon color="primary" className={classes.publicIcon} /> : <VpnLockIcon color="disabled" className={classes.publicIcon} />}
+                                    {formik.values.isPublic ? <PublicIcon color="primary" className={classes.publicIcon} /> : <VpnLockIcon color="disabled" className={classes.publicIcon} />}
                                     {t('LPDetail.public')}
                                 </React.Fragment>
                             }

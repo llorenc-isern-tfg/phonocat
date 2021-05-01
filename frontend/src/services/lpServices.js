@@ -8,3 +8,13 @@ export const preloadAlbumDataService = (title, artist) => {
         params: { title, artist }
     })
 }
+
+export const addLPService = (username, lp) => {
+    return api.post(`users/${username}/lps`, lp,
+        {
+            headers: {
+                'Authorization': authToken(),
+                'Content-Type': 'application/json'
+            }
+        })
+}

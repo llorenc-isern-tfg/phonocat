@@ -1,7 +1,7 @@
 import axios from 'axios'
 import asyncHandler from 'express-async-handler'
 import jwt from 'jsonwebtoken'
-import { getCode } from 'country-list'
+import { getCode, getName } from 'country-list'
 
 import Lp from '../models/lp-model.js'
 import User from '../models/user-model.js';
@@ -127,7 +127,7 @@ const deleteLP = asyncHandler(async (req, res) => {
  */
 const getExternalData = asyncHandler(async (req, res) => {
     const filters = req.query;
-    console.log(req.query)
+
     if (filters.title) {
         const searchData = await axios.get(`${process.env.DISCOGS_API_URL}/database/search`, {
             params: {
@@ -165,7 +165,7 @@ const getExternalData = asyncHandler(async (req, res) => {
                 country: getCode(data.country) ? getCode(data.country) : data.country,
                 year: data.year,
                 numDiscs: data.format_quantity,
-                //enviem nomes el subset d'atributs de cada cançó que ens interessa
+                //enviem nomes un subset d'atributs de cada cançó
                 trackList: data.tracklist.map(({ position, title, duration }) => ({ position, title, duration }))
             })
         } else {

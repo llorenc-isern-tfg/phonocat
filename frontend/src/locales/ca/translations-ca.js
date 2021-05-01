@@ -52,8 +52,8 @@ export const TRANSLATIONS_CA = {
         condition: 'Condició de la teva copia',
         weight: 'Qualitat del vinil',
         channel: 'Canal d\'audio',
-        score: 'Puntua aquest àlbum',
-        review: 'Resenya',
+        ratting: 'Puntua aquest àlbum',
+        comment: 'Resenya',
         public: 'Vols que aquest LP sigui visible per la resta d\'usuaris?'
     },
     form: {

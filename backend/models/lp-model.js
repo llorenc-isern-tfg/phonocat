@@ -2,8 +2,8 @@ import mongoose from 'mongoose'
 
 const reviewSchema = mongoose.Schema({
     rating: {
-        type: Number,
         required: true,
+        type: Number,
         min: 0,
         max: 5,
     },
@@ -26,8 +26,7 @@ const lpSchema = mongoose.Schema({
         required: true
     },
     label: {
-        type: String,
-        required: true
+        type: String
     },
     releaseYear: {
         type: Number
@@ -49,25 +48,16 @@ const lpSchema = mongoose.Schema({
     },
     channel: {
         type: String,
-        enum: ['Mono', 'Stereo'],
-        default: 'Stereo'
+        enum: ['mono', 'stereo'],
+        default: 'stereo'
     },
     isPublic: {
         type: Boolean,
         default: true
     },
-    images: [
-        {
-            uri: {
-                type: String,
-                required: true
-            },
-            isCover: {
-                type: Boolean,
-                default: false
-            }
-        }
-    ],
+    coverImg: {
+        type: String
+    },
     numDiscs: {
         type: Number,
         default: 1

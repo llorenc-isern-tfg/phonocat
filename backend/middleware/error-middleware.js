@@ -6,6 +6,7 @@ const notFoundHandler = (req, res, next) => {
 
 const errorHandler = (err, req, res, next) => {
     //Per errors no controlats indiquem un error de servidor (500)
+    console.log(err)
     const status = res.statusCode === 200 ? 500 : res.statusCode
     res.status(status)
     res.json({

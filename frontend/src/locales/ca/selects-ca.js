@@ -18,8 +18,8 @@ export const SELECTS_CA = {
     },
     albumCondition: {
         mint: 'Impecable',
-        nearMint: 'Casi com nova',
-        veryGood: 'Molt bona',
+        nearmint: 'Casi com nova',
+        vgood: 'Molt bona',
         good: 'Bona',
         fair: 'Acceptable',
         poor: 'Dolenta',

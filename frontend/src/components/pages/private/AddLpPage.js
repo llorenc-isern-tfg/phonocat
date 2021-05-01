@@ -72,19 +72,19 @@ const AddLpPage = () => {
         try {
             setPreloadingData(true)
             const { data } = await preloadAlbumDataService(searchResult.name, searchResult.artist)
-            dispatch(showAlert('success', { messageKey: 'searchAlbum.preloadDataComplete' }))
+            showAlert('success', { messageKey: 'searchAlbum.preloadDataComplete' })
             setPreloadedData(data)
         } catch (error) {
-            //TODO: centralitzar gestió d'error de les respostes al service o a les actions?
+            //TODO: centralitzar gestió d'error de les respostes al service?
             console.log(error.response)
             if (error.response && error.response.status === 401) {
-                dispatch(logout())
-                dispatch(showAlert('error', { messageKey: 'session.expired' }))
+                logout()
+                showAlert('error', { messageKey: 'session.expired' })
                 return
             }
 
             console.log(error)
-            dispatch(showAlert('warning', { messageKey: 'searchAlbum.preloadDataNotFound' }))
+            showAlert('warning', { messageKey: 'searchAlbum.preloadDataNotFound' })
             setPreloadedData({ title: searchResult.name, artist: searchResult.artist })
         }
         setPreloadingData(false)

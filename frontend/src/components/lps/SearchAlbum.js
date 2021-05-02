@@ -13,7 +13,9 @@ import { v4 as uuidv4 } from 'uuid'
 import match from 'autosuggest-highlight/match'
 import parse from 'autosuggest-highlight/parse'
 import { useDispatch } from 'react-redux'
-import { showAlert } from '../../actions/alertActions'
+import { useSelector } from 'react-redux'
+
+import { lpAutocompleteSearch, lpAutocompleteSearchClear } from '../../actions/lpActions'
 
 
 import { searchAlbumsService } from '../../services/lastFmServices'
@@ -46,7 +48,9 @@ const SearchAlbum = ({ onSearchResultSelected }) => {
 
     const [term, setTerm] = useState('')
     const [debouncedTerm, setDebouncedTerm] = useState(term)
-    const [results, setResults] = useState([])
+    // const [results, setResults] = useState([])
+    const lpAutocomplete = useSelector((state) => state.lpAutocomplete)
+    const { searchResults, loading } = lpAutocomplete
 
     //fem servir aquesta variable per evitar memory leaks quan el component ja no és visible
     const _isMounted = useRef(true);
@@ -59,7 +63,6 @@ const SearchAlbum = ({ onSearchResultSelected }) => {
 
     //Amb aquest hook es controlen els canvis del terme de cerca i nomès fem la crida al servei si ha passat mig segon sense canvis
     useEffect(() => {
-
         //Es crea una crida a la cerca amb un timeout de mig segon
         const timerId = setTimeout(() => {
             setDebouncedTerm(term)
@@ -75,26 +78,31 @@ const SearchAlbum = ({ onSearchResultSelected }) => {
     //Amb aquest hook es controlen els canvis una vegada l'usuari deixa d'escriure i es fa la crida al servei de cerca
     useEffect(() => {
         const search = async () => {
-            try {
-                const { data } = await searchAlbumsService(debouncedTerm)
-                if (_isMounted.current)
-                    //descartem els resultats amb valors com ( o [ que corresponen a variacions del disc
-                    setResults(data.results.albummatches.album.filter((album) => { return !album.name.includes("(") && !album.name.includes("[") }))
-            } catch (error) {
-                dispatch(showAlert('warning', { messageKey: 'lastFm.searchAlbum.unavailable' }))
+            if (_isMounted.current) {
+                dispatch(lpAutocompleteSearch(debouncedTerm))
             }
+
+            // try {
+            //     const { data } = await searchAlbumsService(debouncedTerm)
+            //     if (_isMounted.current)
+            //         //descartem els resultats amb valors com ( o [ que corresponen a variacions del disc
+            //         setResults(data.results.albummatches.album.filter((album) => { return !album.name.includes("(") && !album.name.includes("[") }))
+            // } catch (error) {
+            //     dispatch(showAlert('warning', { messageKey: 'lastFm.searchAlbum.unavailable' }))
+            // }
         }
         if (debouncedTerm)
             search()
-        else
-            setResults([])
+        else {
+            dispatch(lpAutocompleteSearchClear())
+        }
+        // setResults([])
 
     }, [debouncedTerm])
 
 
     //Render d'una opció del desplegable de resultats de la cerca
     const renderAlbumOption = (option) => {
-
         const parts = parse(option.name, match(option.name, term));
 
         return (
@@ -132,6 +140,8 @@ const SearchAlbum = ({ onSearchResultSelected }) => {
                             {t('searchAlbum.title')}
                         </Typography>
                         <Autocomplete
+                            loading={loading}
+                            loadingText={t('searchAlbum.searching')}
                             style={{
                                 backgroundColor: 'white'
                             }}
@@ -139,7 +149,7 @@ const SearchAlbum = ({ onSearchResultSelected }) => {
                             id="suggest-album-title"
                             getOptionLabel={(option) => (typeof option === 'string' ? option : option.name)}
                             filterOptions={(x) => x}
-                            options={results}
+                            options={searchResults ? searchResults : []}
                             autoComplete
                             includeInputInList
                             filterSelectedOptions

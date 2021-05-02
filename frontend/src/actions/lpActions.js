@@ -1,4 +1,7 @@
-import { LP_ADD_REQUEST, LP_ADD_FAIL, LP_ADD_SUCCESS } from '../constants/lpActionTypes'
+import {
+    LP_ADD_REQUEST, LP_ADD_FAIL, LP_ADD_SUCCESS,
+    LP_AUTOCOMPLETE_SEARCH_REQUEST, LP_AUTOCOMPLETE_SEARCH_FAIL, LP_AUTOCOMPLETE_SEARCH_SUCCESS, LP_AUTOCOMPLETE_SEARCH_CLEAR
+} from '../constants/lpActionTypes'
 
 import { addLPService } from '../services/lpServices'
 import { showAlert } from './alertActions'
@@ -23,10 +26,17 @@ import { showAlert } from './alertActions'
 //     }
 // }
 
+const action = (type, payload = {}) => ({ type, payload })
+
+export const lpAutocompleteSearch = searchTerm => (action(LP_AUTOCOMPLETE_SEARCH_REQUEST, searchTerm))
+export const lpAutocompleteSearchFail = error => (action(LP_AUTOCOMPLETE_SEARCH_FAIL, error))
+export const lpAutocompleteSearchSuccess = ({ searchTerm, searchResults }) => (action(LP_AUTOCOMPLETE_SEARCH_SUCCESS, { searchTerm, searchResults }))
+export const lpAutocompleteSearchClear = () => (action(LP_AUTOCOMPLETE_SEARCH_CLEAR))
+
 export const addLP = (lp) => async (dispatch, getState) => {
     try {
-        console.log('HOLA')
-        console.log(getState())
+        // console.log('HOLA')
+        // console.log(getState())
         dispatch({ type: LP_ADD_REQUEST })
 
         const { username } = getState().auth.userInfo

@@ -20,7 +20,7 @@ import { setLocale } from 'yup'
 
 import ButtonSpinner from '../../components/shared/ButtonSpinner'
 import DialogTitleWithClose from '../../components/shared/DialogTitleWithClose'
-import { login } from '../../actions/userActions'
+import { loginRequest } from '../../actions/userActions'
 import yupMessages from '../../locales/yupMessages'
 
 const useStyles = makeStyles((theme) => ({
@@ -70,7 +70,7 @@ const LoginDialog = ({ open, onClose }) => {
         },
         validationSchema: loginSchema,
         onSubmit: values => {
-            dispatch(login(values.email, values.password))
+            dispatch(loginRequest(values))
         }
     });
 

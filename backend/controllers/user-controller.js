@@ -30,6 +30,7 @@ const registerUser = asyncHandler(async (req, res) => {
  * @access Public
  */
 const authUserJWT = asyncHandler(async (req, res) => {
+  console.log(req.body)
   const { email, password } = req.body
   const user = await User.findOne({ email })
 

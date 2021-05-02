@@ -1,7 +1,7 @@
 import { api } from './phonocat'
 
-export const loginService = (email, password) => {
-    return api.post('/users/login', { email, password }, {
+export const loginService = credentials => {
+    return api.post('/users/login', credentials, {
         headers: {
             'Content-Type': 'application/json'
         }

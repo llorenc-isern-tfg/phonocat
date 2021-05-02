@@ -38,7 +38,8 @@ export const TRANSLATIONS_CA = {
         helpTitle: 'No trobes el que busques?',
         helpDescription: 'No et preocupis, avança al següent pas i introdueix les dades del teu LP manualment',
         preloadDataComplete: 'Hem trobat les següents dades del LP que has seleccionat. Ets lliure de modificar-les al teu gust',
-        preloadDataNotFound: 'No s\'han trobat dades a precarregar d\'aquest LP'
+        preloadDataNotFound: 'No s\'han trobat dades a precarregar d\'aquest LP',
+        searching: 'Cercant...'
     },
     LPDetail: {
         title: 'Detalls de l\'àlbum',

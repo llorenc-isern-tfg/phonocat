@@ -18,7 +18,7 @@ export const TRANSLATIONS_CA = {
         home: 'Inici',
         lps: 'ALBUMS',
         lpCollection: 'Col·lecció',
-        addLP: 'Nou disc',
+        lpAdd: 'Nou disc',
         market: 'MERCAT',
         listedItems: 'En venda',
         offers: 'Ofertes',
@@ -31,6 +31,8 @@ export const TRANSLATIONS_CA = {
         searchAlbum: 'Cerca un album',
         completeAlbumData: 'Completa els detalls',
         addPictures: 'Afegeix la portada',
+        saved: 'EL teu LP s\'ha desat correctament!',
+        fail: 'El teu LP no s\'ha pogut desar'
     },
     searchAlbum: {
         title: 'Cerca un àlbum pel seu títol o autor',
@@ -41,7 +43,7 @@ export const TRANSLATIONS_CA = {
         preloadDataNotFound: 'No s\'han trobat dades a precarregar d\'aquest LP',
         searching: 'Cercant...'
     },
-    LPDetail: {
+    lpDetail: {
         title: 'Detalls de l\'àlbum',
         albumTitle: 'Títol',
         artist: 'Autor',
@@ -53,16 +55,24 @@ export const TRANSLATIONS_CA = {
         condition: 'Condició de la teva copia',
         weight: 'Qualitat del vinil',
         channel: 'Canal d\'audio',
-        ratting: 'Puntua aquest àlbum',
+        rating: 'Puntua aquest àlbum',
         comment: 'Resenya',
         public: 'Vols que aquest LP sigui visible per la resta d\'usuaris?'
+    },
+    tracklist: {
+        header: 'Llistat de cançons',
+        title: 'Títol de la cançó',
+        position: 'Cara i número de pista',
+        duration: 'Duració'
     },
     form: {
         save: 'Desa',
         cancel: 'Cancel·la',
         next: 'Següent',
         back: 'Torna',
-        noResults: 'No s\'han trobat resultats'
+        noResults: 'No s\'han trobat resultats',
+        edit: 'Edita',
+        delete: 'Elimina'
     },
     lastFm: {
         searchAlbum: {
@@ -73,12 +83,9 @@ export const TRANSLATIONS_CA = {
         welcome: 'Hola {{username}}!',
         expired: 'La teva sessió s\'ha exhaurit. Torna a identificar-te si us plau'
     },
-    yup: {
-        field_invalid: 'Valor incorrecte',
-        required: 'Camp obligatori',
-        email: 'Adreça de correu electrònic invàlida',
-        text_field_too_short: 'El camp ha de tenir com a mínim {{min}} caracters',
-        text_field_too_big: 'El camp ha de tenir com a màxim {{max}} caracters'
-
+    userMenu: {
+        profile: 'Perfil',
+        settings: 'Configuració',
+        signout: 'Tancar sessió',
     }
 };

@@ -74,6 +74,12 @@ const LoginDialog = ({ open, onClose }) => {
         }
     });
 
+    useEffect(() => {
+        if (userInfo)
+            handleClose()
+
+    }, [userInfo])
+
     const handleClose = () => {
         onClose()
         //timeout per evitar efecte grafic quan es resetejen els missatges d'error i encara no s'ha tancat la pantalla modal

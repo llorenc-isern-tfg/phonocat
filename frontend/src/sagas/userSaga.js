@@ -12,7 +12,7 @@ function* login({ payload }) {
         const credentials = payload
         const { data } = yield call(loginService, credentials)
         yield put(userActions.loginSuccess(data))
-        history.push('/app')
+        history.push('/home')
         yield put(showAlert('success', { messageKey: 'session.welcome', params: { username: data.username } }))
     } catch (error) {
         const errorMsg = error.response && error.response.data.message ?
@@ -23,7 +23,7 @@ function* login({ payload }) {
 }
 
 function* logout() {
-    yield put(userActions.loggedOut)
+    yield put(userActions.loggedOut())
     history.push('/')
 }
 

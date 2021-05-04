@@ -12,13 +12,10 @@ import { makeStyles } from '@material-ui/core/styles'
 import { v4 as uuidv4 } from 'uuid'
 import match from 'autosuggest-highlight/match'
 import parse from 'autosuggest-highlight/parse'
-import { useDispatch } from 'react-redux'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 
 import { lpAutocompleteSearch, lpAutocompleteSearchClear } from '../../actions/lpActions'
 
-
-import { searchAlbumsService } from '../../services/lastFmServices'
 
 const useStyles = makeStyles((theme) => ({
     albumThumb: {
@@ -48,7 +45,7 @@ const SearchAlbum = ({ onSearchResultSelected }) => {
 
     const [term, setTerm] = useState('')
     const [debouncedTerm, setDebouncedTerm] = useState(term)
-    // const [results, setResults] = useState([])
+
     const lpAutocomplete = useSelector((state) => state.lpAutocomplete)
     const { searchResults, loading } = lpAutocomplete
 
@@ -56,7 +53,7 @@ const SearchAlbum = ({ onSearchResultSelected }) => {
     const _isMounted = useRef(true);
 
     useEffect(() => {
-        return () => { // ComponentWillUnmount in Class Component
+        return () => { // equivalent a componentDidUnmount a components de classe
             _isMounted.current = false;
         }
     }, []);
@@ -69,6 +66,7 @@ const SearchAlbum = ({ onSearchResultSelected }) => {
         }, 500)
 
         //Cleanup: La proxima vegada que el terme de cerca canviï, s'executarà aquesta funció i es farà un clear del timeout anterior
+        //d'aquesta manera evitem crides innecessaries al servei de cerca
         return () => {
             clearTimeout(timerId)
         }
@@ -81,22 +79,12 @@ const SearchAlbum = ({ onSearchResultSelected }) => {
             if (_isMounted.current) {
                 dispatch(lpAutocompleteSearch(debouncedTerm))
             }
-
-            // try {
-            //     const { data } = await searchAlbumsService(debouncedTerm)
-            //     if (_isMounted.current)
-            //         //descartem els resultats amb valors com ( o [ que corresponen a variacions del disc
-            //         setResults(data.results.albummatches.album.filter((album) => { return !album.name.includes("(") && !album.name.includes("[") }))
-            // } catch (error) {
-            //     dispatch(showAlert('warning', { messageKey: 'lastFm.searchAlbum.unavailable' }))
-            // }
         }
         if (debouncedTerm)
             search()
         else {
             dispatch(lpAutocompleteSearchClear())
         }
-        // setResults([])
 
     }, [debouncedTerm])
 
@@ -153,7 +141,6 @@ const SearchAlbum = ({ onSearchResultSelected }) => {
                             autoComplete
                             includeInputInList
                             filterSelectedOptions
-                            // value={term}
                             getOptionSelected={(option, value) => option.name === value.name}
                             onChange={(event, newValue) => {
                                 //callback al component superior per passar la opció seleccionada

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import Grid from '@material-ui/core/Grid'
 import Button from '@material-ui/core/Button'
@@ -7,8 +7,6 @@ import TextField from '@material-ui/core/TextField'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
 import Checkbox from '@material-ui/core/Checkbox'
 import InputLabel from '@material-ui/core/InputLabel'
-import Select from '@material-ui/core/Select'
-import FormControl from '@material-ui/core/FormControl'
 import MenuItem from '@material-ui/core/MenuItem'
 import Switch from '@material-ui/core/Switch'
 import MomentUtils from '@date-io/moment'
@@ -20,16 +18,17 @@ import * as yup from 'yup'
 import { setLocale } from 'yup'
 import PublicIcon from '@material-ui/icons/Public'
 import VpnLockIcon from '@material-ui/icons/VpnLock'
-import MoodBadIcon from '@material-ui/icons/MoodBad'
 import Rating from '@material-ui/lab/Rating'
-import { useDispatch } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import _ from 'lodash'
+import ConditionIcon from './ConditionIcon'
+
 
 import yupMessages from '../../locales/yupMessages'
 import { musicGenres, albumConditions, albumWeights } from '../../constants/selectCodes'
 import countries from '../../constants/countries'
-import { addLP } from '../../actions/lpActions'
-import ConditionIcon from './ConditionIcon'
+import { lpAdd } from '../../actions/lpActions'
+import TrackList from './TrackList'
 
 const useStyles = makeStyles((theme) => ({
     publicIcon: {
@@ -37,9 +36,16 @@ const useStyles = makeStyles((theme) => ({
     }
 }))
 
-const AlbumDetailsForm = ({ preloadedData }) => {
+const AlbumDetailsForm = () => {
+
+    const lpPreload = useSelector((state) => state.lpPreload)
+    const { searchResult } = lpPreload
+    const preloadedData = lpPreload.preloadedData ? lpPreload.preloadedData : {}
+
 
     const { t } = useTranslation(['translation', 'select', 'country'])
+    setLocale(yupMessages)
+
     const classes = useStyles()
 
     const dispatch = useDispatch()
@@ -55,8 +61,8 @@ const AlbumDetailsForm = ({ preloadedData }) => {
 
     const formik = useFormik({
         initialValues: {
-            title: preloadedData.title ? preloadedData.title : '',
-            artist: preloadedData.artist ? preloadedData.artist : '',
+            title: preloadedData.title ? preloadedData.title : (searchResult && searchResult.title ? searchResult.title : ''),
+            artist: preloadedData.artist ? preloadedData.artist : (searchResult && searchResult.artist ? searchResult.artist : ''),
             label: preloadedData.label ? preloadedData.label : '',
             genre: preloadedData.genre ? preloadedData.genre : '',
             country: preloadedData.country && countries.includes(preloadedData.country) ? preloadedData.country : '',
@@ -81,7 +87,7 @@ const AlbumDetailsForm = ({ preloadedData }) => {
 
             if (lp.rating || lp.comment) {
                 lp.review = {
-                    ratting: values.rating,
+                    rating: values.rating,
                     comment: values.comment
                 }
                 delete (lp.rating)
@@ -91,9 +97,12 @@ const AlbumDetailsForm = ({ preloadedData }) => {
             lp.channel = lp.stereo ? 'stereo' : 'mono'
             delete lp.stereo
 
+            if (preloadedData && preloadedData.trackList)
+                lp.trackList = preloadedData.trackList
+
             alert(JSON.stringify(lp, null, 2))
 
-            dispatch(addLP(lp))
+            dispatch(lpAdd(lp))
 
         },
     });
@@ -150,7 +159,7 @@ const AlbumDetailsForm = ({ preloadedData }) => {
                             label={t('LPDetail.genre')}
                             fullWidth
                             value={formik.values.genre}
-                            onChange={formik.handleChange("genre")}
+                            onChange={formik.handleChange}
                         >
                             {musicGenres.map((key) => (
                                 <MenuItem key={key} value={key}>
@@ -315,6 +324,7 @@ const AlbumDetailsForm = ({ preloadedData }) => {
                             }
                         />
                     </Grid>
+                    {preloadedData.trackList && preloadedData.trackList.length > 1 && <TrackList trackList={preloadedData.trackList} />}
                 </Grid>
                 <Button
                     type="submit"

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Drawer from '@material-ui/core/Drawer'
 import Hidden from '@material-ui/core/Hidden'
 import Divider from '@material-ui/core/Divider'
@@ -18,7 +18,7 @@ import ChatIcon from '@material-ui/icons/Chat'
 import { makeStyles, useTheme } from '@material-ui/core/styles'
 import { useDispatch, useSelector } from 'react-redux'
 import { useTranslation } from "react-i18next"
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import clsx from 'clsx'
 
 const drawerWidth = 240
@@ -71,6 +71,47 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
+const sideMenu = [
+    {
+
+        header: undefined,
+        menuItems: [
+            {
+                id: 'home',
+                to: '/home',
+                icon: <HomeIcon />,
+                textKey: 'sideMenu.home',
+            }
+        ]
+
+    },
+    {
+        header: 'sideMenu.lps',
+        menuItems: [
+            {
+                id: 'lpCollection',
+                to: '/lp/collection',
+                icon: <AlbumIcon />,
+                textKey: 'sideMenu.lpCollection'
+            },
+            {
+                id: 'lpAdd',
+                to: '/lp/new',
+                icon: <AddBoxIcon />,
+                textKey: 'sideMenu.lpAdd'
+            },
+
+        ]
+    }
+]
+
+let flatMenuItems = []
+sideMenu.forEach((section) => {
+    flatMenuItems = flatMenuItems.concat(
+        section.menuItems
+    )
+})
+
 const SideMenu = () => {
 
     const { t } = useTranslation();
@@ -83,46 +124,88 @@ const SideMenu = () => {
 
     const [mobileOpen, setMobileOpen] = useState(false);
 
+    const location = useLocation()
+
+    const [selected, setSelected] = useState('')
+
+    const findSelected = () => {
+
+        return flatMenuItems.find(({ to }) => (location.pathname === to || location.pathname.indexOf(to) !== -1))
+    }
+
+    useEffect(() => {
+        setSelected(findSelected() ? findSelected().id : '')
+    }, [location])
 
     const renderDrawer = () => {
         return (
-            <List>
-                <ListItem button key={'home'} component={Link} to={'/app'}>
-                    <ListItemIcon><HomeIcon /></ListItemIcon>
-                    <ListItemText primary={t('sideMenu.home')} />
-                </ListItem>
-                <Divider className={classes.divider} />
-                <Typography className={classes.sectionTitle}>{t('sideMenu.lps')}</Typography>
-                <ListItem button key={'sideMenu.lpCollection'} component={Link} to={'/app/lps'}>
-                    <ListItemIcon><AlbumIcon /></ListItemIcon>
-                    <ListItemText primary={t('sideMenu.lpCollection')} />
-                </ListItem>
-                <ListItem button key={'sideMenu.addLP'} component={Link} to={'/app/lps/new'}>
-                    <ListItemIcon><AddBoxIcon /></ListItemIcon>
-                    <ListItemText primary={t('sideMenu.addLP')} />
-                </ListItem>
-                <Divider className={classes.divider} />
-                <Typography className={classes.sectionTitle}>{t('sideMenu.market')}</Typography>
-                <ListItem button key={'sideMenu.listedItems'}>
-                    <ListItemIcon><LocalOfferIcon /></ListItemIcon>
-                    <ListItemText primary={t('sideMenu.listedItems')} />
-                </ListItem>
-                <ListItem button key={'sideMenu.offers'}>
-                    <ListItemIcon><ShoppingBasketIcon /></ListItemIcon>
-                    <ListItemText primary={t('sideMenu.offers')} />
-                </ListItem>
-                <Divider className={classes.divider} />
-                <Typography className={classes.sectionTitle}>{t('sideMenu.social')}</Typography>
-                <ListItem button key={'sideMenu.users'}>
-                    <ListItemIcon><GroupIcon /></ListItemIcon>
-                    <ListItemText primary={t('sideMenu.users')} />
-                </ListItem>
-                <ListItem button key={'sideMenu.conversations'}>
-                    <ListItemIcon><ChatIcon /></ListItemIcon>
-                    <ListItemText primary={t('sideMenu.conversations')} />
-                </ListItem>
-            </List>
+            <React.Fragment>
+                {
+                    sideMenu.map((section, i) => {
+                        return (
+                            <React.Fragment key={i}>
+                                {/* {section.header && <Typography key={i} className={classes.sectionTitle}>{t(section.header)}</Typography>} */}
+                                <List>
+                                    {
+                                        section.header && (
+                                            <ListItem>
+                                                <ListItemText primary={t(section.header)} />
+                                            </ListItem>
+                                        )
+                                    }
+                                    {section.menuItems.map((menuItem) => {
+                                        return (
+                                            <ListItem button key={menuItem.id} component={Link} selected={menuItem.id === selected} to={menuItem.to}>
+                                                <ListItemIcon>{menuItem.icon}</ListItemIcon>
+                                                <ListItemText primary={t(menuItem.textKey)} />
+                                            </ListItem>
+                                        )
+                                    })
+                                    }
+
+                                </List>
+                                { sideMenu[i + 1] ? <Divider /> : null}
+                            </React.Fragment>
+                        )
+                    })
+                }
+            </React.Fragment>
         )
+
+        /* //     /* <ListItem button key={'home'} component={Link} selected={selected} to={'/app'}>
+            //     <ListItemIcon><HomeIcon /></ListItemIcon>
+    //     <ListItemText primary={t('sideMenu.home')} />
+    // </ListItem>
+    // <Divider className={classes.divider} />
+    // <Typography className={classes.sectionTitle}>{t('sideMenu.lps')}</Typography>
+    // <ListItem button key={'sideMenu.lpCollection'} component={Link} selected={selected} to={'/app/lps'}>
+            //     <ListItemIcon><AlbumIcon /></ListItemIcon>
+    //     <ListItemText primary={t('sideMenu.lpCollection')} />
+    // </ListItem>
+    // <ListItem button key={'sideMenu.addLP'} component={Link} selected={selected} to={'/app/lps/new'}>
+            //     <ListItemIcon><AddBoxIcon /></ListItemIcon>
+    //     <ListItemText primary={t('sideMenu.addLP')} />
+    // </ListItem>
+    // <Divider className={classes.divider} />
+    // <Typography className={classes.sectionTitle}>{t('sideMenu.market')}</Typography>
+    // <ListItem button key={'sideMenu.listedItems'}>
+            //     <ListItemIcon><LocalOfferIcon /></ListItemIcon>
+    //     <ListItemText primary={t('sideMenu.listedItems')} />
+    // </ListItem>
+    // <ListItem button key={'sideMenu.offers'}>
+            //     <ListItemIcon><ShoppingBasketIcon /></ListItemIcon>
+    //     <ListItemText primary={t('sideMenu.offers')} />
+    // </ListItem>
+    // <Divider className={classes.divider} />
+    // <Typography className={classes.sectionTitle}>{t('sideMenu.social')}</Typography>
+    // <ListItem button key={'sideMenu.users'}>
+            //     <ListItemIcon><GroupIcon /></ListItemIcon>
+    //     <ListItemText primary={t('sideMenu.users')} />
+    // </ListItem>
+    // <ListItem button key={'sideMenu.conversations'}>
+            //     <ListItemIcon><ChatIcon /></ListItemIcon>
+    //     <ListItemText primary={t('sideMenu.conversations')} />
+    // </ListItem> */
     }
 
     const handleDrawerToggle = () => {
@@ -135,7 +218,7 @@ const SideMenu = () => {
     return (
         userInfo ? (
             <div>
-                <Hidden smUp>
+                {/* <Hidden smUp>
                     <Drawer
                         variant="temporary"
                         anchor={theme.direction === 'rtl' ? 'right' : 'left'}
@@ -153,7 +236,7 @@ const SideMenu = () => {
                             {renderDrawer()}
                         </div>
                     </Drawer>
-                </Hidden>
+                </Hidden> */}
                 <Hidden xsDown>
                     <Drawer
                         className={clsx(classes.drawer, {

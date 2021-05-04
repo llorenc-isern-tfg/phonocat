@@ -1,8 +1,9 @@
 import mongoose from 'mongoose'
 
+import trackSchema from './track-schema.js'
+
 const reviewSchema = mongoose.Schema({
     rating: {
-        required: true,
         type: Number,
         min: 0,
         max: 5,
@@ -24,6 +25,11 @@ const lpSchema = mongoose.Schema({
     title: {
         type: String,
         required: true
+    },
+    artist: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
+        ref: 'Artist'
     },
     label: {
         type: String
@@ -68,7 +74,10 @@ const lpSchema = mongoose.Schema({
     },
     review: {
         type: reviewSchema
-    }
+    },
+    trackList: [{
+        type: trackSchema
+    }]
 
 }, {
     timestamps: true

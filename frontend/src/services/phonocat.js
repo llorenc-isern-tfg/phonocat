@@ -1,7 +1,6 @@
 import axios from 'axios'
 
-export const authToken = () => {
-    const userInfo = JSON.parse(localStorage.getItem('userInfo'))
+export const authToken = (userInfo) => {
     if (userInfo && userInfo.token) {
         return `Bearer ${userInfo.token}`
     }

@@ -5,6 +5,7 @@ import { getCode, getName } from 'country-list'
 
 import Lp from '../models/lp-model.js'
 import User from '../models/user-model.js';
+import Artist from '../models/artist-model.js';
 
 /**
  * @description Add LP to user collection
@@ -18,6 +19,21 @@ const addLP = asyncHandler(async (req, res) => {
         ...req.body,
         owner: req.user._id
     })
+
+    const artistName = req.body.artist
+    const artistMbid = req.body.artistMbid
+    let artist = await Artist.findOne({ name: artistName })
+
+    if (!artist) {
+        console.log('ARTIST: ' + artistName, artistMbid)
+        artist = new Artist({
+            name: artistName,
+            mbid: artistMbid
+        })
+        await artist.save()
+    }
+
+    lp.artist = artist.id
 
     await lp.save()
     res.status(201).send(lp)
@@ -43,9 +59,7 @@ const getLPs = asyncHandler(async (req, res) => {
                 _id: lp._id,
                 title: lp.title,
                 genre: lp.genre,
-                cover: lp.images.find((img) => {
-                    img.isCover
-                })
+                coverImg: lp.coverImg
             })
         });
         res.send(lpsSummary)
@@ -128,6 +142,7 @@ const deleteLP = asyncHandler(async (req, res) => {
 const getExternalData = asyncHandler(async (req, res) => {
     const filters = req.query;
 
+    console.log(JSON.stringify(filters))
     if (filters.title) {
         const searchData = await axios.get(`${process.env.DISCOGS_API_URL}/database/search`, {
             params: {
@@ -157,7 +172,8 @@ const getExternalData = asyncHandler(async (req, res) => {
                 }
             })
 
-            res.send({
+            console.log('HOLA')
+            const resu = {
                 title: filters.title,
                 artist: filters.artist ? filters.artist : data.artist[0].name,
                 label: data.labels[0].name,
@@ -167,7 +183,9 @@ const getExternalData = asyncHandler(async (req, res) => {
                 numDiscs: data.format_quantity,
                 //enviem nomes un subset d'atributs de cada cançó
                 trackList: data.tracklist.map(({ position, title, duration }) => ({ position, title, duration }))
-            })
+            }
+            console.log('HOLA2')
+            res.status(200).send(resu)
         } else {
             res.status(404)
             throw new Error('Didn\t find any results')

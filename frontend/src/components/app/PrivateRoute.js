@@ -8,7 +8,6 @@ function PrivateRoute({ component: Component }) {
     const auth = useSelector((state) => state.auth)
     const { userInfo } = auth
 
-    console.log(auth)
     return (
         <Route render={props => {
             if (!userInfo) {

@@ -13,6 +13,7 @@ import history from './history'
 import theme from './pages/theme'
 import Alerts from './components/shared/Alerts'
 import SideMenu from './components/layout/SideMenu'
+import NotFoundPage from './pages/public/NotFoundPage'
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -44,9 +45,10 @@ const App = () => {
                         <div className={classes.appBarSpacer} />
                         <Switch>
                             <Route path="/" exact component={LandingPage} />
-                            <PrivateRoute path="/app" exact component={HomePage} />
-                            <PrivateRoute path="/app/lps" exact component={LpCollectionPage} />
-                            <PrivateRoute path="/app/lps/new" exact component={AddLpPage} />
+                            <PrivateRoute path="/home" exact component={HomePage} />
+                            <PrivateRoute path="/lp/collection" exact component={LpCollectionPage} />
+                            <PrivateRoute path="/lp/new" exact component={AddLpPage} />
+                            <Route component={NotFoundPage} />
                         </Switch>
                     </main>
                 </div>

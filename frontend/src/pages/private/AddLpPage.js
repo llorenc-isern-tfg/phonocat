@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import Paper from '@material-ui/core/Paper'
 import Stepper from '@material-ui/core/Stepper'
@@ -7,17 +7,16 @@ import StepLabel from '@material-ui/core/StepLabel'
 import Button from '@material-ui/core/Button'
 import Typography from '@material-ui/core/Typography'
 import Container from '@material-ui/core/Container'
+import { useTranslation } from "react-i18next"
+import { useSelector, useDispatch } from 'react-redux'
 import Backdrop from '@material-ui/core/Backdrop'
 import CircularProgress from '@material-ui/core/CircularProgress'
-import { useTranslation } from "react-i18next"
-import { useDispatch } from 'react-redux'
-import { showAlert } from '../../actions/alertActions'
-import { logout } from '../../actions/userActions'
 
-import SearchAlbum from '../../components/lps/SearchAlbum';
-import AlbumDetailsForm from '../../components/lps/AlbumDetailsForm';
+import { lpPreloadExternalData, lpPreloadExternalDataClear } from '../../actions/lpActions'
+import SearchAlbum from '../../components/lps/SearchAlbum'
+import AlbumDetailsForm from '../../components/lps/AlbumDetailsForm'
+import AlbumDetailsFormHooks from '../../components/lps/AlbumDetailsFormHooks'
 
-import { preloadAlbumDataService } from '../../services/lpServices'
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -57,8 +56,8 @@ const AddLpPage = () => {
     const classes = useStyles()
     const [activeStep, setActiveStep] = useState(0)
 
-    const [preloadedData, setPreloadedData] = useState({})
-    const [preloadingData, setPreloadingData] = useState(false)
+    const lpPreload = useSelector((state) => state.lpPreload)
+    const { status, preloadedData } = lpPreload
 
     const handleNext = () => {
         setActiveStep(activeStep + 1)
@@ -69,27 +68,19 @@ const AddLpPage = () => {
     }
 
     const handleSearchResultSelected = async (searchResult) => {
-        try {
-            setPreloadingData(true)
-            const { data } = await preloadAlbumDataService(searchResult.name, searchResult.artist)
-            dispatch(showAlert('success', { messageKey: 'searchAlbum.preloadDataComplete' }))
-            setPreloadedData(data)
-        } catch (error) {
-            //TODO: centralitzar gestió d'error de les respostes al service o a les actions?
-            console.log(error.response)
-            if (error.response && error.response.status === 401) {
-                dispatch(logout())
-                dispatch(showAlert('error', { messageKey: 'session.expired' }))
-                return
-            }
-
-            console.log(error)
-            dispatch(showAlert('warning', { messageKey: 'searchAlbum.preloadDataNotFound' }))
-            setPreloadedData({ title: searchResult.name, artist: searchResult.artist })
-        }
-        setPreloadingData(false)
-        handleNext()
+        dispatch(lpPreloadExternalData(searchResult))
     }
+
+    //Quan la precàrrega finalitza mostrem el formulari
+    useEffect(() => {
+        if (status && status.finished) {
+            handleNext()
+        }
+    }, [status])
+
+    useEffect(() => {
+        return () => dispatch(lpPreloadExternalDataClear())
+    }, [])
 
     const getStepContent = (step) => {
         switch (step) {
@@ -100,7 +91,8 @@ const AddLpPage = () => {
             case 2:
                 return null
             default:
-                throw new Error('Unknown step')
+                return null
+            // throw new Error('Unknown step')
         }
     }
 
@@ -143,7 +135,7 @@ const AddLpPage = () => {
                 </Paper>
             </Container>
             {/* Modal per la precarrega */}
-            <Backdrop className={classes.backdrop} open={preloadingData}>
+            <Backdrop className={classes.backdrop} open={status ? !status.finished : false}>
                 <CircularProgress color="inherit" />
             </Backdrop>
         </React.Fragment>

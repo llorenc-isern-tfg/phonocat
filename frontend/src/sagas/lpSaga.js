@@ -1,10 +1,13 @@
 import { takeEvery, takeLatest, call, put, all, select } from 'redux-saga/effects'
 
 import { searchAlbumsService } from '../services/lastFmServices'
-import { preloadAlbumDataService, addLpService, getLpCollectionService } from '../services/lpServices'
+import { preloadAlbumDataService, addLpService, getLpCollectionService, deleteLpService } from '../services/lpServices'
 import * as lpActions from '../actions/lpActions'
 import { showAlert } from '../actions/alertActions'
-import { LP_ADD_REQUEST, LP_AUTOCOMPLETE_SEARCH_REQUEST, LP_FETCH_EXTERNAL_DATA_REQUEST, LP_COLLECTION_REQUEST } from '../constants/lpActionTypes'
+import {
+    LP_ADD_REQUEST, LP_AUTOCOMPLETE_SEARCH_REQUEST, LP_FETCH_EXTERNAL_DATA_REQUEST,
+    LP_COLLECTION_REQUEST, LP_DELETE_REQUEST
+} from '../constants/lpActionTypes'
 import { selectUserInfo } from '../reducers/selectors'
 
 function* autocomplete({ payload }) {
@@ -12,7 +15,9 @@ function* autocomplete({ payload }) {
         const searchTerm = payload
 
         const { data } = yield call(searchAlbumsService, searchTerm)
-        const searchResults = data.results.albummatches.album.filter((album) => { return !album.name.includes("(") && !album.name.includes("[") })
+        const searchResults = data.results.albummatches.album.filter(
+            (album) => { return !album.name.includes("(") && !album.name.includes("[") }
+        )
         yield put(lpActions.lpAutocompleteSearchSuccess({ searchTerm, searchResults }))
     } catch (error) {
         const errorMsg = error.response && error.response.data.message ?
@@ -51,7 +56,6 @@ function* addLp({ payload }) {
 
         const userInfo = yield select(selectUserInfo)
         const { data } = yield call(addLpService, userInfo, lp)
-        alert(JSON.stringify(data))
         yield put(lpActions.lpAddSuccess({ lp: data }))
         yield put(showAlert('success', { messageKey: 'addLP.saved' }))
     } catch (error) {
@@ -76,6 +80,22 @@ function* lpCollection() {
     }
 }
 
+function* deleteLp({ payload }) {
+    try {
+        const id = payload
+
+        const userInfo = yield select(selectUserInfo)
+        yield call(deleteLpService, userInfo, id)
+        yield put(lpActions.lpDeleteSuccess(id))
+        yield put(showAlert('success', { messageKey: 'deleteLP.success' }))
+    } catch (error) {
+        const errorMsg = error.response && error.response.data.message ?
+            error.response.data.message : error.message
+        yield put(lpActions.lpDeleteFail(errorMsg))
+        yield put(showAlert('error', { messageKey: 'deleteLP.fail' }))
+    }
+}
+
 function* watchAutocomplete() {
     yield takeLatest(LP_AUTOCOMPLETE_SEARCH_REQUEST, autocomplete)
 }
@@ -92,11 +112,16 @@ function* watchLpCollection() {
     yield takeLatest(LP_COLLECTION_REQUEST, lpCollection)
 }
 
+function* watchDeleteLp() {
+    yield takeEvery(LP_DELETE_REQUEST, deleteLp)
+}
+
 export function* lpSaga() {
     yield all([
         watchAutocomplete(),
         watchPreload(),
         watchAddLp(),
-        watchLpCollection()
+        watchLpCollection(),
+        watchDeleteLp()
     ])
 }

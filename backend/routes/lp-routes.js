@@ -1,6 +1,8 @@
 import express from 'express'
-import { addLP, getLPs, getLP, editLP, deleteLP, getExternalData } from '../controllers/lp-controller.js'
 import passport from 'passport'
+
+import { addLP, getLPs, getLP, editLP, deleteLP, getExternalData, uploadLPCover } from '../controllers/lp-controller.js'
+import { multerUploadSingleImage } from '../middleware/multer-middleware.js'
 
 const router = express.Router()
 
@@ -9,8 +11,11 @@ router.get('/users/:username/lps', passport.authenticate("jwt", { session: false
 router.get('/users/:username/lps/:id', passport.authenticate("jwt", { session: false }), getLP)
 router.patch('/users/:username/lps/:id', passport.authenticate("jwt", { session: false }), editLP)
 router.delete('/users/:username/lps/:id', passport.authenticate("jwt", { session: false }), deleteLP)
+router.post('/upload', passport.authenticate("jwt", { session: false }),
+    multerUploadSingleImage('cover'), uploadLPCover)
 
 //Configurem una ruta per recuperar dades externes d'un disc
 router.get('/album/search', passport.authenticate("jwt", { session: false }), getExternalData)
+
 
 export default router

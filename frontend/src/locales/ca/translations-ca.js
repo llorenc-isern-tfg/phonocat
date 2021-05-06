@@ -65,6 +65,14 @@ export const TRANSLATIONS_CA = {
         position: 'Cara i número de pista',
         duration: 'Duració'
     },
+    lpCollection: {
+        public: 'Públic',
+        private: 'Privat'
+    },
+    lpDelete: {
+        title: 'Eliminar el LP?',
+        message: 'Les dades d\'aquest LP s\'esborraran permanentment'
+    },
     form: {
         save: 'Desa',
         cancel: 'Cancel·la',
@@ -84,8 +92,7 @@ export const TRANSLATIONS_CA = {
         expired: 'La teva sessió s\'ha exhaurit. Torna a identificar-te si us plau'
     },
     userMenu: {
-        profile: 'Perfil',
-        settings: 'Configuració',
+        profile: 'Perfil d\'usuari',
         signout: 'Tancar sessió',
     }
 };

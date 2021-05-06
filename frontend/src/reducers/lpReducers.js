@@ -2,7 +2,8 @@ import {
     LP_COLLECTION_REQUEST, LP_COLLECTION_SUCCESS, LP_COLLECTION_FAIL,
     LP_ADD_REQUEST, LP_ADD_FAIL, LP_ADD_SUCCESS,
     LP_AUTOCOMPLETE_SEARCH_REQUEST, LP_AUTOCOMPLETE_SEARCH_FAIL, LP_AUTOCOMPLETE_SEARCH_SUCCESS, LP_AUTOCOMPLETE_SEARCH_CLEAR,
-    LP_FETCH_EXTERNAL_DATA_REQUEST, LP_FETCH_EXTERNAL_DATA_FAIL, LP_FETCH_EXTERNAL_DATA_SUCCESS, LP_FETCH_EXTERNAL_DATA_CLEAR
+    LP_FETCH_EXTERNAL_DATA_REQUEST, LP_FETCH_EXTERNAL_DATA_FAIL, LP_FETCH_EXTERNAL_DATA_SUCCESS, LP_FETCH_EXTERNAL_DATA_CLEAR,
+    LP_DELETE_REQUEST, LP_DELETE_FAIL, LP_DELETE_SUCCESS,
 } from '../constants/lpActionTypes'
 
 export const lpCollectionReducer = (state = {}, action) => {
@@ -13,6 +14,12 @@ export const lpCollectionReducer = (state = {}, action) => {
             return { ...state, loading: false, lps: action.payload }
         case LP_COLLECTION_FAIL:
             return { ...state, loading: false, error: action.payload }
+        case LP_DELETE_REQUEST:
+            return { ...state, loading: true }
+        case LP_DELETE_SUCCESS:
+            return { ...state, loading: false, lps: state.lps.filter(lp => lp._id !== action.payload) }
+        case LP_DELETE_FAIL:
+            return { ...state, loading: false }
         default:
             return state
     }

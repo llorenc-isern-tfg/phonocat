@@ -29,6 +29,7 @@ import { musicGenres, albumConditions, albumWeights } from '../../constants/sele
 import countries from '../../constants/countries'
 import { lpAdd } from '../../actions/lpActions'
 import TrackList from './TrackList'
+import { preloadAlbumDataService } from '../../services/lpServices'
 
 const useStyles = makeStyles((theme) => ({
     publicIcon: {
@@ -100,6 +101,9 @@ const AlbumDetailsForm = () => {
             if (preloadedData && preloadedData.trackList)
                 lp.trackList = preloadedData.trackList
 
+            if (preloadedData.coverImg || searchResult.coverImg)
+                lp.coverImg = preloadedData.coverImg ? preloadedData.coverImg : searchResult.coverImg
+
             alert(JSON.stringify(lp, null, 2))
 
             dispatch(lpAdd(lp))
@@ -111,7 +115,7 @@ const AlbumDetailsForm = () => {
         <React.Fragment>
             <form noValidate autoComplete="off" onSubmit={formik.handleSubmit}>
                 <Typography variant="h6" gutterBottom>
-                    {t('LPDetail.title')}
+                    {t('lpDetail.title')}
                 </Typography>
                 <Grid container spacing={3}>
                     <Grid item xs={12} sm={6}>
@@ -119,7 +123,7 @@ const AlbumDetailsForm = () => {
                             required
                             id="title"
                             name="title"
-                            label={t('LPDetail.albumTitle')}
+                            label={t('lpDetail.albumTitle')}
                             fullWidth
                             value={formik.values.title}
                             onChange={formik.handleChange}
@@ -132,7 +136,7 @@ const AlbumDetailsForm = () => {
                             required
                             id="artist"
                             name="artist"
-                            label={t('LPDetail.artist')}
+                            label={t('lpDetail.artist')}
                             fullWidth
                             value={formik.values.artist}
                             onChange={formik.handleChange}
@@ -145,7 +149,7 @@ const AlbumDetailsForm = () => {
                             required
                             id="label"
                             name="label"
-                            label={t('LPDetail.discoLabel')}
+                            label={t('lpDetail.discoLabel')}
                             fullWidth
                             value={formik.values.label}
                             onChange={formik.handleChange}
@@ -156,7 +160,7 @@ const AlbumDetailsForm = () => {
                             id="genre"
                             name="genre"
                             select
-                            label={t('LPDetail.genre')}
+                            label={t('lpDetail.genre')}
                             fullWidth
                             value={formik.values.genre}
                             onChange={formik.handleChange}
@@ -176,7 +180,7 @@ const AlbumDetailsForm = () => {
                             getOptionLabel={(option) => t(`country:${option}`)}
                             value={formik.values.country}
                             onChange={(event, value) => formik.setFieldValue("country", value)}
-                            renderInput={(params) => <TextField {...params} label={t('LPDetail.releaseCountry')} />}
+                            renderInput={(params) => <TextField {...params} label={t('lpDetail.releaseCountry')} />}
                         />
                     </Grid>
                     <Grid item xs={6} sm={3}>
@@ -186,7 +190,7 @@ const AlbumDetailsForm = () => {
                                 id="year"
                                 name="year"
                                 views={["year"]}
-                                label={t('LPDetail.releaseYear')}
+                                label={t('lpDetail.releaseYear')}
                                 value={formik.values.year}
                                 onChange={(date) => formik.setFieldValue("year", date)}
                                 error={formik.touched.year && Boolean(formik.errors.year)}
@@ -200,7 +204,7 @@ const AlbumDetailsForm = () => {
                             id="numDiscs"
                             name="numDiscs"
                             type="number"
-                            label={t('LPDetail.numDiscs')}
+                            label={t('lpDetail.numDiscs')}
                             // InputLabelProps={{
                             //     shrink: true
                             // }}
@@ -217,7 +221,7 @@ const AlbumDetailsForm = () => {
                             id="condition"
                             name="condition"
                             select
-                            label={t('LPDetail.condition')}
+                            label={t('lpDetail.condition')}
                             value={formik.values.condition}
                             onChange={formik.handleChange("condition")}
                         >
@@ -243,7 +247,7 @@ const AlbumDetailsForm = () => {
                             id="weight"
                             name="weight"
                             select
-                            label={t('LPDetail.weight')}
+                            label={t('lpDetail.weight')}
                             value={formik.values.weight}
                             onChange={formik.handleChange("weight")}
                         >
@@ -256,7 +260,7 @@ const AlbumDetailsForm = () => {
                     </Grid>
                     <Grid item xs={12} sm={12}>
                         <Grid item xs={12} sm={12}>
-                            <InputLabel id="channel-label">{t('LPDetail.channel')}</InputLabel>
+                            <InputLabel id="channel-label">{t('lpDetail.channel')}</InputLabel>
                         </Grid>
                         <Grid item xs={12} sm={12}>
                             <Typography component="div">
@@ -280,7 +284,7 @@ const AlbumDetailsForm = () => {
                         </Grid>
                     </Grid>
                     <Grid item xs={12}>
-                        <Typography component="legend">{t('LPDetail.rating')}</Typography>
+                        <Typography component="legend">{t('lpDetail.rating')}</Typography>
                         <Rating
                             id="rating"
                             name="rating"
@@ -295,7 +299,7 @@ const AlbumDetailsForm = () => {
                             name="comment"
                             value={formik.values.comment}
                             onChange={formik.handleChange}
-                            placeholder={t('LPDetail.comment')}
+                            placeholder={t('lpDetail.comment')}
                             multiline
                             rows={4}
                             variant="outlined"
@@ -319,7 +323,7 @@ const AlbumDetailsForm = () => {
                             label={
                                 <React.Fragment>
                                     {formik.values.isPublic ? <PublicIcon color="primary" className={classes.publicIcon} /> : <VpnLockIcon color="disabled" className={classes.publicIcon} />}
-                                    {t('LPDetail.public')}
+                                    {t('lpDetail.public')}
                                 </React.Fragment>
                             }
                         />

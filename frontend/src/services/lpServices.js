@@ -4,7 +4,6 @@ export const preloadAlbumDataService = (userInfo, { title, artist }) => {
     return api.get('album/search', {
         headers: {
             'Authorization': authToken(userInfo),
-            'Content-Type': 'application/json'
         },
         params: { title, artist }
     })
@@ -24,7 +23,15 @@ export const getLpCollectionService = (userInfo) => {
     return api.get(`users/${userInfo.username}/lps`, {
         headers: {
             'Authorization': authToken(userInfo),
-            'Content-Type': 'application/json'
         }
     })
+}
+
+export const deleteLpService = (userInfo, id) => {
+    return api.delete(`users/${userInfo.username}/lps/${id}`,
+        {
+            headers: {
+                'Authorization': authToken(userInfo),
+            }
+        })
 }

@@ -134,12 +134,6 @@ const Header = () => {
                                         </ListItemIcon>
                                         <ListItemText primary={t('userMenu.profile')} />
                                     </MenuItem>
-                                    <MenuItem>
-                                        <ListItemIcon>
-                                            <SettingsIcon color="primary" fontSize="small" />
-                                        </ListItemIcon>
-                                        <ListItemText primary={t('userMenu.settings')} />
-                                    </MenuItem>
                                     <MenuItem onClick={handleLogout}>
                                         <ListItemIcon>
                                             <LogoutIcon color="secondary" fontSize="small" />

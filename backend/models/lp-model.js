@@ -59,7 +59,7 @@ const lpSchema = mongoose.Schema({
     },
     isPublic: {
         type: Boolean,
-        default: true
+        // default: true
     },
     coverImg: {
         type: String

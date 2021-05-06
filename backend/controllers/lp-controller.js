@@ -1,11 +1,14 @@
 import axios from 'axios'
 import asyncHandler from 'express-async-handler'
-import jwt from 'jsonwebtoken'
+import multer from 'multer'
+import streamifier from 'streamifier';
 import { getCode, getName } from 'country-list'
 
 import Lp from '../models/lp-model.js'
 import User from '../models/user-model.js';
 import Artist from '../models/artist-model.js';
+import cloudinary from '../config/cloudinary-config.js'
+import { imgDataUri } from '../middleware/multer-middleware.js'
 
 /**
  * @description Add LP to user collection
@@ -47,19 +50,21 @@ const addLP = asyncHandler(async (req, res) => {
 const getLPs = asyncHandler(async (req, res) => {
     const paramUser = await User.findOne({ username: req.params.username })
     if (paramUser) {
-        let lps = await Lp.find({ owner: paramUser.id })
+        let lps = await Lp.find({ owner: paramUser.id }).populate('artist')
         if (req.user.id !== paramUser.id) {
             lps = lps.filter((lp) => {
                 lp.isPublic
             })
         }
         let lpsSummary = []
-        lps.forEach(lp => {
+        lps.forEach(async lp => {
             lpsSummary.push({
                 _id: lp._id,
                 title: lp.title,
                 genre: lp.genre,
-                coverImg: lp.coverImg
+                coverImg: lp.coverImg,
+                artist: lp.artist.name,
+                isPublic: lp.isPublic
             })
         });
         res.send(lpsSummary)
@@ -172,8 +177,7 @@ const getExternalData = asyncHandler(async (req, res) => {
                 }
             })
 
-            console.log('HOLA')
-            const resu = {
+            const lpPreloadedData = {
                 title: filters.title,
                 artist: filters.artist ? filters.artist : data.artist[0].name,
                 label: data.labels[0].name,
@@ -182,10 +186,11 @@ const getExternalData = asyncHandler(async (req, res) => {
                 year: data.year,
                 numDiscs: data.format_quantity,
                 //enviem nomes un subset d'atributs de cada cançó
-                trackList: data.tracklist.map(({ position, title, duration }) => ({ position, title, duration }))
+                trackList: data.tracklist.map(({ position, title, duration }) => ({ position, title, duration })),
+                coverImg: topRelease.cover_image
             }
             console.log('HOLA2')
-            res.status(200).send(resu)
+            res.send(lpPreloadedData)
         } else {
             res.status(404)
             throw new Error('Didn\t find any results')
@@ -196,6 +201,50 @@ const getExternalData = asyncHandler(async (req, res) => {
     }
 })
 
+/**
+ * @description Delete LP
+ * @route DELETE /users/{username}/lps{id}
+ * @access Authenticated as LP owner
+ */
+const uploadLPCover = asyncHandler(async (req, res) => {
+    const file = 'data:image/jpeg;base64,' + imgDataUri(req).content
+    try {
+        const response = await uploadImage(req.file.buffer)
+        console.log(response)
+        res.send(response)
+    } catch (error) {
+        console.log(error)
+    }
+
+})
 
 
-export { addLP, getLPs, getLP, editLP, deleteLP, getExternalData }
+// .upload(file, {
+//     overwrite: true,
+//     invalidate: true,
+//     width: 810, height: 456, crop: "fill"
+// }, (error, result) => {
+//     if (error)
+//         console.log(error)
+//     else
+//         res.send(result)
+// })
+// res.send('Image upload success')
+
+
+const uploadImage = async (buffer) => {
+    return new Promise((resolve, reject) => {
+        const uploadStream = cloudinary.uploader.upload_stream(
+            {
+                folder: 'phonocat',
+            },
+            (error, result) => {
+                if (result) resolve(result);
+                else reject(error);
+            },
+        );
+        streamifier.createReadStream(buffer).pipe(uploadStream);
+    });
+}
+
+export { addLP, getLPs, getLP, editLP, deleteLP, getExternalData, uploadLPCover }

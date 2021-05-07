@@ -11,7 +11,7 @@ router.get('/users/:username/lps', passport.authenticate("jwt", { session: false
 router.get('/users/:username/lps/:id', passport.authenticate("jwt", { session: false }), getLP)
 router.patch('/users/:username/lps/:id', passport.authenticate("jwt", { session: false }), editLP)
 router.delete('/users/:username/lps/:id', passport.authenticate("jwt", { session: false }), deleteLP)
-router.post('/upload', passport.authenticate("jwt", { session: false }),
+router.post('/lps/:id/cover/', passport.authenticate("jwt", { session: false }),
     multerUploadSingleImage('cover'), uploadLPCover)
 
 //Configurem una ruta per recuperar dades externes d'un disc

@@ -29,6 +29,7 @@
     "passport": "^0.4.1",
     "passport-google-oauth20": "^2.0.0",
     "passport-jwt": "^4.0.0",
+    "sharp": "^0.28.1",
     "streamifier": "^0.1.1",
     "uuid": "^8.3.2",
     "validator": "^13.5.2"

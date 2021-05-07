@@ -1,14 +1,12 @@
 import axios from 'axios'
 import asyncHandler from 'express-async-handler'
-import multer from 'multer'
-import streamifier from 'streamifier';
 import { getCode, getName } from 'country-list'
 
 import Lp from '../models/lp-model.js'
 import User from '../models/user-model.js';
 import Artist from '../models/artist-model.js';
-import cloudinary from '../config/cloudinary-config.js'
 import { imgDataUri } from '../middleware/multer-middleware.js'
+import { normalizeImageFormat, uploadImage } from '../utils/utils.js'
 
 /**
  * @description Add LP to user collection
@@ -207,44 +205,30 @@ const getExternalData = asyncHandler(async (req, res) => {
  * @access Authenticated as LP owner
  */
 const uploadLPCover = asyncHandler(async (req, res) => {
-    const file = 'data:image/jpeg;base64,' + imgDataUri(req).content
-    try {
-        const response = await uploadImage(req.file.buffer)
-        console.log(response)
-        res.send(response)
-    } catch (error) {
-        console.log(error)
+
+    //només pot pujar la portada el propietari del lp
+    const lp = await Lp.findById(req.params.id)
+    if (lp) {
+        await lp.populate('owner').execPopulate()
+        if (req.user.id !== lp.owner.id) {
+            res.status(403)
+            throw new Error('Permission denied')
+        }
+
+        //es pre-processa la imatge amb la llibreria sharp per mantenir un format comú a les caràtules
+        const processedImageBuffer = await normalizeImageFormat(req.file.buffer)
+
+        //S'envia la imatge al cloud de cloudinary i s'emmagatzema la url resultant a bdd
+        const cloudinaryResponse = await uploadImage(processedImageBuffer, 'phonocat/covers', req.params.id)
+
+        lp.save({ coverImg: cloudinaryResponse.secure_url })
+        res.send(lp)
+
+    } else {
+        res.status(404)
+        throw new Error('LP not found')
     }
 
 })
-
-
-// .upload(file, {
-//     overwrite: true,
-//     invalidate: true,
-//     width: 810, height: 456, crop: "fill"
-// }, (error, result) => {
-//     if (error)
-//         console.log(error)
-//     else
-//         res.send(result)
-// })
-// res.send('Image upload success')
-
-
-const uploadImage = async (buffer) => {
-    return new Promise((resolve, reject) => {
-        const uploadStream = cloudinary.uploader.upload_stream(
-            {
-                folder: 'phonocat',
-            },
-            (error, result) => {
-                if (result) resolve(result);
-                else reject(error);
-            },
-        );
-        streamifier.createReadStream(buffer).pipe(uploadStream);
-    });
-}
 
 export { addLP, getLPs, getLP, editLP, deleteLP, getExternalData, uploadLPCover }

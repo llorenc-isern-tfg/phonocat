@@ -20,6 +20,7 @@ const LandingPage = () => {
 
     return (
         // <React.Fragment>
+        //TODO: Afegir carousel amb react-slick, exemple: https://demos.creative-tim.com/material-kit-react/#/documentation/carousel
         <Container maxWidth="lg">
             <MainInfo mainInfo={mainInfo} />
             <Typography paragraph>

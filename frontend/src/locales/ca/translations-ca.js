@@ -12,10 +12,20 @@ export const TRANSLATIONS_CA = {
         signin: 'Identifícat',
         forgotPassword: 'No recordes la contrasenya?',
         signup: 'Encara no t\'has registrat?',
-        fail: 'No s\'ha trobat cap usuari amb aquest email o password'
+        fail: 'No s\'ha trobat cap usuari amb aquest email o password',
+        google: 'Entra amb un compte de Google',
+    },
+    registerForm: {
+        username: 'Nom d\'usuari',
+        signup: 'Registra\'t',
+        passwordConfirm: 'Confirma la contrasenya',
+        login: 'Ja tens un compte? Identifícat',
+        passwordConstrain: 'Introdueix una contrasenya de com a mínim {{min}} caracters',
+        differentPasswords: 'Les contrasenyes no coincideixen'
     },
     sideMenu: {
         home: 'Inici',
+        profile: 'Perfil',
         lps: 'ALBUMS',
         lpCollection: 'Col·lecció',
         lpAdd: 'Nou disc',
@@ -30,7 +40,7 @@ export const TRANSLATIONS_CA = {
         title: 'Afegeix un nou LP',
         searchAlbum: 'Cerca un album',
         completeAlbumData: 'Completa els detalls',
-        addPictures: 'Afegeix la portada',
+        addPictures: 'Afegeix una portada',
         saved: 'EL teu LP s\'ha desat correctament!',
         fail: 'El teu LP no s\'ha pogut desar'
     },
@@ -57,12 +67,21 @@ export const TRANSLATIONS_CA = {
         channel: 'Canal d\'audio',
         rating: 'Puntua aquest àlbum',
         comment: 'Resenya',
-        public: 'Vols que aquest LP sigui visible per la resta d\'usuaris?'
+        public: 'Vols que aquest LP sigui visible per la resta d\'usuaris?',
+    },
+    lpCover: {
+        almostThere: 'Ja casi està! Només falta afegir una imatge de la portada que t\'ajudarà a identificar el teu LP.',
+        notMandatory: 'Si no vols associar cap imatge fes click a "Surt"',
+        suggested: 'Hem trobat aquesta caràtula basant-nos en la teva cerca. Vols associar-la al teu LP?',
+        notFound: 'No hem trobat cap caràtula amb les dades del teu LP',
+        upload: 'Puja',
+        discard: 'Descarta',
+        uploaded: 'La portada s\'ha pujat correctament'
     },
     tracklist: {
         header: 'Llistat de cançons',
-        title: 'Títol de la cançó',
-        position: 'Cara i número de pista',
+        title: 'Títol',
+        position: 'Posició',
         duration: 'Duració'
     },
     lpCollection: {
@@ -71,7 +90,16 @@ export const TRANSLATIONS_CA = {
     },
     lpDelete: {
         title: 'Eliminar el LP?',
-        message: 'Les dades d\'aquest LP s\'esborraran permanentment'
+        message: 'Les dades d\'aquest LP s\'esborraran permanentment',
+        success: 'L\'àlbum s\'ha esborrat',
+        fail: 'No s\'ha pogut esborrar el LP'
+    },
+    lpEdit: {
+        title: 'Edita les dades del teu LP',
+        cover: 'Portada',
+        success: 'Les dades s\'han desat correctament',
+        fail: 'No s\'han pogut desar les dades correctament',
+        editCover: 'Modifica la portada'
     },
     form: {
         save: 'Desa',
@@ -80,7 +108,9 @@ export const TRANSLATIONS_CA = {
         back: 'Torna',
         noResults: 'No s\'han trobat resultats',
         edit: 'Edita',
-        delete: 'Elimina'
+        delete: 'Elimina',
+        dragFile: 'Arrosega un fitxer o fes click per seleccionar-lo',
+        exit: 'Surt'
     },
     lastFm: {
         searchAlbum: {
@@ -94,5 +124,29 @@ export const TRANSLATIONS_CA = {
     userMenu: {
         profile: 'Perfil d\'usuari',
         signout: 'Tancar sessió',
+    },
+    profile: {
+        title: 'Perfil d\'Usuari',
+        picture: 'Imatge',
+        editPicture: 'Modifica la imatge del teu perfil',
+        pictureUploaded: 'La imatge s\'ha pujat correctament',
+        userData: 'Dades personals',
+        username: 'Nom d\'usuari',
+        email: 'Correu electrònic',
+        birthDate: 'Data de naixement',
+        phoneNumber: 'Telèfon',
+        bioLabel: 'Explica els teus interessos i presentat a la resta d\'usuaris',
+        bio: 'Presentació',
+        registerDate: 'Data de registre',
+        address: 'Adreça',
+        country: 'Pais',
+        region: 'Provincia',
+        city: 'Municipi',
+        postalCode: 'Codi postal',
+        language: 'Idioma de l\'aplicació'
+    },
+    editProfile: {
+        success: 'El teu perfil s\'ha actualitzat correctament',
+        fail: 'No s\'ha pogut actualitzar el teu perfil'
     }
 };

@@ -23,12 +23,12 @@ export const createToken = (id) => {
  * @param {*} public_id resource public_id
  * @returns Promise with service result
  */
-export const uploadImage = async (buffer, folder, public_id) => {
+export const uploadImageBufferCloud = async (buffer, folder, public_id) => {
     return new Promise((resolve, reject) => {
         const uploadStream = cloudinary.uploader.upload_stream(
             {
-                public_id,
                 folder,
+                public_id
             },
             (error, result) => {
                 if (result) resolve(result);
@@ -36,9 +36,63 @@ export const uploadImage = async (buffer, folder, public_id) => {
             },
         );
         streamifier.createReadStream(buffer).pipe(uploadStream);
-    });
+    })
+}
+
+export const deleteImageCloud = async (path) => {
+    cloudinary.uploader.destroy(path, function (error, result) {
+        console.log(`Delete image cloudinary ${path}`, result, error)
+    })
 }
 
 export const normalizeImageFormat = async (inputBuffer) => {
     return sharp(inputBuffer).resize(600, 600).png().toBuffer()
+}
+
+export const findExternalGenre = (genre) => {
+    console.log('GENRE: ' + genre)
+    switch (genre) {
+        case 'Blues':
+        case 'Classical':
+        case 'Electronic':
+        case 'Jazz':
+        case 'Latin':
+        case 'Pop':
+        case 'Reggae':
+        case 'Rock':
+            return genre.toLowerCase()
+        case 'Children\'s':
+            return 'childrens'
+        case 'Folk, World, & Country':
+            return 'folk'
+        case 'Funk / Soul':
+        case 'Funk Soul':
+            return 'funk_soul'
+        case 'Hip - Hop':
+        case 'Hip Hop':
+            return 'hiphop'
+        default:
+            return 'other'
+    }
+}
+
+//Utilitat per relacionar alguns països de fonts externes amb formats estranys
+export const findReleaseCountry = (country) => {
+    console.log('COUNTRY: ' + country)
+    switch (country) {
+        case 'UK':
+        case 'UK & Europe':
+        case 'UK & France':
+        case 'UK & Ireland':
+        case 'UK & US':
+            return 'GB'
+        case 'US':
+        case 'USA & Canada':
+        case 'USA & Europe':
+        case 'USA, Canada & Europe':
+        case 'USA, Canada & UK':
+            return 'US'
+        default:
+            return ''
+    }
 }

@@ -4,6 +4,7 @@ import Typography from '@material-ui/core/Typography'
 import TextField from '@material-ui/core/TextField'
 import Autocomplete from '@material-ui/lab/Autocomplete'
 import Avatar from '@material-ui/core/Avatar'
+import Button from '@material-ui/core/Button'
 import Paper from '@material-ui/core/Paper'
 import AlbumIcon from '@material-ui/icons/Album'
 import HelpIcon from '@material-ui/icons/Help'
@@ -36,18 +37,26 @@ const useStyles = makeStyles((theme) => ({
         float: 'right',
         marginTop: '5px',
         marginRight: '5px',
-    }
+    },
+    buttons: {
+        display: 'flex',
+        justifyContent: 'flex-end',
+    },
+    button: {
+        marginTop: theme.spacing(3),
+        marginLeft: theme.spacing(1),
+    },
 }));
 
-const SearchAlbum = ({ onSearchResultSelected }) => {
+const SearchAlbum = ({ onSearchResultSelected, handleNext }) => {
 
     const dispatch = useDispatch()
 
     const [term, setTerm] = useState('')
     const [debouncedTerm, setDebouncedTerm] = useState(term)
 
-    const lpAutocomplete = useSelector((state) => state.lpAutocomplete)
-    const { searchResults, loading } = lpAutocomplete
+    const lpAdd = useSelector((state) => state.lpAdd)
+    const { searchResults, loading } = lpAdd.autocomplete
 
     //fem servir aquesta variable per evitar memory leaks quan el component ja no és visible
     const _isMounted = useRef(true);
@@ -166,6 +175,16 @@ const SearchAlbum = ({ onSearchResultSelected }) => {
                     </Paper>
                 </Grid>
             </Grid>
+            <div className={classes.buttons}>
+                <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={handleNext}
+                    className={classes.button}
+                >
+                    {t('form.next')}
+                </Button>
+            </div>
         </React.Fragment>
     )
 }

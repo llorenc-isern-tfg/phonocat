@@ -230,7 +230,6 @@ export const COUNTRIES_CA = {
     TZ: "Tanzània",
     UA: "Ucraïna",
     UG: "Uganda",
-    UK: "Regne Unit",
     UM: "Illes Perifèriques Menors dels EUA; Estats Units d'Amèrica (illes menors allunyades)",
     US: "Estats Units (EUA); Estats Units d'Amèrica",
     UY: "Uruguai",

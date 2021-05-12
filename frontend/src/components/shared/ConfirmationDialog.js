@@ -24,7 +24,7 @@ const ConfirmationDialog = ({ dialogProps }) => {
                 <Button onClick={dialogProps.handleCancel} color="default" >
                     {dialogProps.cancelButtonMsg}
                 </Button>
-                <Button onClick={dialogProps.handleConfirm} color="secondary" autoFocus>
+                <Button onClick={dialogProps.handleConfirm} color={dialogProps.confirmButtonColor} variant="contained" autoFocus>
                     {dialogProps.confirmButtonMsg}
                 </Button>
             </DialogActions>

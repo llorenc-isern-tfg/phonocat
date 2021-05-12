@@ -31,27 +31,4 @@ function checkFileType(file, cb) {
 
 const multerUploadSingleImage = (fieldName) => upload.single(fieldName)
 
-// const { DatauriParser } = new Datauri()
-
-// console.log(DatauriParser)
-
-// const parser = new DatauriParser()
-
-// const imgDataUri = req => DatauriParser.format(path.extname(req.file.originalname).toString(), req.file.buffer);
-
-// const dUri = new Datauri()
-
-// try {
-//     const dUri = new Datauri()
-// } catch (error) {
-//     console.log(error)
-// }
-
-const imgDataUri = req => {
-    console.log(path.extname(req.file.originalname).toString())
-    const imgDataUri = req.file.buffer.toString('base64')
-    // dUri.format(path.extname(req.file.originalname).toString(), req.file.buffer)
-    return imgDataUri
-}
-
-export { multerUploadSingleImage, imgDataUri }
+export { multerUploadSingleImage }

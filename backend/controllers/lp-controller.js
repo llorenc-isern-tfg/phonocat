@@ -5,8 +5,10 @@ import { getCode, getName } from 'country-list'
 import Lp from '../models/lp-model.js'
 import User from '../models/user-model.js';
 import Artist from '../models/artist-model.js';
-import { imgDataUri } from '../middleware/multer-middleware.js'
-import { normalizeImageFormat, uploadImage } from '../utils/utils.js'
+import {
+    normalizeImageFormat, uploadImageBufferCloud,
+    findExternalGenre, deleteImageCloud, findReleaseCountry
+} from '../utils/utils.js'
 
 /**
  * @description Add LP to user collection
@@ -14,8 +16,8 @@ import { normalizeImageFormat, uploadImage } from '../utils/utils.js'
  * @access Public
  */
 const addLP = asyncHandler(async (req, res) => {
-    console.log(req)
 
+    console.log(JSON.stringify(req.body))
     const lp = new Lp({
         ...req.body,
         owner: req.user._id
@@ -26,7 +28,6 @@ const addLP = asyncHandler(async (req, res) => {
     let artist = await Artist.findOne({ name: artistName })
 
     if (!artist) {
-        console.log('ARTIST: ' + artistName, artistMbid)
         artist = new Artist({
             name: artistName,
             mbid: artistMbid
@@ -37,6 +38,7 @@ const addLP = asyncHandler(async (req, res) => {
     lp.artist = artist.id
 
     await lp.save()
+
     res.status(201).send(lp)
 });
 
@@ -78,7 +80,8 @@ const getLPs = asyncHandler(async (req, res) => {
  * @access Authenticated. Logged in as LP owner if LP is not public
  */
 const getLP = asyncHandler(async (req, res) => {
-    const lp = await Lp.findById(req.params.id)
+    console.log('ID: ' + req.params.id)
+    const lp = await Lp.findById(req.params.id).populate('artist')
     if (lp) {
         await lp.populate('owner').execPopulate()
         if (req.user.id !== lp.owner.id && !lp.isPublic) {
@@ -106,8 +109,20 @@ const editLP = asyncHandler(async (req, res) => {
             throw new Error('Permission denied')
         }
         const updates = Object.keys(req.body)
+        const artistName = req.body.artist
         updates.forEach((update) => lp[update] = req.body[update])
-        await lp.save(req.body)
+
+        let artist = await Artist.findOne({ name: artistName })
+        if (!artist) {
+            artist = new Artist({
+                name: artistName,
+            })
+            await artist.save()
+        }
+
+        lp.artist = artist.id
+
+        await lp.save()
         res.send(lp)
     } else {
         res.status(404)
@@ -130,6 +145,8 @@ const deleteLP = asyncHandler(async (req, res) => {
         }
         await lp.delete()
         res.send({ message: 'LP removed' })
+        //esborrem la imatge de la portada del cloud, no fem await per agilitat
+        deleteImageCloud(`phonocat/covers/${req.params.id}`)
     } else {
         res.status(404)
         throw new Error('LP not found')
@@ -145,7 +162,6 @@ const deleteLP = asyncHandler(async (req, res) => {
 const getExternalData = asyncHandler(async (req, res) => {
     const filters = req.query;
 
-    console.log(JSON.stringify(filters))
     if (filters.title) {
         const searchData = await axios.get(`${process.env.DISCOGS_API_URL}/database/search`, {
             params: {
@@ -179,15 +195,15 @@ const getExternalData = asyncHandler(async (req, res) => {
                 title: filters.title,
                 artist: filters.artist ? filters.artist : data.artist[0].name,
                 label: data.labels[0].name,
-                genre: data.genres[0].toLowerCase(),
-                country: getCode(data.country) ? getCode(data.country) : data.country,
+                genre: findExternalGenre(data.genres[0]),
+                country: getCode(data.country) ? getCode(data.country) : findReleaseCountry(data.country),
                 year: data.year,
                 numDiscs: data.format_quantity,
                 //enviem nomes un subset d'atributs de cada cançó
                 trackList: data.tracklist.map(({ position, title, duration }) => ({ position, title, duration })),
                 coverImg: topRelease.cover_image
             }
-            console.log('HOLA2')
+
             res.send(lpPreloadedData)
         } else {
             res.status(404)
@@ -200,12 +216,12 @@ const getExternalData = asyncHandler(async (req, res) => {
 })
 
 /**
- * @description Delete LP
+ * @description Upload LP cover accepts file or url
  * @route DELETE /users/{username}/lps{id}
  * @access Authenticated as LP owner
  */
 const uploadLPCover = asyncHandler(async (req, res) => {
-
+    console.log(JSON.stringify(req.body))
     //només pot pujar la portada el propietari del lp
     const lp = await Lp.findById(req.params.id)
     if (lp) {
@@ -215,14 +231,36 @@ const uploadLPCover = asyncHandler(async (req, res) => {
             throw new Error('Permission denied')
         }
 
-        //es pre-processa la imatge amb la llibreria sharp per mantenir un format comú a les caràtules
-        const processedImageBuffer = await normalizeImageFormat(req.file.buffer)
+        const method = req.body.method
+        let processedImageBuffer
+        switch (method) {
+            case 'file':
+                //es pre-processa la imatge amb la llibreria sharp per mantenir un format comú a les caràtules
+                processedImageBuffer = await normalizeImageFormat(req.file.buffer)
+                break
+            case 'url':
+                const coverUrl = req.body.cover
+                if (!coverUrl)
+                    throw new Error('Invalid arguments')
+                const imageResponse = await axios({ url: coverUrl, responseType: 'arraybuffer' })
+                const buffer = Buffer.from(imageResponse.data, 'binary')
+                processedImageBuffer = await normalizeImageFormat(buffer)
+                break
+            default:
+                throw new Error('Must provide file or url method')
 
+        }
         //S'envia la imatge al cloud de cloudinary i s'emmagatzema la url resultant a bdd
-        const cloudinaryResponse = await uploadImage(processedImageBuffer, 'phonocat/covers', req.params.id)
+        const cloudinaryResponse = await uploadImageBufferCloud(processedImageBuffer, 'phonocat/covers', req.params.id)
+        lp.coverImg = cloudinaryResponse.secure_url
 
-        lp.save({ coverImg: cloudinaryResponse.secure_url })
-        res.send(lp)
+        await lp.save()
+
+        res.send({
+            message: 'upload success',
+            id: lp.id,
+            coverImg: lp.coverImg
+        })
 
     } else {
         res.status(404)

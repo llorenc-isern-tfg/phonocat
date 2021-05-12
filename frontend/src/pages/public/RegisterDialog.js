@@ -10,21 +10,18 @@ import Grid from '@material-ui/core/Grid'
 import LockOpenIcon from '@material-ui/icons/LockOpen'
 import IconButton from '@material-ui/core/IconButton'
 import InputAdornment from '@material-ui/core/InputAdornment'
-import Visibility from '@material-ui/icons/Visibility'
-import VisibilityOff from '@material-ui/icons/VisibilityOff'
 import { makeStyles } from '@material-ui/core/styles'
 import { useTranslation } from "react-i18next"
 import { useFormik } from 'formik'
 import * as yup from 'yup'
 import { setLocale } from 'yup'
-import GoogleLogin from 'react-google-login'
 
 
 import ButtonSpinner from '../../components/shared/ButtonSpinner'
 import DialogTitleWithClose from '../../components/shared/DialogTitleWithClose'
-import { loginRequest, googleLoginRequest } from '../../actions/userActions'
+import { registerRequest } from '../../actions/userActions'
 import yupMessages from '../../locales/yupMessages'
-import { PASSWORD_MIN_LENGTH } from '../../constants/constants'
+import { USERNAME_MIN_LENGTH, PASSWORD_MIN_LENGTH } from '../../constants/constants'
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -50,7 +47,7 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 
-const LoginDialog = ({ open, onClose }) => {
+const RegisterDialog = ({ open, onClose, selectedLanguage }) => {
 
     const { t } = useTranslation();
     setLocale(yupMessages)
@@ -66,18 +63,26 @@ const LoginDialog = ({ open, onClose }) => {
     const classes = useStyles();
 
     const loginSchema = yup.object().shape({
+        username: yup.string().required().min(USERNAME_MIN_LENGTH),
         email: yup.string().email().required(),
-        password: yup.string().required().min(PASSWORD_MIN_LENGTH)
+        password: yup.string().required().min(PASSWORD_MIN_LENGTH),
+        password2: yup.string().required().oneOf([yup.ref('password'), null], t('registerForm.differentPasswords'))
     })
 
     const formik = useFormik({
         initialValues: {
+            username: '',
             email: '',
             password: '',
+            password2: '',
         },
         validationSchema: loginSchema,
         onSubmit: values => {
-            dispatch(loginRequest(values))
+            //Si l'usuari ha seleccionat un llenguatge el registrem amb aquest idioma com a preferència
+            alert(selectedLanguage)
+            if (selectedLanguage)
+                values.language = selectedLanguage
+            dispatch(registerRequest(values))
         }
     })
 
@@ -93,23 +98,10 @@ const LoginDialog = ({ open, onClose }) => {
         setTimeout(formik.resetForm, 200)
     }
 
-    const handleClickShowPassword = () => {
-        console.log(showPassword)
-        setShowPassword(!showPassword)
-    }
-
-    const handleMouseDownPassword = (event) => {
-        event.preventDefault();
-    }
-
-    const onGoogleAuthSuccess = (res) => {
-        dispatch(googleLoginRequest({ id_token: res.tokenObj.id_token }))
-        handleClose()
-    }
 
     return (
         <Dialog open={!userInfo && open} onClose={handleClose} aria-labelledby="form-dialog-title" maxWidth="xs">
-            <DialogTitleWithClose id="form-dialog-title" title={t('loginForm.signin')} onClose={onClose} />
+            <DialogTitleWithClose id="form-dialog-title" title={t('registerForm.signup')} onClose={onClose} />
             <DialogContent dividers>
 
                 <div className={classes.paper}>
@@ -119,7 +111,20 @@ const LoginDialog = ({ open, onClose }) => {
                     {/* Si el sistema d'alertes no funciona tornar a aquesta versió */}
                     {/* {error && <Alert severity="error">{error}</Alert>} */}
                     <form className={classes.form} noValidate onSubmit={formik.handleSubmit}>
-
+                        <TextField
+                            required
+                            id="username"
+                            name="username"
+                            variant="outlined"
+                            margin="normal"
+                            fullWidth
+                            label={t('registerForm.username')}
+                            autoFocus
+                            value={formik.values.username}
+                            onChange={formik.handleChange}
+                            error={formik.touched.username && Boolean(formik.errors.username)}
+                            helperText={formik.touched.username && formik.errors.username}
+                        />
                         <TextField
                             required
                             id="email"
@@ -129,13 +134,11 @@ const LoginDialog = ({ open, onClose }) => {
                             fullWidth
                             label={t('loginForm.email')}
                             autoComplete="email"
-                            autoFocus
                             value={formik.values.email}
                             onChange={formik.handleChange}
                             error={formik.touched.email && Boolean(formik.errors.email)}
                             helperText={formik.touched.email && formik.errors.email}
                         />
-
                         <TextField
                             required
                             name="password"
@@ -143,29 +146,26 @@ const LoginDialog = ({ open, onClose }) => {
                             margin="normal"
                             fullWidth
                             label={t('loginForm.password')}
-                            type={showPassword ? 'text' : 'password'}
+                            type="password"
                             value={formik.values.password}
                             onChange={formik.handleChange}
                             error={formik.touched.password && Boolean(formik.errors.password)}
-                            helperText={formik.touched.password && formik.errors.password}
-                            InputProps={
-                                {
-                                    //Icona per mostrar/amagar password
-                                    endAdornment:
-                                        <InputAdornment position="end">
-                                            <IconButton
-                                                aria-label="toggle password visibility"
-                                                onClick={handleClickShowPassword}
-                                                onMouseDown={handleMouseDownPassword}
-                                                edge="end"
-                                            >
-                                                {showPassword ? <Visibility /> : <VisibilityOff />}
-                                            </IconButton>
-                                        </InputAdornment>
-                                }
-                            }
+                            helperText={formik.touched.password && formik.errors.password ?
+                                formik.errors.password : t('registerForm.passwordConstrain', { min: PASSWORD_MIN_LENGTH })}
                         />
-
+                        <TextField
+                            required
+                            name="password2"
+                            variant="outlined"
+                            margin="normal"
+                            fullWidth
+                            label={t('registerForm.passwordConfirm')}
+                            type="password"
+                            value={formik.values.password2}
+                            onChange={formik.handleChange}
+                            error={formik.touched.password && Boolean(formik.errors.password2)}
+                            helperText={formik.touched.password && formik.errors.password2}
+                        />
                         <Button
                             type="submit"
                             fullWidth
@@ -174,26 +174,13 @@ const LoginDialog = ({ open, onClose }) => {
                             className={classes.submit}
                             disabled={loading}
                         >
-                            LOGIN
-                            {/* Si es està fent login mostrem un spinner dins el botó */}
+                            {t('registerForm.signup').toUpperCase()}
                             {loading && <ButtonSpinner />}
                         </Button>
-                        <GoogleLogin className={classes.googleLogin}
-                            clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
-                            buttonText={t('loginForm.google')}
-                            onSuccess={(res) => onGoogleAuthSuccess(res)}
-                            cookiePolicy={'single_host_origin'}
-                        >{loading && <ButtonSpinner />}</GoogleLogin>
-                        {/* </Link> */}
-                        <Grid container>
-                            <Grid item xs>
-                                <Link href="#" variant="body2">
-                                    {t('loginForm.forgotPassword')}
-                                </Link>
-                            </Grid>
+                        <Grid container justify="flex-end">
                             <Grid item>
                                 <Link href="#" variant="body2">
-                                    {t('loginForm.signup')}
+                                    {t('registerForm.login')}
                                 </Link>
                             </Grid>
                         </Grid>
@@ -204,5 +191,5 @@ const LoginDialog = ({ open, onClose }) => {
     )
 }
 
-export default LoginDialog
+export default RegisterDialog
 

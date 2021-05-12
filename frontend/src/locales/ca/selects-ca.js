@@ -3,8 +3,7 @@ export const SELECTS_CA = {
         pop: 'Pop',
         rock: 'Rock and roll',
         blues: 'Blues',
-        soul: 'Soul',
-        funk: 'Funk',
+        funk_soul: 'Funk / Soul',
         hiphop: 'Hip hop',
         jazz: 'Jazz',
         electronic: 'Electrònica',
@@ -28,5 +27,10 @@ export const SELECTS_CA = {
         lt180: 'Standard (Menys de 180g)',
         180: 'Molt Bona (180g)',
         mt180: 'Premium (Més de 180g)'
+    },
+    language: {
+        ca: 'Català',
+        es: 'Castellà',
+        en: 'Anglès'
     }
 }

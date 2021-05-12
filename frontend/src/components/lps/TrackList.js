@@ -9,27 +9,63 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
-import Accordion from '@material-ui/core/Accordion'
-import AccordionSummary from '@material-ui/core/AccordionSummary'
-import AccordionDetails from '@material-ui/core/AccordionDetails'
+import MuiAccordion from '@material-ui/core/Accordion'
+import MuiAccordionSummary from '@material-ui/core/AccordionSummary'
+import MuiAccordionDetails from '@material-ui/core/AccordionDetails'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
+import QueueMusicIcon from '@material-ui/icons/QueueMusic'
 import Grid from '@material-ui/core/Grid'
 import Typography from '@material-ui/core/Typography'
 import { useTranslation } from "react-i18next"
-import List from '@material-ui/core/List'
-import ListItem from '@material-ui/core/ListItem'
-import ListItemText from '@material-ui/core/ListItemText'
-import Divider from '@material-ui/core/Divider'
+import { withStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles((theme) => ({
-    publicIcon: {
-        marginRight: '5px'
-    },
     heading: {
         fontSize: theme.typography.pxToRem(15),
         fontWeight: theme.typography.fontWeightRegular,
     },
 }))
+
+const Accordion = withStyles({
+    root: {
+        border: '1px solid rgba(0, 0, 0, .125)',
+        boxShadow: 'none',
+        '&:not(:last-child)': {
+            borderBottom: 0,
+        },
+        '&:before': {
+            display: 'none',
+        },
+        '&$expanded': {
+            margin: 'auto',
+        },
+    },
+    expanded: {},
+})(MuiAccordion);
+
+const AccordionSummary = withStyles({
+    root: {
+        backgroundColor: 'rgba(0, 0, 0, .03)',
+        borderBottom: '1px solid rgba(0, 0, 0, .125)',
+        marginBottom: -1,
+        minHeight: 56,
+        '&$expanded': {
+            minHeight: 56,
+        },
+    },
+    content: {
+        '&$expanded': {
+            margin: '12px 0',
+        },
+    },
+    expanded: {},
+})(MuiAccordionSummary);
+
+const AccordionDetails = withStyles((theme) => ({
+    root: {
+        padding: theme.spacing(2),
+    },
+}))(MuiAccordionDetails);
 
 
 const TrackList = ({ trackList }) => {
@@ -45,11 +81,11 @@ const TrackList = ({ trackList }) => {
                     aria-controls="tracklist-content"
                     id="tracklist-header"
                 >
-                    <Typography className={classes.heading}>{t('tracklist.header')}</Typography>
+                    <QueueMusicIcon color="disabled" />&nbsp;<Typography className={classes.heading}>{t('tracklist.header')}</Typography>
                 </AccordionSummary>
                 <AccordionDetails>
-                    <TableContainer component={Paper}>
-                        <Table className={classes.table} aria-label="simple table">
+                    <TableContainer component={Paper} elevation={0}>
+                        <Table className={classes.table} aria-label="simple table" size="small" >
                             <TableHead>
                                 <TableRow>
                                     <TableCell align="left">{t('tracklist.title')}</TableCell>
@@ -58,14 +94,14 @@ const TrackList = ({ trackList }) => {
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {trackList.map((track) => (
-                                    <TableRow key={track.title}>
+                                {trackList.map((track, index) => (
+                                    <TableRow key={index}>
                                         <TableCell component="th" scope="row">
-                                            <Grid container direction="row" alignItems="center">
+                                            <Grid container wrap="nowrap">
                                                 <Grid item>
-                                                    <AudiotrackIcon />
+                                                    <AudiotrackIcon color="disabled" />
                                                 </Grid>
-                                                <Grid item>
+                                                <Grid item xs zeroMinWidth>
                                                     {track.title}
                                                 </Grid>
                                             </Grid>
@@ -82,39 +118,5 @@ const TrackList = ({ trackList }) => {
         </Grid >
     )
 }
-
-// const renderTrackList = (trackList) => {
-//     if (trackList && trackList.length > 1)
-//         return (
-//             < Grid item xs={12} >
-//                 <Accordion>
-//                     <AccordionSummary
-//                         expandIcon={<ExpandMoreIcon />}
-//                         aria-controls="tracklist-content"
-//                         id="tracklist-header"
-//                     >
-//                         <Typography className={classes.heading}>Tracklist</Typography>
-//                     </AccordionSummary>
-//                     <AccordionDetails>
-//                         <List aria-label="tracklist songs" style={{ width: '100%' }}>
-//                             {trackList.map((track) => (
-//                                 <>
-//                                     <ListItem >
-//                                         <ListItemIcon>
-//                                             <AudiotrackIcon />
-//                                         </ListItemIcon>
-//                                         <ListItemText primary={track.title} secondary={`${track.position} - ${track.duration}`} />
-//                                     </ListItem>
-//                                     <Divider />
-//                                 </>
-//                             ))}
-//                         </List>
-//                     </AccordionDetails>
-//                 </Accordion>
-//             </Grid >
-//         )
-//     else
-//         return null
-// }
 
 export default TrackList

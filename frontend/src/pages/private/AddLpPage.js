@@ -4,7 +4,6 @@ import Paper from '@material-ui/core/Paper'
 import Stepper from '@material-ui/core/Stepper'
 import Step from '@material-ui/core/Step'
 import StepLabel from '@material-ui/core/StepLabel'
-import Button from '@material-ui/core/Button'
 import Typography from '@material-ui/core/Typography'
 import Container from '@material-ui/core/Container'
 import { useTranslation } from "react-i18next"
@@ -14,8 +13,9 @@ import CircularProgress from '@material-ui/core/CircularProgress'
 
 import { lpPreloadExternalData, lpPreloadExternalDataClear } from '../../actions/lpActions'
 import SearchAlbum from '../../components/lps/SearchAlbum'
-import AlbumDetailsForm from '../../components/lps/AlbumDetailsForm'
-import AlbumDetailsFormHooks from '../../components/lps/AlbumDetailsFormHooks'
+import CreateLp from '../../components/lps/CreateLp'
+import UploadLpCover from '../../components/lps/UploadLpCover'
+import history from '../../history'
 
 
 const useStyles = makeStyles((theme) => ({
@@ -32,6 +32,14 @@ const useStyles = makeStyles((theme) => ({
     stepper: {
         padding: theme.spacing(3, 0, 5),
     },
+    wrapper: {
+        margin: 0,
+        position: 'relative',
+    },
+    backdrop: {
+        zIndex: theme.zIndex.drawer - 1,
+        color: '#fff'
+    },
     buttons: {
         display: 'flex',
         justifyContent: 'flex-end',
@@ -40,31 +48,29 @@ const useStyles = makeStyles((theme) => ({
         marginTop: theme.spacing(3),
         marginLeft: theme.spacing(1),
     },
-    backdrop: {
-        zIndex: theme.zIndex.drawer + 1,
-        color: '#fff',
-    }
 }));
 
-
-
+const SEARCH = 'SEARCH'
+const FILL_DATA = 'FILL_DATA'
+const ADD_COVER = 'ADD_COVER'
+const formSteps = [SEARCH, FILL_DATA, ADD_COVER]
 
 const AddLpPage = () => {
 
     const dispatch = useDispatch()
 
     const classes = useStyles()
-    const [activeStep, setActiveStep] = useState(0)
+    const [activeStepIndex, setActiveStepIndex] = useState(0)
 
-    const lpPreload = useSelector((state) => state.lpPreload)
-    const { status, preloadedData } = lpPreload
+    const addLp = useSelector((state) => state.lpAdd)
+    const { status, preload } = addLp
 
     const handleNext = () => {
-        setActiveStep(activeStep + 1)
+        setActiveStepIndex(activeStepIndex + 1)
     }
 
     const handleBack = () => {
-        setActiveStep(activeStep - 1)
+        setActiveStepIndex(activeStepIndex - 1)
     }
 
     const handleSearchResultSelected = async (searchResult) => {
@@ -73,23 +79,33 @@ const AddLpPage = () => {
 
     //Quan la precàrrega finalitza mostrem el formulari
     useEffect(() => {
-        if (status && status.finished) {
-            handleNext()
+        console.log('add lp status change: ' + status.type)
+        if (status && status.moveStep) {
+
+            if (activeStepIndex < formSteps.length - 1)
+                handleNext()
+            else
+                //Si es l'últim pas, redirigim a la col·lecció de lps
+                history.push('/lp/collection')
         }
     }, [status])
 
     useEffect(() => {
+        setActiveStepIndex(0)
         return () => dispatch(lpPreloadExternalDataClear())
     }, [])
 
     const getStepContent = (step) => {
         switch (step) {
-            case 0:
-                return <SearchAlbum onSearchResultSelected={handleSearchResultSelected} />
-            case 1:
-                return <AlbumDetailsForm preloadedData={preloadedData} />
-            case 2:
-                return null
+            case SEARCH:
+                return <SearchAlbum onSearchResultSelected={handleSearchResultSelected} handleNext={handleNext} />
+            case FILL_DATA:
+                return <CreateLp preload={addLp.preload} handleBack={handleBack} />
+            case ADD_COVER:
+                return <UploadLpCover lpProps={{
+                    id: addLp.add.lp._id,
+                    cover: preload.preloadedData ? preload.preloadedData.coverImg : (preload.searchResult ? preload.searchResult.coverImg : undefined)
+                }} />
             default:
                 return null
             // throw new Error('Unknown step')
@@ -99,6 +115,7 @@ const AddLpPage = () => {
     const { t } = useTranslation();
     const steps = [t('addLP.searchAlbum'), t('addLP.completeAlbumData'), t('addLP.addPictures')]
 
+
     return (
         <React.Fragment>
             <Container maxWidth="xl">
@@ -106,7 +123,7 @@ const AddLpPage = () => {
                     <Typography component="h1" variant="h4" align="center">
                         {t('addLP.title')}
                     </Typography>
-                    <Stepper activeStep={activeStep} className={classes.stepper}>
+                    <Stepper activeStep={activeStepIndex} className={classes.stepper}>
                         {steps.map((label) => (
                             <Step key={label}>
                                 <StepLabel>{label}</StepLabel>
@@ -115,27 +132,13 @@ const AddLpPage = () => {
                     </Stepper>
                     {/* //TODO: afegir stepper reduït per versio mobil */}
                     <React.Fragment>
-                        {getStepContent(activeStep)}
-                        <div className={classes.buttons}>
-                            {activeStep !== 0 && (
-                                <Button onClick={handleBack} className={classes.button}>
-                                    {t('form.back')}
-                                </Button>
-                            )}
-                            <Button
-                                variant="contained"
-                                color="primary"
-                                onClick={handleNext}
-                                className={classes.button}
-                            >
-                                {activeStep === steps.length - 1 ? t('form.save') : t('form.next')}
-                            </Button>
-                        </div>
+
+                        {getStepContent(formSteps[activeStepIndex])}
                     </React.Fragment>
                 </Paper>
             </Container>
             {/* Modal per la precarrega */}
-            <Backdrop className={classes.backdrop} open={status ? !status.finished : false}>
+            <Backdrop className={classes.backdrop} open={status && status.loading ? status.loading : false}>
                 <CircularProgress color="inherit" />
             </Backdrop>
         </React.Fragment>

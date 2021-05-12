@@ -1,14 +1,19 @@
 import { takeEvery, takeLatest, call, put, all, select } from 'redux-saga/effects'
 
 import { searchAlbumsService } from '../services/lastFmServices'
-import { preloadAlbumDataService, addLpService, getLpCollectionService, deleteLpService } from '../services/lpServices'
+import {
+    preloadAlbumDataService, addLpService, getLpCollectionService,
+    deleteLpService, uploadLpCover, getLpDetailsService, editLpService
+} from '../services/lpServices'
 import * as lpActions from '../actions/lpActions'
 import { showAlert } from '../actions/alertActions'
 import {
     LP_ADD_REQUEST, LP_AUTOCOMPLETE_SEARCH_REQUEST, LP_FETCH_EXTERNAL_DATA_REQUEST,
-    LP_COLLECTION_REQUEST, LP_DELETE_REQUEST
+    LP_COLLECTION_REQUEST, LP_DELETE_REQUEST, LP_ADD_COVER_REQUEST,
+    LP_DETAILS_REQUEST, LP_EDIT_COVER_REQUEST, LP_EDIT_REQUEST
 } from '../constants/lpActionTypes'
 import { selectUserInfo } from '../reducers/selectors'
+import history from '../history'
 
 function* autocomplete({ payload }) {
     try {
@@ -56,12 +61,12 @@ function* addLp({ payload }) {
 
         const userInfo = yield select(selectUserInfo)
         const { data } = yield call(addLpService, userInfo, lp)
-        yield put(lpActions.lpAddSuccess({ lp: data }))
+        yield put(lpActions.lpAddSuccess(data))
         yield put(showAlert('success', { messageKey: 'addLP.saved' }))
     } catch (error) {
         const errorMsg = error.response && error.response.data.message ?
             error.response.data.message : error.message
-        yield put(lpActions.lpAutocompleteSearchFail(errorMsg))
+        yield put(lpActions.lpAddFail(errorMsg))
         yield put(showAlert('error', { messageKey: 'addLP.fail' }))
     }
 }
@@ -87,12 +92,78 @@ function* deleteLp({ payload }) {
         const userInfo = yield select(selectUserInfo)
         yield call(deleteLpService, userInfo, id)
         yield put(lpActions.lpDeleteSuccess(id))
-        yield put(showAlert('success', { messageKey: 'deleteLP.success' }))
+        yield put(showAlert('info', { messageKey: 'lpDelete.success' }))
     } catch (error) {
         const errorMsg = error.response && error.response.data.message ?
             error.response.data.message : error.message
         yield put(lpActions.lpDeleteFail(errorMsg))
-        yield put(showAlert('error', { messageKey: 'deleteLP.fail' }))
+        yield put(showAlert('error', { messageKey: 'lpDelete.fail' }))
+    }
+}
+
+function* addLpCover({ payload }) {
+    try {
+        const { id, formData } = payload
+
+        const userInfo = yield select(selectUserInfo)
+        const { data } = yield call(uploadLpCover, userInfo, id, formData)
+        const coverUrl = data
+        yield put(lpActions.lpUploadCoverSuccess(coverUrl))
+        yield put(showAlert('info', { messageKey: 'lpCover.uploaded' }))
+    } catch (error) {
+        const errorMsg = error.response && error.response.data.message ?
+            error.response.data.message : error.message
+        yield put(lpActions.lpUploadCoverFail(errorMsg))
+        yield put(showAlert('error', { messageKey: 'lpCover.uploadFail' }))
+    }
+}
+
+function* lpDetails({ payload }) {
+    try {
+        const id = payload
+
+        const userInfo = yield select(selectUserInfo)
+        const { data } = yield call(getLpDetailsService, userInfo, id)
+        const lp = data
+        yield put(lpActions.lpDetailsSuccess(lp))
+    } catch (error) {
+        const errorMsg = error.response && error.response.data.message ?
+            error.response.data.message : error.message
+        yield put(lpActions.lpDetailsFail(errorMsg))
+    }
+}
+
+function* editLpCover({ payload }) {
+    try {
+        const { id, formData } = payload
+
+        const userInfo = yield select(selectUserInfo)
+        const { data } = yield call(uploadLpCover, userInfo, id, formData)
+        const coverUrl = data
+        yield put(lpActions.lpEditCoverSuccess(coverUrl))
+        yield put(showAlert('info', { messageKey: 'lpCover.uploaded' }))
+    } catch (error) {
+        const errorMsg = error.response && error.response.data.message ?
+            error.response.data.message : error.message
+        yield put(lpActions.lpEditCoverFail(errorMsg))
+        yield put(showAlert('error', { messageKey: 'lpCover.uploadFail' }))
+    }
+}
+
+function* editLp({ payload }) {
+    try {
+        const lp = payload
+
+        const userInfo = yield select(selectUserInfo)
+        const { data } = yield call(editLpService, userInfo, lp)
+        yield put(lpActions.lpEditSuccess(data))
+        yield put(showAlert('success', { messageKey: 'editLp.success' }))
+        history.push('/lp/collection')
+    } catch (error) {
+        const errorMsg = error.response && error.response.data.message ?
+            error.response.data.message : error.message
+        yield put(lpActions.lpEditFail(errorMsg))
+        yield put(showAlert('error', { messageKey: 'editLp.fail' }))
     }
 }
 
@@ -116,12 +187,32 @@ function* watchDeleteLp() {
     yield takeEvery(LP_DELETE_REQUEST, deleteLp)
 }
 
+function* watchAddLpCover() {
+    yield takeEvery(LP_ADD_COVER_REQUEST, addLpCover)
+}
+
+function* watchLpDetails() {
+    yield takeEvery(LP_DETAILS_REQUEST, lpDetails)
+}
+
+function* watchEditLpCover() {
+    yield takeEvery(LP_EDIT_COVER_REQUEST, editLpCover)
+}
+
+function* watchEditLp() {
+    yield takeEvery(LP_EDIT_REQUEST, editLp)
+}
+
 export function* lpSaga() {
     yield all([
         watchAutocomplete(),
         watchPreload(),
         watchAddLp(),
         watchLpCollection(),
-        watchDeleteLp()
+        watchDeleteLp(),
+        watchAddLpCover(),
+        watchLpDetails(),
+        watchEditLpCover(),
+        watchEditLp()
     ])
 }

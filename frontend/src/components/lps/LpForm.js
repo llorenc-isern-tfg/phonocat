@@ -1,7 +1,6 @@
 import React from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import Grid from '@material-ui/core/Grid'
-import Button from '@material-ui/core/Button'
 import Typography from '@material-ui/core/Typography'
 import TextField from '@material-ui/core/TextField'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
@@ -19,7 +18,6 @@ import { setLocale } from 'yup'
 import PublicIcon from '@material-ui/icons/Public'
 import VpnLockIcon from '@material-ui/icons/VpnLock'
 import Rating from '@material-ui/lab/Rating'
-import { useSelector, useDispatch } from 'react-redux'
 import _ from 'lodash'
 import ConditionIcon from './ConditionIcon'
 
@@ -27,9 +25,7 @@ import ConditionIcon from './ConditionIcon'
 import yupMessages from '../../locales/yupMessages'
 import { musicGenres, albumConditions, albumWeights } from '../../constants/selectCodes'
 import countries from '../../constants/countries'
-import { lpAdd } from '../../actions/lpActions'
 import TrackList from './TrackList'
-import { preloadAlbumDataService } from '../../services/lpServices'
 
 const useStyles = makeStyles((theme) => ({
     publicIcon: {
@@ -37,23 +33,17 @@ const useStyles = makeStyles((theme) => ({
     }
 }))
 
-const AlbumDetailsForm = () => {
-
-    const lpPreload = useSelector((state) => state.lpPreload)
-    const { searchResult } = lpPreload
-    const preloadedData = lpPreload.preloadedData ? lpPreload.preloadedData : {}
-
+const LpForm = ({ lpData = {}, actions, handleSubmit }) => {
 
     const { t } = useTranslation(['translation', 'select', 'country'])
     setLocale(yupMessages)
 
     const classes = useStyles()
 
-    const dispatch = useDispatch()
-
-    const loginSchema = yup.object().shape({
+    const lpSchema = yup.object().shape({
         title: yup.string().required(),
         artist: yup.string().required(),
+        genre: yup.string().required(),
         year: yup.date().nullable(),
         numDiscs: yup.number().min(1).max(15),
         rating: yup.number().min(0).max(5).nullable(),
@@ -62,21 +52,21 @@ const AlbumDetailsForm = () => {
 
     const formik = useFormik({
         initialValues: {
-            title: preloadedData.title ? preloadedData.title : (searchResult && searchResult.title ? searchResult.title : ''),
-            artist: preloadedData.artist ? preloadedData.artist : (searchResult && searchResult.artist ? searchResult.artist : ''),
-            label: preloadedData.label ? preloadedData.label : '',
-            genre: preloadedData.genre ? preloadedData.genre : '',
-            country: preloadedData.country && countries.includes(preloadedData.country) ? preloadedData.country : '',
-            year: preloadedData.year ? new Date(preloadedData.year, 1) : null,
-            numDiscs: preloadedData.numDiscs ? preloadedData.numDiscs : '',
-            condition: preloadedData.condition ? preloadedData.condition : '',
-            weight: preloadedData.weight ? preloadedData.weight : '',
-            stereo: preloadedData.channel ? preloadedData.channel === 'stereo' : true,
-            rating: preloadedData.review && preloadedData.review.rating ? preloadedData.review.rating : 0,
-            comment: preloadedData.review && preloadedData.review.comment ? preloadedData.review.comment : '',
-            isPublic: preloadedData.isPublic ? preloadedData.isPublic : false
+            title: lpData.title ? lpData.title : '',
+            artist: lpData.artist ? (lpData.artist.name ? lpData.artist.name : lpData.artist) : '',
+            label: lpData.label ? lpData.label : '',
+            genre: lpData.genre ? lpData.genre : '',
+            country: lpData.country && countries.includes(lpData.country) ? lpData.country : '',
+            year: lpData.year ? new Date(lpData.year, 1) : null,
+            numDiscs: lpData.numDiscs ? lpData.numDiscs : '',
+            condition: lpData.condition ? lpData.condition : '',
+            weight: lpData.weight ? lpData.weight : '',
+            stereo: lpData.channel ? lpData.channel === 'stereo' : true,
+            rating: lpData.review && lpData.review.rating ? lpData.review.rating : 0,
+            comment: lpData.review && lpData.review.comment ? lpData.review.comment : '',
+            isPublic: "isPublic" in lpData ? lpData.isPublic : true
         },
-        validationSchema: loginSchema,
+        validationSchema: lpSchema,
         onSubmit: values => {
             //recuperem els camps amb valors
             const lp = _.pickBy(values, _.identity);
@@ -98,15 +88,12 @@ const AlbumDetailsForm = () => {
             lp.channel = lp.stereo ? 'stereo' : 'mono'
             delete lp.stereo
 
-            if (preloadedData && preloadedData.trackList)
-                lp.trackList = preloadedData.trackList
+            if (lpData && lpData.trackList)
+                lp.trackList = lpData.trackList
 
-            if (preloadedData.coverImg || searchResult.coverImg)
-                lp.coverImg = preloadedData.coverImg ? preloadedData.coverImg : searchResult.coverImg
+            lp.isPublic = lp.isPublic ? lp.isPublic : false
 
-            alert(JSON.stringify(lp, null, 2))
-
-            dispatch(lpAdd(lp))
+            handleSubmit(lp)
 
         },
     });
@@ -146,7 +133,6 @@ const AlbumDetailsForm = () => {
                     </Grid>
                     <Grid item xs={12} sm={6}>
                         <TextField
-                            required
                             id="label"
                             name="label"
                             label={t('lpDetail.discoLabel')}
@@ -157,6 +143,7 @@ const AlbumDetailsForm = () => {
                     </Grid>
                     <Grid item xs={12} sm={6}>
                         <TextField
+                            required
                             id="genre"
                             name="genre"
                             select
@@ -164,6 +151,8 @@ const AlbumDetailsForm = () => {
                             fullWidth
                             value={formik.values.genre}
                             onChange={formik.handleChange}
+                            error={formik.touched.genre && Boolean(formik.errors.genre)}
+                            helperText={formik.touched.genre && formik.errors.genre}
                         >
                             {musicGenres.map((key) => (
                                 <MenuItem key={key} value={key}>
@@ -314,7 +303,7 @@ const AlbumDetailsForm = () => {
                                 <Checkbox
                                     color="primary"
                                     name="isPublic"
-                                    value={formik.values.isPublic}
+                                    checked={formik.values.isPublic}
                                     onChange={(event) => {
                                         formik.setFieldValue("isPublic", event.target.checked ? true : false)
                                     }}
@@ -328,21 +317,12 @@ const AlbumDetailsForm = () => {
                             }
                         />
                     </Grid>
-                    {preloadedData.trackList && preloadedData.trackList.length > 1 && <TrackList trackList={preloadedData.trackList} />}
+                    {lpData.trackList && lpData.trackList.length > 1 && <TrackList trackList={lpData.trackList} />}
                 </Grid>
-                <Button
-                    type="submit"
-                    fullWidth
-                    variant="contained"
-                    color="primary"
-                >
-                    PROVA SUBMIT
-                            {/* Si es està fent login mostrem un spinner dins el botó */}
-                    {/* {loading && <ButtonSpinner />} */}
-                </Button>
+                {actions()}
             </form>
         </React.Fragment >
     )
 }
 
-export default AlbumDetailsForm
+export default LpForm

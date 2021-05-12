@@ -9,6 +9,7 @@ import ListItemIcon from '@material-ui/core/ListItemIcon'
 import ListItemText from '@material-ui/core/ListItemText'
 import Typography from '@material-ui/core/Typography'
 import HomeIcon from '@material-ui/icons/Home'
+import AccountCircleIcon from '@material-ui/icons/AccountCircle'
 import AlbumIcon from '@material-ui/icons/Album'
 import AddBoxIcon from '@material-ui/icons/AddBox'
 import LocalOfferIcon from '@material-ui/icons/LocalOffer';
@@ -81,6 +82,12 @@ const sideMenu = [
                 to: '/home',
                 icon: <HomeIcon />,
                 textKey: 'sideMenu.home',
+            },
+            {
+                id: 'profile',
+                to: '/profile',
+                icon: <AccountCircleIcon />,
+                textKey: 'sideMenu.profile',
             }
         ]
 
@@ -101,6 +108,17 @@ const sideMenu = [
                 textKey: 'sideMenu.lpAdd'
             },
 
+        ]
+    },
+    {
+        header: 'sideMenu.social',
+        menuItems: [
+            {
+                id: 'users',
+                to: '/users',
+                icon: <GroupIcon />,
+                textKey: 'sideMenu.users'
+            },
         ]
     }
 ]

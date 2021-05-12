@@ -1,23 +1,18 @@
-import React from 'react';
-import Button from '@material-ui/core/Button';
-import Card from '@material-ui/core/Card';
-import CardActions from '@material-ui/core/CardActions';
-import CardMedia from '@material-ui/core/CardMedia';
-import CardActionArea from '@material-ui/core/CardActionArea';
-import CardHeader from '@material-ui/core/CardHeader';
-import Tooltip from '@material-ui/core/Tooltip';
-import Avatar from '@material-ui/core/Avatar';
-import Fab from '@material-ui/core/Fab';
-import Badge from '@material-ui/core/Badge';
-import IconButton from '@material-ui/core/IconButton';
-import AlbumIcon from '@material-ui/icons/Album'
+import React from 'react'
+import Button from '@material-ui/core/Button'
+import Card from '@material-ui/core/Card'
+import CardActions from '@material-ui/core/CardActions'
+import CardMedia from '@material-ui/core/CardMedia'
+import CardActionArea from '@material-ui/core/CardActionArea'
+import CardHeader from '@material-ui/core/CardHeader'
+import Badge from '@material-ui/core/Badge'
+import IconButton from '@material-ui/core/IconButton'
 import OfferIcon from '@material-ui/icons/LocalOffer'
 import PublicIcon from '@material-ui/icons/Visibility'
 import PrivateIcon from '@material-ui/icons/VisibilityOff'
-import EditIcon from '@material-ui/icons/Edit'
-import DeleteIcon from '@material-ui/icons/Delete'
 import { useTranslation } from "react-i18next"
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles'
+import { Link } from 'react-router-dom'
 
 import defaultCoverImg from '../../images/lp_cover_default.png'
 
@@ -58,7 +53,7 @@ const truncateText = (text, limit = 25) => {
 
 }
 
-const LpCard = ({ lp, onEdit, onDelete }) => {
+const LpCard = ({ lp, onDelete }) => {
 
     const { t } = useTranslation()
 
@@ -70,16 +65,10 @@ const LpCard = ({ lp, onEdit, onDelete }) => {
         <Card className={classes.card}>
             {/* <Tooltip title={tooltipMsg} aria-label={tooltipMsg} placement="top" arrow> */}
             <CardActionArea>
-                {/* <CardActionArea className={classes.headerActionArea}> */}
                 <CardHeader classes={{
                     root: classes.headerRoot,
                     action: classes.headerAction
                 }}
-                    // avatar={
-                    //     <Avatar aria-label="recipe">
-                    //         <AlbumIcon />
-                    //     </Avatar>
-                    // }
                     action={
                         lp.isPublic ? <PublicIcon color="disabled" /> : <PrivateIcon color="disabled" />
                     }
@@ -89,26 +78,19 @@ const LpCard = ({ lp, onEdit, onDelete }) => {
                     subheader={lp.artist}
                     subheaderTypographyProps={{ display: 'block', noWrap: true }}
                 />
-                {/* </CardActionArea> */}
-                {/* <CardActionArea> */}
                 <CardMedia
                     // component="img"
                     className={classes.media}
+                    src={lp.coverImg}
                     image={lp.coverImg ? lp.coverImg : defaultCoverImg}
+                    // onError={(e) => { e.target.onerror = null; e.target.src = defaultCoverImg }}
                     title={lp.title + ' cover'}
                 />
-                {/* </CardActionArea> */}
             </CardActionArea >
             {/* </Tooltip> */}
             <CardActions className={classes.cartButtons}>
-                {/* <Fab size="small" color="primary" >
-                    <EditIcon className={classes.extendedIcon} />
-                </Fab>
-                <Fab size="small" color="secondary" className={classes.actionButton} >
-                    <DeleteIcon className={classes.extendedIcon} />
-                </Fab> */}
-                <Button
-                    size="small" color="primary" variant="outlined" onClick={() => onEdit(lp)}>
+                <Button component={Link} to={`/lp/collection/${lp._id}/edit`}
+                    size="small" color="primary" variant="outlined" >
                     {t('form.edit')}
                 </Button>
                 <Button

@@ -2,37 +2,6 @@ import bcrypt from "bcryptjs";
 
 import mongoose from 'mongoose'
 
-const addressSchema = mongoose.Schema({
-    country: {
-        type: String,
-        required: true
-    },
-    region: {
-        type: String
-    },
-    city: {
-        type: String
-    },
-    postalCode: {
-        type: String
-    }
-})
-
-const reviewSchema = mongoose.Schema({
-    rating: {
-        type: Number,
-        required: true,
-        min: 0,
-        max: 5,
-    },
-    comment: {
-        type: String
-    }
-
-}, {
-    timestamps: true
-})
-
 const userSchema = mongoose.Schema({
     username: {
         type: String,
@@ -62,7 +31,7 @@ const userSchema = mongoose.Schema({
     phoneNumber: {
         type: String
     },
-    profilePictureUrl: {
+    picture: {
         type: String
     },
     language: {
@@ -70,8 +39,11 @@ const userSchema = mongoose.Schema({
         enum: ['ca', 'es', 'en'],
         default: 'ca'
     },
-    address: {
-        type: addressSchema
+    country: {
+        type: String
+    },
+    bio: {
+        type: String
     }
 }, {
     timestamps: true

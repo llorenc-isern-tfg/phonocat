@@ -8,12 +8,14 @@ import Header from './components/layout/Header'
 import LandingPage from './pages/public/LandingPage'
 import HomePage from './pages/private/HomePage'
 import LpCollectionPage from './pages/private/LpCollectionPage'
+import EditLpPage from './pages/private/EditLpPage'
 import AddLpPage from './pages/private/AddLpPage'
 import history from './history'
 import theme from './pages/theme'
 import Alerts from './components/shared/Alerts'
 import SideMenu from './components/layout/SideMenu'
 import NotFoundPage from './pages/public/NotFoundPage'
+import UserProfilePage from './pages/private/UserProfilePage'
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -24,7 +26,7 @@ const useStyles = makeStyles((theme) => ({
         flexGrow: 1,
         height: '100vh',
         overflow: 'auto',
-        padding: theme.spacing(3)
+        // padding: theme.spacing(3)
     },
     appBarSpacer: theme.mixins.toolbar,
 }));
@@ -47,7 +49,9 @@ const App = () => {
                             <Route path="/" exact component={LandingPage} />
                             <PrivateRoute path="/home" exact component={HomePage} />
                             <PrivateRoute path="/lp/collection" exact component={LpCollectionPage} />
+                            <PrivateRoute path='/lp/collection/:id/edit' component={EditLpPage} />
                             <PrivateRoute path="/lp/new" exact component={AddLpPage} />
+                            <PrivateRoute path='/profile' component={UserProfilePage} />
                             <Route component={NotFoundPage} />
                         </Switch>
                     </main>

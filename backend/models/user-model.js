@@ -1,6 +1,7 @@
 import bcrypt from "bcryptjs";
 
 import mongoose from 'mongoose'
+import mongoosePaginate from 'mongoose-paginate-v2'
 
 const userSchema = mongoose.Schema({
     username: {
@@ -46,8 +47,28 @@ const userSchema = mongoose.Schema({
         type: String
     }
 }, {
-    timestamps: true
+    timestamps: true,
+    toJSON: { virtuals: true }, //Sense això toJSON() i toObject no inclourien els virtuals
+    toObject: { virtuals: true }
 })
+
+//Afegim un virtual amb els últims 5 LPs amb visivilitat pública per poder fer populate al llistat d'usuaris
+userSchema.virtual('latestLps', {
+    ref: 'Lp',
+    localField: '_id',
+    foreignField: 'owner',
+    justOne: false,
+    match: { isPublic: true },
+    options: { sort: { createdAt: -1 }, limit: 5 }
+})
+
+//També fem un virtual amb el num total de LPs que té l'usuari
+userSchema.virtual('numLps', {
+    ref: 'Lp',
+    localField: '_id',
+    foreignField: 'owner',
+    count: true
+});
 
 //Hash del password abans de desar
 userSchema.pre('save', async function (next) {
@@ -88,6 +109,8 @@ userSchema.methods.publicProfile = function () {
 userSchema.methods.comparePassword = async function (receivedPassword) {
     return await bcrypt.compare(receivedPassword, this.password)
 }
+
+userSchema.plugin(mongoosePaginate)
 
 const User = mongoose.model('User', userSchema)
 

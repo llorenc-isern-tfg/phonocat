@@ -127,7 +127,7 @@ const ProfileForm = ({ userData = {}, actions, handleSubmit }) => {
                         <Grid item xs={12} sm={3}>
                             <FormControl>
                                 <MuiPhoneNumber
-                                    defaultCountry={userData.country ? userData.country.toLowerCase() : 'es'}
+                                    // defaultCountry={userData.country ? userData.country.toLowerCase() : 'es'}
                                     // regions={'europe'}
                                     name="phoneNumber"
                                     label={t('profile.phoneNumber')}

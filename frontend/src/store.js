@@ -3,7 +3,8 @@ import thunk from 'redux-thunk'
 import createSagaMiddleware from 'redux-saga'
 import { composeWithDevTools } from 'redux-devtools-extension'
 import { lpCollectionReducer, lpAddReducer, lpDetailsReducer, lpEditReducer } from './reducers/lpReducers'
-import { userLoginReducer, userProfileReducer, userEditProfileReducer } from './reducers/userReducers'
+import { userLoginReducer, userProfileReducer } from './reducers/userReducers'
+import { userListReducer, userDetailReducer } from './reducers/socialReducers'
 import { alertReducer } from './reducers/alertReducers'
 import { persistStore, persistReducer } from 'redux-persist'
 import storage from 'redux-persist/lib/storage'
@@ -23,7 +24,8 @@ const reducers = combineReducers({
     lpDetails: lpDetailsReducer,
     lpEdit: lpEditReducer,
     userProfile: userProfileReducer,
-    // userEditProfile: userEditProfileReducer,
+    userList: userListReducer,
+    userDetail: userDetailReducer,
     alerts: alertReducer
 })
 

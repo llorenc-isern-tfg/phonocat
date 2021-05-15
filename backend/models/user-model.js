@@ -52,7 +52,7 @@ const userSchema = mongoose.Schema({
     toObject: { virtuals: true }
 })
 
-//Afegim un virtual amb els últims 5 LPs amb visivilitat pública per poder fer populate al llistat d'usuaris
+//Afegim un virtual amb els últims LPs amb visivilitat pública per poder fer populate al llistat d'usuaris
 userSchema.virtual('latestLps', {
     ref: 'Lp',
     localField: '_id',
@@ -68,7 +68,7 @@ userSchema.virtual('numLps', {
     localField: '_id',
     foreignField: 'owner',
     count: true
-});
+})
 
 //Hash del password abans de desar
 userSchema.pre('save', async function (next) {

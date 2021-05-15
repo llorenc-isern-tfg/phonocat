@@ -16,6 +16,7 @@ import Alerts from './components/shared/Alerts'
 import SideMenu from './components/layout/SideMenu'
 import NotFoundPage from './pages/public/NotFoundPage'
 import UserProfilePage from './pages/private/UserProfilePage'
+import UserListPage from './pages/private/UserListPage'
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -24,7 +25,7 @@ const useStyles = makeStyles((theme) => ({
     },
     mainContent: {
         flexGrow: 1,
-        height: '100vh',
+        height: '100%',
         overflow: 'auto',
         // padding: theme.spacing(3)
     },
@@ -43,7 +44,7 @@ const App = () => {
                     <Header />
                     <SideMenu />
                     <Alerts />
-                    <main className={classes.mainContent}>
+                    <main className={classes.mainContent} id="mainContent">
                         <div className={classes.appBarSpacer} />
                         <Switch>
                             <Route path="/" exact component={LandingPage} />
@@ -52,6 +53,7 @@ const App = () => {
                             <PrivateRoute path='/lp/collection/:id/edit' component={EditLpPage} />
                             <PrivateRoute path="/lp/new" exact component={AddLpPage} />
                             <PrivateRoute path='/profile' component={UserProfilePage} />
+                            <PrivateRoute path='/users' component={UserListPage} />
                             <Route component={NotFoundPage} />
                         </Switch>
                     </main>

@@ -4,7 +4,7 @@ import mongoose from 'mongoose'
 import '../config/env-config.js'
 import User from '../models/user-model.js'
 
-const NUM_USERS = 1250
+const DEFAULT_NUM_USERS = 500
 
 const dbOptions = {
     useNewUrlParser: true,
@@ -40,12 +40,15 @@ export const closeConnection = async () => {
 //Aquest script serveix per generar usuaris de mentida per provar funcionalitats de l'aplicació
 //Els passwords es guarden encriptats per tant cal apuntar-los al generar el llistat si es vol entrar amb aquests usuaris
 const seedUsers = async () => {
+    const params = process.argv.slice(2)
+
     try {
         createDBConnection()
 
         // faker.seed(666) //activar per resultats consistents entre execucions
+        const numUsers = params[0] ? params[0] : DEFAULT_NUM_USERS
 
-        for (let i = 0; i < NUM_USERS; i++) {
+        for (let i = 0; i < numUsers; i++) {
 
             const email = faker.internet.email()
             const password = faker.internet.password()

@@ -9,7 +9,7 @@
     "server": "nodemon backend/server.js",
     "client": "npm start --prefix frontend",
     "dev": "concurrently \"npm run server\" \"npm run client\"",
-    "seed-users": "nodemon backend/test/seed-users.js"
+    "seed-users": "node backend/test/seed-users.js"
   },
   "author": "Llorenç Isern Martín",
   "license": "ISC",

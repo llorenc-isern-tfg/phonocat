@@ -79,7 +79,6 @@ const RegisterDialog = ({ open, onClose, selectedLanguage }) => {
         validationSchema: loginSchema,
         onSubmit: values => {
             //Si l'usuari ha seleccionat un llenguatge el registrem amb aquest idioma com a preferència
-            alert(selectedLanguage)
             if (selectedLanguage)
                 values.language = selectedLanguage
             dispatch(registerRequest(values))

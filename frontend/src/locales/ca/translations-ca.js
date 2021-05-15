@@ -148,5 +148,10 @@ export const TRANSLATIONS_CA = {
     editProfile: {
         success: 'El teu perfil s\'ha actualitzat correctament',
         fail: 'No s\'ha pogut actualitzar el teu perfil'
+    },
+    userList: {
+        latestLps: 'Últims Lps',
+        fail: 'No s\'ha pogut actualitzar el teu perfil',
+        loading: 'Carregant usuaris...'
     }
 };

@@ -17,6 +17,7 @@ import Skeleton from '@material-ui/lab/Skeleton'
 import PlaceIcon from '@material-ui/icons/Place'
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import { withStyles } from '@material-ui/core/styles'
+import { Link } from 'react-router-dom'
 
 import { userListRequest, userListClear } from '../../actions/socialActions'
 import { truncateString } from '../../utils/utils'
@@ -32,29 +33,9 @@ const useStyles = makeStyles((theme) => ({
         maxWidth: '600ch',
         backgroundColor: theme.palette.background.paper,
     },
-    inline: {
-        display: 'inline',
-    },
-    smallAvatar: {
-        width: theme.spacing(4),
-        height: theme.spacing(4),
-    },
-    gridList: {
-        flexWrap: 'nowrap',
-        // // Promote the list into his own layer on Chrome. This cost memory but helps keeping high FPS.
-        // transform: 'translateZ(0)',
-    },
-    // title: {
-    //     color: theme.palette.primary.light,
-    // },
-    // titleBar: {
-    //     background:
-    //         'linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.3) 70%, rgba(0,0,0,0) 100%)',
-    // },
-    flexContainer: {
-        display: 'flex',
-        flexDirection: 'row',
-        padding: 0,
+    lpChip: {
+        margin: '2px',
+        display: 'inline-block'
     }
 }))
 
@@ -110,7 +91,8 @@ const UserListPage = () => {
     const renderUser = (user) => {
         let expandUser = false
         return (
-            <ListItem alignItems="flex-start" key={user._id} button divider >
+            <ListItem alignItems="flex-start" key={user._id} button divider
+                component={Link} to={`/users/${user.username}`}>
                 <Grid container wrap="nowrap" spacing={2}>
                     <Grid item>
                         <Avatar alt={user.username} src={user.picture} style={{ margin: 'auto' }} />
@@ -126,7 +108,7 @@ const UserListPage = () => {
                             <Grid item>
                                 <Typography variant="caption" color="textSecondary"> {t('userList.latestLps')}</Typography>
                                 {user.latestLps.map((lp) => (
-                                    <span>&nbsp;
+                                    <span key={lp._id} className={classes.lpChip}>&nbsp;
                                         <Chip color="default" size="small"
                                             avatar={lp.coverImg ? <Avatar src={lp.coverImg} /> : undefined}
                                             label={truncateString(lp.title, 20)}
@@ -135,7 +117,7 @@ const UserListPage = () => {
                                     </span>
                                 ))}
                                 {user.latestLps.length < user.numLps ?
-                                    <span style={{ padding: '5px' }}>
+                                    <span key="moreLps" className={classes.lpChip}>
                                         <StyledBadge badgeContent={`+${user.numLps - 5}`} >
                                             <MoreHorizIcon color="disabled" fontSize="small" />
                                         </StyledBadge>

@@ -97,6 +97,7 @@ userSchema.methods.publicProfile = function () {
 
     delete userObject.email
     delete userObject.birthDate
+    delete userObject.phoneNumber
     delete userObject.address
     delete userObject.createdAt
     delete userObject.updatedAt

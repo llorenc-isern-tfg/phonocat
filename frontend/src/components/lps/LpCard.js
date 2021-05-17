@@ -64,7 +64,7 @@ const LpCard = ({ lp, onDelete }) => {
     return (
         <Card className={classes.card}>
             {/* <Tooltip title={tooltipMsg} aria-label={tooltipMsg} placement="top" arrow> */}
-            <CardActionArea>
+            <CardActionArea component={Link} to={`/lp/collection/${lp._id}`}>
                 <CardHeader classes={{
                     root: classes.headerRoot,
                     action: classes.headerAction

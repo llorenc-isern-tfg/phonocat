@@ -2,13 +2,13 @@ import React from 'react'
 import AudiotrackIcon from '@material-ui/icons/Audiotrack'
 import { makeStyles } from '@material-ui/core/styles'
 import ListItemIcon from '@material-ui/core/ListItemIcon'
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
+import Table from '@material-ui/core/Table'
+import TableBody from '@material-ui/core/TableBody'
+import TableCell from '@material-ui/core/TableCell'
+import TableContainer from '@material-ui/core/TableContainer'
+import TableHead from '@material-ui/core/TableHead'
+import TableRow from '@material-ui/core/TableRow'
+import Paper from '@material-ui/core/Paper'
 import MuiAccordion from '@material-ui/core/Accordion'
 import MuiAccordionSummary from '@material-ui/core/AccordionSummary'
 import MuiAccordionDetails from '@material-ui/core/AccordionDetails'
@@ -17,7 +17,7 @@ import QueueMusicIcon from '@material-ui/icons/QueueMusic'
 import Grid from '@material-ui/core/Grid'
 import Typography from '@material-ui/core/Typography'
 import { useTranslation } from "react-i18next"
-import { withStyles } from '@material-ui/core/styles';
+import { withStyles } from '@material-ui/core/styles'
 
 const useStyles = makeStyles((theme) => ({
     heading: {

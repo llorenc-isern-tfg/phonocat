@@ -317,7 +317,7 @@ const LpForm = ({ lpData = {}, actions, handleSubmit }) => {
                             }
                         />
                     </Grid>
-                    {lpData.trackList && lpData.trackList.length > 1 && <TrackList trackList={lpData.trackList} />}
+                    {lpData.trackList && lpData.trackList.length > 0 && <TrackList trackList={lpData.trackList} />}
                 </Grid>
                 {actions()}
             </form>

@@ -1,4 +1,7 @@
 export const TRANSLATIONS_CA = {
+    generic: {
+        fail: 'S\'ha produït un error, intenta-ho més tard'
+    },
     landingPage: {
         mainInfo: {
             title: 'Et donem la benvinguda a Phonocat',
@@ -68,6 +71,10 @@ export const TRANSLATIONS_CA = {
         rating: 'Puntua aquest àlbum',
         comment: 'Resenya',
         public: 'Vols que aquest LP sigui visible per la resta d\'usuaris?',
+        visibility: 'Visibilitat',
+        public: 'pública',
+        private: 'privada',
+        score: 'Puntuació'
     },
     lpCover: {
         almostThere: 'Ja casi està! Només falta afegir una imatge de la portada que t\'ajudarà a identificar el teu LP.',
@@ -153,5 +160,15 @@ export const TRANSLATIONS_CA = {
         latestLps: 'Últims Lps',
         fail: 'No s\'ha pogut actualitzar el teu perfil',
         loading: 'Carregant usuaris...'
+    },
+    userDetail: {
+        follow: 'Seguir aquest usuari',
+        unfollow: 'Deixar de seguir aquest usuari',
+        collection: 'Col·lecció de Lps',
+        emptyCollection: 'L\'usuari no te LPs amb visibilitat pública',
+        usersFollowing: "{{count}} usuari segueix a {{username}}",
+        usersFollowing_plural: "{{count}} usuaris segueixen a {{username}}",
+        followingUser: "Ara segueixes a {{username}}!",
+        unfollowingUser: "Ja no segueixes a {{username}}",
     }
 };

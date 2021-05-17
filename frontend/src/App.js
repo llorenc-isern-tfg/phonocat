@@ -8,6 +8,7 @@ import Header from './components/layout/Header'
 import LandingPage from './pages/public/LandingPage'
 import HomePage from './pages/private/HomePage'
 import LpCollectionPage from './pages/private/LpCollectionPage'
+import LpDetailPage from './pages/private/LpDetailPage'
 import EditLpPage from './pages/private/EditLpPage'
 import AddLpPage from './pages/private/AddLpPage'
 import history from './history'
@@ -17,6 +18,7 @@ import SideMenu from './components/layout/SideMenu'
 import NotFoundPage from './pages/public/NotFoundPage'
 import UserProfilePage from './pages/private/UserProfilePage'
 import UserListPage from './pages/private/UserListPage'
+import UserDetailPage from './pages/private/UserDetailPage'
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -50,10 +52,12 @@ const App = () => {
                             <Route path="/" exact component={LandingPage} />
                             <PrivateRoute path="/home" exact component={HomePage} />
                             <PrivateRoute path="/lp/collection" exact component={LpCollectionPage} />
-                            <PrivateRoute path='/lp/collection/:id/edit' component={EditLpPage} />
+                            <PrivateRoute path='/lp/collection/:id' exact component={LpDetailPage} />
+                            <PrivateRoute path='/lp/collection/:id/edit' exact component={EditLpPage} />
                             <PrivateRoute path="/lp/new" exact component={AddLpPage} />
-                            <PrivateRoute path='/profile' component={UserProfilePage} />
-                            <PrivateRoute path='/users' component={UserListPage} />
+                            <PrivateRoute path='/profile' exact component={UserProfilePage} />
+                            <PrivateRoute path='/users' exact component={UserListPage} />
+                            <PrivateRoute path='/users/:username' exact component={UserDetailPage} />
                             <Route component={NotFoundPage} />
                         </Switch>
                     </main>

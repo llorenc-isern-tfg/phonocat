@@ -157,13 +157,13 @@ function* editLp({ payload }) {
         const userInfo = yield select(selectUserInfo)
         const { data } = yield call(editLpService, userInfo, lp)
         yield put(lpActions.lpEditSuccess(data))
-        yield put(showAlert('success', { messageKey: 'editLp.success' }))
+        yield put(showAlert('success', { messageKey: 'lpEdit.success' }))
         history.push('/lp/collection')
     } catch (error) {
         const errorMsg = error.response && error.response.data.message ?
             error.response.data.message : error.message
         yield put(lpActions.lpEditFail(errorMsg))
-        yield put(showAlert('error', { messageKey: 'editLp.fail' }))
+        yield put(showAlert('error', { messageKey: 'lpEdit.fail' }))
     }
 }
 

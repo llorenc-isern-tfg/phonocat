@@ -16,6 +16,9 @@ const followingSchema = mongoose.Schema({
     timestamps: true
 })
 
+//Index per evitar duplicats
+followingSchema.index({ follower: 1, followed: 1 }, { unique: true });
+
 const Following = mongoose.model('Following', followingSchema)
 
 export default Following

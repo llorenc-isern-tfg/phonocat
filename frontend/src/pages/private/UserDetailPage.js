@@ -10,7 +10,6 @@ import Accordion from '@material-ui/core/Accordion'
 import AccordionSummary from '@material-ui/core/AccordionSummary'
 import AccordionDetails from '@material-ui/core/AccordionDetails'
 import Button from '@material-ui/core/Button'
-import PersonIcon from '@material-ui/icons/Person'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import Fab from '@material-ui/core/Fab'
 import Tooltip from '@material-ui/core/Tooltip'
@@ -39,7 +38,6 @@ const useStyles = makeStyles((theme) => ({
         marginBottom: theme.spacing(3),
         display: 'flex',
         flexDirection: 'column',
-        alignItems: 'center',
         paddingBottom: theme.spacing(3)
     },
     avatar: {
@@ -72,6 +70,7 @@ const useStyles = makeStyles((theme) => ({
         borderBottom: '1px solid rgba(0, 0, 0, .125)',
     },
     accordionDetail: {
+        display: 'block',
         backgroundColor: theme.palette.primary[50],
     },
     heading: {
@@ -79,6 +78,7 @@ const useStyles = makeStyles((theme) => ({
         fontWeight: theme.typography.fontWeightMedium,
     },
     gridList: {
+        // minWidth: '150px',
         [theme.breakpoints.down('sm')]: {
             maxHeight: 400,
         },
@@ -137,19 +137,24 @@ const UserDetailPage = (props) => {
     }
 
     const getGridCols = () => {
-        if (isWidthUp('lg', props.width)) {
-            return 4;
-        }
+        let cols = 1
         if (isWidthUp('sm', props.width)) {
-            return 3;
+            cols = 2
         }
-        return 2
+        if (isWidthUp('md', props.width)) {
+            cols = 3
+        }
+        if (isWidthUp('lg', props.width)) {
+            cols = 4
+        }
+        console.log(cols)
+        return cols
     }
 
     return (
         <React.Fragment>
             {user &&
-                <Container maxWidth="xl">
+                <Container maxWidth="lg">
                     <Paper className={classes.paper} elevation={2} >
                         <Container maxWidth="md">
                             <div className={classes.wrapper}>
@@ -164,12 +169,14 @@ const UserDetailPage = (props) => {
                                         color="textPrimary">
                                         {user.username}
                                     </Typography>
-                                    <Typography
-                                        variant="subtitle1"
-                                        color="textSecondary"
-                                        align="center">
-                                        <PlaceIcon color="disabled" />{t(`country:${user.country}`)}
-                                    </Typography>
+                                    {user.country &&
+                                        <Typography
+                                            variant="subtitle1"
+                                            color="textSecondary"
+                                            align="center">
+                                            <PlaceIcon color="disabled" />{t(`country:${user.country}`)}
+                                        </Typography>
+                                    }
                                     <Typography
                                         variant="subtitle1" align="center"
                                         color="textPrimary" gutterBottom>
@@ -244,10 +251,6 @@ const UserDetailPage = (props) => {
                                                     <GridListTileBar
                                                         title={lp.title}
                                                         subtitle={lp.artist}
-                                                        classes={{
-                                                            root: classes.titleBar,
-                                                            title: classes.title,
-                                                        }}
                                                     />
                                                 </GridListTile>
                                             ))}
@@ -262,12 +265,14 @@ const UserDetailPage = (props) => {
                                 </Typography>
                             }
                         </Container>
-                        <div className={classes.buttons}>
-                            <Button variant="contained" color="primary" className={classes.button}
-                                component={Link} to="/users/">
-                                {t('form.exit')}
-                            </Button>
-                        </div>
+                        <Container maxWidth="lg">
+                            <Box component="div" className={classes.buttons}>
+                                <Button variant="contained" color="primary" className={classes.button}
+                                    component={Link} to="/users/">
+                                    {t('form.exit')}
+                                </Button>
+                            </Box>
+                        </Container>
                     </Paper>
 
                     {/* <Backdrop className={classes.backdrop} open={(status && status.loading) ? status.loading : false}>

@@ -169,16 +169,16 @@ const EditLpPage = ({ match }) => {
                                 </Card>
                             </Grid>
                             <Grid item xs={12} sm={6}>
-                                <DropImage label={t('lpEdit.editCover')} onUpload={uploadFileCover} />
+                                <DropImage label={t('lpEdit.editCover')} onUpload={uploadFileCover} maxFiles={1} />
                             </Grid>
                         </Grid>
                         <React.Fragment>
                             <LpForm lpData={lp} actions={actions} handleSubmit={handleSubmit} />
                         </React.Fragment>
                     </Paper>
-                    <Backdrop className={classes.backdrop} open={(status && status.loading) ? status.loading : false}>
+                    {/* <Backdrop className={classes.backdrop} open={(status && status.loading) ? status.loading : false}>
                         <CircularProgress color="inherit" />
-                    </Backdrop>
+                    </Backdrop> */}
                 </Container>
             }
         </React.Fragment >

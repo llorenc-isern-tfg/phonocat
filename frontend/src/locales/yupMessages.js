@@ -1,5 +1,5 @@
 //claus per traduïr els missatges de validació amb yup per defecte
-import i18n from "i18next"
+import i18n from 'i18next'
 const yupMessages = {
     mixed: {
         default: () => i18n.t('yup:field_invalid'),

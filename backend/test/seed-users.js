@@ -35,6 +35,8 @@ export const closeConnection = async () => {
     mongooseConn.close()
 }
 
+const locales = ['az', 'ar', 'cz', 'de', 'de_AT', 'de_CH', 'en', 'en_AU', 'en_AU_ocker', 'en_BORK', 'en_CA', 'en_GB', 'en_IE', 'en_IND', 'en_US', 'en_ZA', 'es', 'es_MX', 'fa', 'fi', 'fr', 'fr_CA', 'fr_CH', 'ge', 'hy', 'hr', 'id_ID', 'it', 'ja', 'ko', 'nb_NO', 'ne', 'nl', 'nl_BE', 'pl', 'pt_BR', 'pt_PT', 'ro', 'ru', 'sk', 'sv', 'tr', 'uk', 'vi', 'zh_CN', 'zh_TW']
+
 // createDBConnection()
 
 //Aquest script serveix per generar usuaris de mentida per provar funcionalitats de l'aplicació
@@ -49,7 +51,7 @@ const seedUsers = async () => {
         const numUsers = params[0] ? params[0] : DEFAULT_NUM_USERS
 
         for (let i = 0; i < numUsers; i++) {
-
+            faker.setLocale(locales[Math.floor(Math.random() * locales.length)])
             const email = faker.internet.email()
             const password = faker.internet.password()
             console.log('CREDENCIALS: ', email, password)

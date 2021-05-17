@@ -18,6 +18,8 @@ import PlaceIcon from '@material-ui/icons/Place'
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import { withStyles } from '@material-ui/core/styles'
 import { Link } from 'react-router-dom'
+import _ from 'lodash'
+import i18n from 'i18next'
 
 import { userListRequest, userListClear } from '../../actions/socialActions'
 import { truncateString } from '../../utils/utils'
@@ -45,6 +47,12 @@ const selectUserList = createSelector(
     userList => userList
 )
 
+const StyledBadge = withStyles((theme) => ({
+    badge: {
+        // backgroundColor: theme.palette.grey[200]
+        color: theme.palette.grey[500]
+    },
+}))(Badge);
 
 const UserListPage = () => {
 
@@ -79,14 +87,7 @@ const UserListPage = () => {
                 limit: 25
             }
         ))
-    };
-
-    const StyledBadge = withStyles((theme) => ({
-        badge: {
-            // backgroundColor: theme.palette.grey[200]
-            color: theme.palette.grey[500]
-        },
-    }))(Badge);
+    }
 
     const renderUser = (user) => {
         let expandUser = false
@@ -138,21 +139,22 @@ const UserListPage = () => {
         )
     }
 
-    const renderLoadingUsers = () => (
-        <ListItem alignItems="flex-start" key={'loading_users'} divider >
-            <Grid container wrap="nowrap" spacing={2}>
-                <Grid item>
-                    <Skeleton animation="wave" variant="circle" width={40} height={40} />
+    const renderLoadingUsers = (i) => {
+        return (
+            <ListItem alignItems="flex-start" key={`loading_users_${i}`} divider >
+                <Grid container wrap="nowrap" spacing={2}>
+                    <Grid item>
+                        <Skeleton animation="wave" variant="circle" width={40} height={40} />
+                    </Grid>
+                    <Grid container direction="column" item xs zeroMinWidth>
+                        <Skeleton animation="wave" height={10} width="90%" style={{ marginBottom: 6 }} />
+                        <Skeleton animation="wave" height={10} width="40%" style={{ marginBottom: 6 }} />
+                        <Typography variant="body2" color="textSecondary" noWrap gutterBottom>{t('userList.loading')}</Typography>
+                    </Grid>
                 </Grid>
-                <Grid container direction="column" item xs zeroMinWidth>
-                    <Skeleton animation="wave" height={10} width="90%" style={{ marginBottom: 6 }} />
-                    <Skeleton animation="wave" height={10} width="40%" style={{ marginBottom: 6 }} />
-                    <Typography variant="body2" color="textSecondary" noWrap gutterBottom>{t('userList.loading')}</Typography>
-                </Grid>
-            </Grid>
-        </ListItem >
-    )
-
+            </ListItem >
+        )
+    }
 
     return (
         // <div style={{ height: "100%", overflow: "auto", backgroundColor: "blue" }} id="userList" ref={scrollerRef}>
@@ -163,7 +165,7 @@ const UserListPage = () => {
                         dataLength={scrollableUsers.length} //This is important field to render the next data
                         next={loadMore}
                         hasMore={scrollableUsers && pagination && pagination.hasNextPage}
-                        loader={renderLoadingUsers()}
+                        loader={_.times(25, (i) => renderLoadingUsers(i))}
                         // endMessage={
                         //     <Typography>S'han carregat tots els usuaris</Typography>
                         // }

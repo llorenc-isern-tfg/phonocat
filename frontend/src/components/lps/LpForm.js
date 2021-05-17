@@ -312,7 +312,7 @@ const LpForm = ({ lpData = {}, actions, handleSubmit }) => {
                             label={
                                 <React.Fragment>
                                     {formik.values.isPublic ? <PublicIcon color="primary" className={classes.publicIcon} /> : <VpnLockIcon color="disabled" className={classes.publicIcon} />}
-                                    {t('lpDetail.public')}
+                                    {t('lpDetail.checkPublic')}
                                 </React.Fragment>
                             }
                         />

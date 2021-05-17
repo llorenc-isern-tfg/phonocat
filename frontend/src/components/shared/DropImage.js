@@ -14,6 +14,9 @@ import Typography from '@material-ui/core/Typography'
 import { useTranslation } from "react-i18next"
 
 const useStyles = makeStyles((theme) => ({
+    previewContainer: {
+        display: 'flex'
+    },
     preview: {
         width: 100,
         height: 100,
@@ -63,9 +66,9 @@ const rejectStyle = {
     borderColor: '#ff1744'
 };
 
-const DropImage = ({ label, onUpload, discardAction }) => {
+const DropImage = ({ label, onUpload, discardAction, maxFiles }) => {
 
-    const [selectedFile, setSelectedFile] = useState()
+    const [selectedFiles, setSelectedFiles] = useState([])
 
     const {
         acceptedFiles,
@@ -76,42 +79,50 @@ const DropImage = ({ label, onUpload, discardAction }) => {
         isDragAccept,
         isDragReject
     } = useDropzone({
-        accept: 'image/*', multiple: false,
+        accept: 'image/*',
+        multiple: maxFiles && maxFiles > 1,
+        maxFiles,
         onDrop: acceptedFiles => {
-            if (acceptedFiles.length > 0)
-                setSelectedFile(
-                    {
-                        file: acceptedFiles[0],
-                        preview: URL.createObjectURL(acceptedFiles[0])
+            if (acceptedFiles.length > 0) {
+                const files = acceptedFiles.map((acceptedFile) => {
+                    return {
+                        file: acceptedFile,
+                        preview: URL.createObjectURL(acceptedFile)
                     }
-                )
+                })
+                alert(JSON.stringify(files))
+                setSelectedFiles(files)
+            }
+            // setSelectedFiles(
+            //     // [
+            //     acceptedFiles.map((acceptedFile) =>
+            //     ({
+            //         file: acceptedFile,
+            //         preview: URL.createObjectURL(acceptedFile)
+            //     })
+            //     )
+            //     // ]
+            // )
         }
     })
 
     useEffect(() => () => {
-        selectedFile && URL.revokeObjectURL(selectedFile.preview)
-    }, [selectedFile])
+        if (selectedFiles)
+            selectedFiles.map((file) => URL.revokeObjectURL(file.preview))
+    }, [selectedFiles])
 
-    const renderPreview = () => {
-
-        return selectedFile && (
-            <>
-                <Card className={classes.preview}>
-                    <CardMedia
-                        className={classes.previewMedia}
-                        height="100"
-                        image={selectedFile.preview}
-                    />
-                </Card>
-            </>
-        )
+    const renderPreview = (i) => {
+        // console.log(preview, i)
+        return selectedFiles[i] && < React.Fragment key={i} >
+            <Card className={classes.preview}>
+                <CardMedia
+                    className={classes.previewMedia}
+                    height="100"
+                    image={selectedFiles[i].preview}
+                />
+            </Card>
+        </React.Fragment >
     }
-
-    const files = acceptedFiles.map(file => (
-        <li key={file.path}>
-            {file.path} - {file.size} bytes
-        </li>
-    ));
 
     const style = useMemo(() => ({
         ...baseStyle,
@@ -128,8 +139,11 @@ const DropImage = ({ label, onUpload, discardAction }) => {
     const { t } = useTranslation();
 
     const uploadFile = () => {
-        if (selectedFile)
-            onUpload(selectedFile.file)
+        if (selectedFiles)
+            onUpload(maxFiles && maxFiles > 1 ?
+                selectedFiles.map(selectedFile => selectedFile.file)
+                :
+                selectedFiles[0].file)
     }
 
     return (
@@ -143,19 +157,25 @@ const DropImage = ({ label, onUpload, discardAction }) => {
                         <Box {...getRootProps({ style })}>
                             <input {...getInputProps()} />
                             <UploadIcon fontSize="large" />
-                            <Typography>{t('form.dragFile')}</Typography>
-                            {renderPreview()}
+                            <Typography>{t('dropImage.dragFile', { count: maxFiles })}</Typography>
+                            <Box component="div" className={classes.previewContainer}>
+                                {selectedFiles.map((file, i) => renderPreview(i))}
+                            </Box>
                         </Box>
-                        <FormHelperText id="component-helper-text">{fileRejections.length > 0 && t('dropImage.invalidFile')}</FormHelperText>
+                        <FormHelperText id="component-helper-text">
+                            {fileRejections.length > 0 && t('dropImage.invalidFile', { count: fileRejections.length, max: maxFiles })}
+                        </FormHelperText>
                     </FormControl>
                 </Box>
-                <Grid item xs={12} className={classes.row}>
-                    {discardAction}
-                    <Button variant="contained" color="primary" disabled={acceptedFiles.length == 0} startIcon={<UploadIcon />} className={classes.button}
-                        onClick={uploadFile}>
-                        {t('lpCover.upload')}
-                    </Button>
-                </Grid>
+                {onUpload &&
+                    <Grid item xs={12} className={classes.row}>
+                        {discardAction}
+                        <Button variant="contained" color="primary" disabled={acceptedFiles.length == 0} startIcon={<UploadIcon />} className={classes.button}
+                            onClick={uploadFile}>
+                            {t('lpCover.upload')}
+                        </Button>
+                    </Grid>
+                }
             </Paper>
         </React.Fragment>
     )

@@ -147,7 +147,7 @@ const UserProfilePage = () => {
                                 </Card>
                             </Grid>
                             <Grid item xs={12} sm={6}>
-                                <DropImage label={t('profile.editPicture')} onUpload={uploadPicture} />
+                                <DropImage label={t('profile.editPicture')} onUpload={uploadPicture} maxFiles={1} />
                             </Grid>
                         </Grid>
                         <React.Fragment>

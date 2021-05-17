@@ -70,11 +70,20 @@ export const TRANSLATIONS_CA = {
         channel: 'Canal d\'audio',
         rating: 'Puntua aquest àlbum',
         comment: 'Resenya',
-        public: 'Vols que aquest LP sigui visible per la resta d\'usuaris?',
+        checkPublic: 'Vols que aquest LP sigui visible per la resta d\'usuaris?',
         visibility: 'Visibilitat',
         public: 'pública',
         private: 'privada',
-        score: 'Puntuació'
+        score: 'Puntuació',
+        sell: {
+            title: 'Vols posar aquest LP en venda?',
+            priceInput: 'Indica a quin preu t\'agradaria vendre\'l',
+            uploadPictures: 'Adjunta imatges on es vegi l\'estat del teu LP',
+            published: 'Aquest LP està en venda',
+            publish: 'Publica l\'anunci de venda',
+            unpublish: 'Retira l\'anunci',
+            listedFor: 'Tens públicat un anunci per {{amount}} €'
+        },
     },
     lpCover: {
         almostThere: 'Ja casi està! Només falta afegir una imatge de la portada que t\'ajudarà a identificar el teu LP.',
@@ -116,8 +125,13 @@ export const TRANSLATIONS_CA = {
         noResults: 'No s\'han trobat resultats',
         edit: 'Edita',
         delete: 'Elimina',
-        dragFile: 'Arrosega un fitxer o fes click per seleccionar-lo',
         exit: 'Surt'
+    },
+    dropImage: {
+        dragFile: 'Arrosega un fitxer o fes click per seleccionar-lo',
+        dragFile_plural: 'Arrosega un màxim de {{count}} fitxers o fes click per seleccionar-los',
+        invalidFile: 'Selecciona un fitxer de tipus imatge',
+        invalidFile_plural: 'Selecciona com a màxim {{max}} fitxers de tipus imatge'
     },
     lastFm: {
         searchAlbum: {
@@ -159,7 +173,7 @@ export const TRANSLATIONS_CA = {
     userList: {
         latestLps: 'Últims Lps',
         fail: 'No s\'ha pogut actualitzar el teu perfil',
-        loading: 'Carregant usuaris...'
+        loading: 'Carregant usuari...'
     },
     userDetail: {
         follow: 'Seguir aquest usuari',
@@ -170,5 +184,9 @@ export const TRANSLATIONS_CA = {
         usersFollowing_plural: "{{count}} usuaris segueixen a {{username}}",
         followingUser: "Ara segueixes a {{username}}!",
         unfollowingUser: "Ja no segueixes a {{username}}",
+    },
+    currency: {
+        thousandSeparator: '.',
+        decimalSeparator: ','
     }
 };

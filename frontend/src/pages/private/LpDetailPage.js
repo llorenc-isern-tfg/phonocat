@@ -172,8 +172,14 @@ const UserDetailPage = ({ match }) => {
     const { t } = useTranslation()
     const classes = useStyles()
 
-    const handlePublish = () => {
+    const [uploadPictures, setUploadPictures] = useState([])
+    const handleOnDropPictures = (files) => {
+        setUploadPictures(files)
+    }
 
+    const handlePublish = () => {
+        console.log(uploadPictures)
+        console.log(ammount)
     }
 
     const handleUnpublish = () => {
@@ -311,7 +317,7 @@ const UserDetailPage = ({ match }) => {
                                             {lp.listedItem ?
                                                 <Typography>IMATGES</Typography>
                                                 :
-                                                <DropImage label={t('lpDetail.sell.uploadPictures')} maxFiles={4} />
+                                                <DropImage label={t('lpDetail.sell.uploadPictures')} maxFiles={4} onDropHandle={handleOnDropPictures} />
                                             }
                                         </Grid>
                                         <Grid item xs={12}>

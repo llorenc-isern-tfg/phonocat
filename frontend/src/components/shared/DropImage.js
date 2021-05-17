@@ -66,7 +66,7 @@ const rejectStyle = {
     borderColor: '#ff1744'
 };
 
-const DropImage = ({ label, onUpload, discardAction, maxFiles }) => {
+const DropImage = ({ label, onUpload, discardAction, maxFiles, onDropHandle }) => {
 
     const [selectedFiles, setSelectedFiles] = useState([])
 
@@ -90,19 +90,9 @@ const DropImage = ({ label, onUpload, discardAction, maxFiles }) => {
                         preview: URL.createObjectURL(acceptedFile)
                     }
                 })
-                alert(JSON.stringify(files))
                 setSelectedFiles(files)
             }
-            // setSelectedFiles(
-            //     // [
-            //     acceptedFiles.map((acceptedFile) =>
-            //     ({
-            //         file: acceptedFile,
-            //         preview: URL.createObjectURL(acceptedFile)
-            //     })
-            //     )
-            //     // ]
-            // )
+            onDropHandle(acceptedFiles)
         }
     })
 
@@ -138,7 +128,7 @@ const DropImage = ({ label, onUpload, discardAction, maxFiles }) => {
     const classes = useStyles()
     const { t } = useTranslation();
 
-    const uploadFile = () => {
+    const uploadFiles = () => {
         if (selectedFiles)
             onUpload(maxFiles && maxFiles > 1 ?
                 selectedFiles.map(selectedFile => selectedFile.file)
@@ -171,7 +161,7 @@ const DropImage = ({ label, onUpload, discardAction, maxFiles }) => {
                     <Grid item xs={12} className={classes.row}>
                         {discardAction}
                         <Button variant="contained" color="primary" disabled={acceptedFiles.length == 0} startIcon={<UploadIcon />} className={classes.button}
-                            onClick={uploadFile}>
+                            onClick={uploadFiles}>
                             {t('lpCover.upload')}
                         </Button>
                     </Grid>

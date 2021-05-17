@@ -96,7 +96,6 @@ const getUserDetail = asyncHandler(async (req, res) => {
  * @access Authenticated as requested user
  */
 const followUser = asyncHandler(async (req, res) => {
-    console.log('ENTRA')
     const paramUser = await User.findOne({ username: req.params.username })
     if (paramUser) {
         if (req.user.id != paramUser.id) {

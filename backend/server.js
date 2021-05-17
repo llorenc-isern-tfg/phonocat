@@ -6,6 +6,7 @@ import createDBConnection from './config/db-config.js'
 import userRoutes from './routes/user-routes.js'
 import lpRoutes from './routes/lp-routes.js'
 import socialRoutes from './routes/social-routes.js'
+import marketRoutes from './routes/market-routes.js'
 import { errorHandler, notFoundHandler } from './middleware/error-middleware.js'
 import { JwtStrategy } from './middleware/auth-jwt-middleware.js'
 import { GoogleStrategy } from './middleware/auth-google-middleware.js'
@@ -38,6 +39,7 @@ passport.deserializeUser((id, done) => {
 app.use('/api', userRoutes)
 app.use('/api', lpRoutes)
 app.use('/api', socialRoutes)
+app.use('/api', marketRoutes)
 
 app.use(notFoundHandler)
 app.use(errorHandler)

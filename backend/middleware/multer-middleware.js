@@ -31,4 +31,6 @@ function checkFileType(file, cb) {
 
 const multerUploadSingleImage = (fieldName) => upload.single(fieldName)
 
-export { multerUploadSingleImage }
+const multerUploadMultipleImages = (fieldName, maxCount) => upload.array(fieldName, maxCount)
+
+export { multerUploadSingleImage, multerUploadMultipleImages }

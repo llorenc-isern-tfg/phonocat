@@ -9,7 +9,6 @@ const opts = {
 
 const JwtStrategy = new Strategy(opts, async (payload, done) => {
     try {
-        console.log('user middleware')
         const user = await User.findById(payload.id)
         if (user) {
             return done(null, user)

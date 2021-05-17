@@ -6,7 +6,8 @@ const listedItemSchema = mongoose.Schema({
     lp: {
         type: mongoose.Schema.Types.ObjectId,
         required: true,
-        ref: 'Lp'
+        ref: 'Lp',
+        unique: true
     },
     wantedPrice: {
         type: Number,
@@ -23,3 +24,7 @@ listedItemSchema.pre('validate', function (next) {
     if (this.pictures.length > MAX_PICTURES) throw (`Pictures exceed the maximum array size (${MAX_PICTURES})`);
     next()
 });
+
+const ListedItem = mongoose.model('ListedItem', listedItemSchema)
+
+export default ListedItem

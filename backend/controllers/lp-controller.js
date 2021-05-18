@@ -50,7 +50,9 @@ const addLP = asyncHandler(async (req, res) => {
 const getLPs = asyncHandler(async (req, res) => {
     const paramUser = await User.findOne({ username: req.params.username })
     if (paramUser) {
-        let lps = await Lp.find({ owner: paramUser.id }).populate('artist')
+        let lps = await Lp.find({ owner: paramUser.id })
+            .populate('artist')
+            .populate({ path: 'listedItem', select: 'wantedPrice -lp' })
         if (req.user.id !== paramUser.id) {
             lps = lps.filter((lp) => {
                 lp.isPublic
@@ -64,7 +66,8 @@ const getLPs = asyncHandler(async (req, res) => {
                 genre: lp.genre,
                 coverImg: lp.coverImg,
                 artist: lp.artist.name,
-                isPublic: lp.isPublic
+                isPublic: lp.isPublic,
+                isForSale: lp.listedItem ? true : false
             })
         });
         res.send(lpsSummary)
@@ -81,7 +84,9 @@ const getLPs = asyncHandler(async (req, res) => {
  */
 const getLP = asyncHandler(async (req, res) => {
     console.log('ID: ' + req.params.id)
-    const lp = await Lp.findById(req.params.id).populate('artist')
+    const lp = await Lp.findById(req.params.id)
+        .populate('artist')
+        .populate({ path: 'listedItem', select: 'wantedPrice pictures -lp' })
     if (lp) {
         await lp.populate('owner').execPopulate()
         if (req.user.id !== lp.owner.id && !lp.isPublic) {

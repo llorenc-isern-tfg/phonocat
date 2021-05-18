@@ -79,11 +79,13 @@ export const TRANSLATIONS_CA = {
             title: 'Vols posar aquest LP en venda?',
             priceInput: 'Indica a quin preu t\'agradaria vendre\'l',
             uploadPictures: 'Adjunta imatges on es vegi l\'estat del teu LP',
-            published: 'Aquest LP està en venda',
+            forSale: 'Aquest LP està anunciat en venda per {{ammount}} €',
             publish: 'Publica l\'anunci de venda',
             unpublish: 'Retira l\'anunci',
-            listedFor: 'Tens públicat un anunci per {{amount}} €'
+            listedSuccess: 'l\'anunci s\'ha publicat satisfactòriament',
+            listedFail: 'No s\'ha pogut publicar l\'anunci'
         },
+        changeVisibilityForSell: 'Si vols posar en venta aquest disc fes la seva visibilitat pública'
     },
     lpCover: {
         almostThere: 'Ja casi està! Només falta afegir una imatge de la portada que t\'ajudarà a identificar el teu LP.',
@@ -102,7 +104,8 @@ export const TRANSLATIONS_CA = {
     },
     lpCollection: {
         public: 'Públic',
-        private: 'Privat'
+        private: 'Privat',
+        nonEditable: 'Retira l`\anunci de venda per poder modificar el LP'
     },
     lpDelete: {
         title: 'Eliminar el LP?',
@@ -115,7 +118,8 @@ export const TRANSLATIONS_CA = {
         cover: 'Portada',
         success: 'Les dades s\'han desat correctament',
         fail: 'No s\'han pogut desar les dades correctament',
-        editCover: 'Modifica la portada'
+        editCover: 'Modifica la portada',
+        nonEditable: 'Aquest LP no es pot modificar perquè està anunciat en venda. Si el vols modificar retira l\'anunci'
     },
     form: {
         save: 'Desa',
@@ -188,5 +192,12 @@ export const TRANSLATIONS_CA = {
     currency: {
         thousandSeparator: '.',
         decimalSeparator: ','
+    },
+    unlistLp: {
+        title: 'Vols retirar l\'anunci de venda?',
+        message: 'Totes les ofertes de compra rebudes es rebutjaran automàticament',
+        unpublish: 'Retira',
+        unlistedSuccess: 'l\'anunci s\'ha retirat',
+        unlistedFail: 'No s\'ha pogut retirar l\'anunci'
     }
 };

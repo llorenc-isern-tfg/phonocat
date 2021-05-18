@@ -77,11 +77,28 @@ const lpSchema = mongoose.Schema({
     },
     trackList: [{
         type: trackSchema
-    }]
+    }],
 
 }, {
-    timestamps: true
+    timestamps: true,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true }
 })
+
+//Afegim un virtual amb els últims LPs amb visivilitat pública per poder fer populate al llistat d'usuaris
+lpSchema.virtual('listedItem', {
+    ref: 'ListedItem',
+    localField: '_id',
+    foreignField: 'lp',
+    justOne: true
+})
+
+// lpSchema.virtual('numOffers', {
+//     ref: 'Lp',
+//     localField: '_id',
+//     foreignField: 'owner',
+//     count: true
+// })
 
 const Lp = mongoose.model('Lp', lpSchema)
 

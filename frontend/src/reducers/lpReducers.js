@@ -1,3 +1,5 @@
+import _ from 'lodash'
+
 import {
     LP_COLLECTION_REQUEST, LP_COLLECTION_SUCCESS, LP_COLLECTION_FAIL,
     LP_ADD_REQUEST, LP_ADD_FAIL, LP_ADD_SUCCESS,
@@ -9,6 +11,11 @@ import {
     LP_EDIT_COVER_REQUEST, LP_EDIT_COVER_SUCCESS, LP_EDIT_COVER_FAIL,
     LP_EDIT_REQUEST, LP_EDIT_FAIL, LP_EDIT_SUCCESS,
 } from '../constants/lpActionTypes'
+
+import {
+    LIST_LP_FORSALE_REQUEST, LIST_LP_FORSALE_SUCCESS, LIST_LP_FORSALE_FAIL,
+    UNLIST_LP_FORSALE_REQUEST, UNLIST_LP_FORSALE_SUCCESS, UNLIST_LP_FORSALE_FAIL
+} from '../constants/marketActionTypes'
 
 export const lpCollectionReducer = (state = {}, action) => {
     switch (action.type) {
@@ -82,6 +89,24 @@ export const lpDetailsReducer = (state = {}, action) => {
             return { ...state, status: { loading: false, type: action.type }, lp: action.payload }
         case LP_DETAILS_FAIL:
             return { ...state, status: { loading: false, type: action.type }, error: action.payload }
+        case LIST_LP_FORSALE_REQUEST:
+            return { ...state, listsForSale: { loading: true } }
+        case LIST_LP_FORSALE_SUCCESS:
+            return {
+                ...state, listsForSale: { loading: false },
+                lp: { ...state.lp, listedItem: action.payload.listedItem }
+            }
+        case LIST_LP_FORSALE_FAIL:
+            return { ...state, listsForSale: { error: action.payload, loading: false } }
+        case UNLIST_LP_FORSALE_REQUEST:
+            return { ...state, listsForSale: { loading: true } }
+        case UNLIST_LP_FORSALE_SUCCESS:
+            return {
+                ...state, listsForSale: { loading: false },
+                lp: _.omit(state.lp, 'listedItem')
+            }
+        case UNLIST_LP_FORSALE_FAIL:
+            return { ...state, listsForSale: { error: action.payload, loading: false } }
         case LP_DETAILS_CLEAR:
             return {}
         default:

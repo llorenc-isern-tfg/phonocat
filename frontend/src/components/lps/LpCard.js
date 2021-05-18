@@ -15,6 +15,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import { Link } from 'react-router-dom'
 
 import defaultCoverImg from '../../images/lp_cover_default.png'
+import { Tooltip } from '@material-ui/core'
 
 const useStyles = makeStyles((theme) => ({
     cardGrid: {
@@ -97,9 +98,9 @@ const LpCard = ({ lp, onDelete }) => {
                     size="small" color="secondary" variant="outlined" onClick={() => onDelete(lp)}>
                     {t('form.delete')}
                 </Button>
-                {lp.isPublic /*lp.forSale*/ &&
+                {lp.isForSale &&
                     <IconButton size="small" color="primary" style={{ marginLeft: 'auto' }}>
-                        <Badge color="secondary" badgeContent={1 /*lp.numReceivedOffers*/}>
+                        <Badge color="secondary" badgeContent={lp.numReceivedOffers}>
                             <OfferIcon />
                         </Badge>
                     </IconButton>

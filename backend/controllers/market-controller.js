@@ -4,7 +4,7 @@ import asyncHandler from 'express-async-handler'
 import Lp from '../models/lp-model.js'
 import ListedItem from '../models/listed-item-model.js'
 import {
-    normalizeImageFormat, uploadImageBufferCloud,
+    normalizeImageFormat, uploadImageBufferCloud, deleteImageCloud
 } from '../utils/utils.js'
 
 const publishListedItem = asyncHandler(async (req, res) => {
@@ -58,4 +58,36 @@ const publishListedItem = asyncHandler(async (req, res) => {
 
 })
 
-export { publishListedItem }
+const unpublishListedItem = asyncHandler(async (req, res) => {
+    //només pot pujar la portada el propietari del lp
+    const listedItem = await ListedItem.findById(req.params.id).populate('lp')
+    if (listedItem) {
+        await listedItem.lp.populate('owner').execPopulate()
+        if (req.user.id !== listedItem.lp.owner.id) {
+            res.status(403)
+            throw new Error('Permission denied')
+        }
+
+        //TODO: esborrar ofertes relacionades
+
+        await listedItem.delete()
+
+        res.send({
+            status: 'success',
+            msg: 'Lp is no longer for sale',
+            listedItemId: listedItem._id
+        })
+
+        //esborrem les imatges de l'anunci allotjades al cloud, no esperem la resposta per guanyar agilitat
+        listedItem.pictures.map((picture, i) =>
+            deleteImageCloud(`phonocat/listedItems/${listedItem._id}_${i}`)
+        )
+
+    } else {
+        res.status(404)
+        throw new Error('Listed item not found')
+    }
+
+})
+
+export { publishListedItem, unpublishListedItem }

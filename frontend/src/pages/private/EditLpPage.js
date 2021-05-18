@@ -12,6 +12,7 @@ import { useTranslation } from "react-i18next"
 import { useSelector, useDispatch } from 'react-redux'
 import { Link } from 'react-router-dom'
 import EditIcon from '@material-ui/icons/Edit'
+import Alert from '@material-ui/lab/Alert'
 
 import LpForm from '../../components/lps/LpForm'
 import { lpDetailsRequest, lpDetailsClear } from '../../actions/lpActions'
@@ -80,6 +81,8 @@ const EditLpPage = ({ match }) => {
     const [loadingCover, setLoadingCover] = useState(false)
     const [coverImg, setCoverImg] = useState()
 
+    const [disableForm, setDisableForm] = useState()
+
     useEffect(() => {
         dispatch(lpDetailsRequest(lpId))
         return () => dispatch(lpDetailsClear())
@@ -89,6 +92,8 @@ const EditLpPage = ({ match }) => {
         if (lp && lp.coverImg) {
             setCoverImg(lp.coverImg)
         }
+
+        setDisableForm(lp && "listedItem" in lp)
 
     }, [lp])
 
@@ -119,6 +124,7 @@ const EditLpPage = ({ match }) => {
                     {t('form.exit')}
                 </Button>
                 <Button
+                    disabled={disableForm}
                     type="submit"
                     variant="contained"
                     color="primary"
@@ -168,12 +174,18 @@ const EditLpPage = ({ match }) => {
                                     </div>
                                 </Card>
                             </Grid>
-                            <Grid item xs={12} sm={6}>
-                                <DropImage label={t('lpEdit.editCover')} onUpload={uploadFileCover} maxFiles={1} />
-                            </Grid>
+                            {disableForm ?
+                                <Grid item xs={12} sm={6}>
+                                    <Alert severity="warning">{t('lpEdit.nonEditable')}</Alert>
+                                </Grid>
+                                :
+                                <Grid item xs={12} sm={6}>
+                                    <DropImage label={t('lpEdit.editCover')} onUpload={uploadFileCover} maxFiles={1} />
+                                </Grid>
+                            }
                         </Grid>
                         <React.Fragment>
-                            <LpForm lpData={lp} actions={actions} handleSubmit={handleSubmit} />
+                            <LpForm lpData={lp} actions={actions} handleSubmit={handleSubmit} disableForm={disableForm} />
                         </React.Fragment>
                     </Paper>
                     {/* <Backdrop className={classes.backdrop} open={(status && status.loading) ? status.loading : false}>

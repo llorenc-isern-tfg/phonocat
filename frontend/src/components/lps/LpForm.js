@@ -33,11 +33,9 @@ const useStyles = makeStyles((theme) => ({
     }
 }))
 
-const LpForm = ({ lpData = {}, actions, handleSubmit }) => {
-
+const LpForm = ({ lpData = {}, actions, handleSubmit, disableForm = false }) => {
     const { t } = useTranslation(['translation', 'select', 'country'])
     setLocale(yupMessages)
-
     const classes = useStyles()
 
     const lpSchema = yup.object().shape({
@@ -107,6 +105,7 @@ const LpForm = ({ lpData = {}, actions, handleSubmit }) => {
                 <Grid container spacing={3}>
                     <Grid item xs={12} sm={6}>
                         <TextField
+                            disabled={disableForm}
                             required
                             id="title"
                             name="title"
@@ -120,6 +119,7 @@ const LpForm = ({ lpData = {}, actions, handleSubmit }) => {
                     </Grid>
                     <Grid item xs={12} sm={6}>
                         <TextField
+                            disabled={disableForm}
                             required
                             id="artist"
                             name="artist"
@@ -133,6 +133,7 @@ const LpForm = ({ lpData = {}, actions, handleSubmit }) => {
                     </Grid>
                     <Grid item xs={12} sm={6}>
                         <TextField
+                            disabled={disableForm}
                             id="label"
                             name="label"
                             label={t('lpDetail.discoLabel')}
@@ -143,6 +144,7 @@ const LpForm = ({ lpData = {}, actions, handleSubmit }) => {
                     </Grid>
                     <Grid item xs={12} sm={6}>
                         <TextField
+                            disabled={disableForm}
                             required
                             id="genre"
                             name="genre"
@@ -163,6 +165,7 @@ const LpForm = ({ lpData = {}, actions, handleSubmit }) => {
                     </Grid>
                     <Grid item xs={12} sm={6}>
                         <Autocomplete
+                            disabled={disableForm}
                             id="country"
                             options={countries}
                             getOptionSelected={(option, value) => option === value}
@@ -175,6 +178,7 @@ const LpForm = ({ lpData = {}, actions, handleSubmit }) => {
                     <Grid item xs={6} sm={3}>
                         <MuiPickersUtilsProvider utils={MomentUtils}>
                             <DatePicker
+                                disabled={disableForm}
                                 fullWidth
                                 id="year"
                                 name="year"
@@ -189,6 +193,7 @@ const LpForm = ({ lpData = {}, actions, handleSubmit }) => {
                     </Grid>
                     <Grid item xs={6} sm={3}>
                         <TextField
+                            disabled={disableForm}
                             fullWidth
                             id="numDiscs"
                             name="numDiscs"
@@ -206,6 +211,7 @@ const LpForm = ({ lpData = {}, actions, handleSubmit }) => {
                     </Grid>
                     <Grid item xs={12} sm={6}>
                         <TextField
+                            disabled={disableForm}
                             fullWidth
                             id="condition"
                             name="condition"
@@ -232,6 +238,7 @@ const LpForm = ({ lpData = {}, actions, handleSubmit }) => {
                     </Grid>
                     <Grid item xs={12} sm={6}>
                         <TextField
+                            disabled={disableForm}
                             fullWidth
                             id="weight"
                             name="weight"
@@ -257,6 +264,7 @@ const LpForm = ({ lpData = {}, actions, handleSubmit }) => {
                                     <Grid item>Mono</Grid>
                                     <Grid item>
                                         <Switch
+                                            disabled={disableForm}
                                             checked={formik.values.stereo}
                                             onChange={(event) => {
                                                 formik.setFieldValue("stereo", event.target.checked)
@@ -275,6 +283,7 @@ const LpForm = ({ lpData = {}, actions, handleSubmit }) => {
                     <Grid item xs={12}>
                         <Typography component="legend">{t('lpDetail.rating')}</Typography>
                         <Rating
+                            disabled={disableForm}
                             id="rating"
                             name="rating"
                             value={formik.values.rating}
@@ -283,6 +292,7 @@ const LpForm = ({ lpData = {}, actions, handleSubmit }) => {
                             }}
                         />
                         <TextField
+                            disabled={disableForm}
                             fullWidth
                             id="comment"
                             name="comment"
@@ -301,6 +311,7 @@ const LpForm = ({ lpData = {}, actions, handleSubmit }) => {
                         <FormControlLabel
                             control={
                                 <Checkbox
+                                    disabled={disableForm}
                                     color="primary"
                                     name="isPublic"
                                     checked={formik.values.isPublic}

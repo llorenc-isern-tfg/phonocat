@@ -111,6 +111,24 @@ const sideMenu = [
         ]
     },
     {
+        header: 'sideMenu.market',
+        menuItems: [
+            {
+                id: 'listedItems',
+                to: '/listedItems',
+                icon: <ShoppingBasketIcon />,
+                textKey: 'sideMenu.listedItems'
+            },
+            {
+                id: 'offers',
+                to: '/listedItems/offers',
+                icon: <LocalOfferIcon />,
+                textKey: 'sideMenu.offers'
+            },
+
+        ]
+    },
+    {
         header: 'sideMenu.social',
         menuItems: [
             {

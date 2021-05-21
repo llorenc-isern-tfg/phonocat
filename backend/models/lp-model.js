@@ -1,4 +1,5 @@
 import mongoose from 'mongoose'
+import mongoosePaginate from 'mongoose-paginate-v2'
 
 import trackSchema from './track-schema.js'
 
@@ -99,6 +100,8 @@ lpSchema.virtual('listedItem', {
 //     foreignField: 'owner',
 //     count: true
 // })
+
+lpSchema.plugin(mongoosePaginate)
 
 const Lp = mongoose.model('Lp', lpSchema)
 

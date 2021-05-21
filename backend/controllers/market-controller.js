@@ -1,8 +1,8 @@
-import axios from 'axios'
 import asyncHandler from 'express-async-handler'
+import _ from 'lodash'
 
 import Lp from '../models/lp-model.js'
-import ListedItem from '../models/listed-item-model.js'
+import ListedItem, { aggregatedListedItems } from '../models/listed-item-model.js'
 import {
     normalizeImageFormat, uploadImageBufferCloud, deleteImageCloud
 } from '../utils/utils.js'
@@ -90,4 +90,80 @@ const unpublishListedItem = asyncHandler(async (req, res) => {
 
 })
 
-export { publishListedItem, unpublishListedItem }
+/**
+ * @description Obtenir llistat de discos en venda
+ * @route GET /listedItems/
+ * @access Autenticat.
+ */
+const getListedItems = asyncHandler(async (req, res) => {
+
+    console.log(req.query)
+
+    const { page = 0, limit = 25, sortBy = 'createdAt', sortOrder = 'desc', genre, minPrice, maxPrice } = req.query
+
+    //construïm objecte per ordenar
+    let sort = {}
+    sort[sortBy] = sortOrder === 'asc' ? 1 : -1
+    console.log(sort)
+
+    //construïm filtres
+    let filter = {}
+    if (genre)
+        filter['lp.genre'] = genre
+    if (minPrice)
+        filter['wantedPrice'] = { $gt: Number(minPrice) }
+    if (maxPrice)
+        filter['wantedPrice'] = { ...filter['wantedPrice'], $lt: Number(maxPrice) }
+
+    console.log(filter)
+
+    const offset = page ? page * limit : 0
+
+    const customLabels = {
+        totalDocs: 'totalItems',
+        docs: 'listedItems',
+        meta: 'pagination',
+    }
+
+    var options = {
+        page,
+        offset,
+        limit,
+        customLabels
+    }
+
+
+    //Per poder filtar i ordenar per subdocuments cal fer servir aggregates amb els camps i col·leccions necessaries
+    let listedItems = await ListedItem.aggregatePaginate(aggregatedListedItems(sort, filter), options)
+
+    //encapsulem els atributs de paginació en un objecte
+    listedItems.pagination = {
+        totalItems: listedItems.totalItems,
+        limit: listedItems.limit,
+        page: listedItems.page,
+        totalPages: listedItems.totalPages,
+        pagingCounter: listedItems.pagingCounter,
+        hasPrevPage: listedItems.hasPrevPage,
+        hasNextPage: listedItems.hasNextPage,
+        offset: listedItems.offset,
+        prevPage: listedItems.prevPage,
+        nextPage: listedItems.nextPage
+    }
+    listedItems = _.pick(listedItems, ['listedItems', 'pagination'])
+
+    //Adicionalment retornem el preu màxim de tots els LP en venda per facilitar les opcions de filtratge
+    listedItems.filterHelper = {}
+    const leastExpensive = await ListedItem.findOne({}).sort({ "wantedPrice": 1 })
+    if (leastExpensive)
+        listedItems.filterHelper.leastExpensive = leastExpensive.wantedPrice
+    const mostExpensive = await ListedItem.findOne({}).sort({ "wantedPrice": -1 })
+    if (mostExpensive)
+        listedItems.filterHelper.mostExpensive = mostExpensive.wantedPrice
+
+
+    res.send(listedItems)
+
+})
+
+
+export { publishListedItem, unpublishListedItem, getListedItems }

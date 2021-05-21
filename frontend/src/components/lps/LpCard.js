@@ -13,6 +13,7 @@ import PrivateIcon from '@material-ui/icons/VisibilityOff'
 import { useTranslation } from "react-i18next"
 import { makeStyles } from '@material-ui/core/styles'
 import { Link } from 'react-router-dom'
+import Image from 'material-ui-image'
 
 import defaultCoverImg from '../../images/lp_cover_default.png'
 import { Tooltip } from '@material-ui/core'
@@ -79,12 +80,11 @@ const LpCard = ({ lp, onDelete }) => {
                     subheader={lp.artist}
                     subheaderTypographyProps={{ display: 'block', noWrap: true }}
                 />
+                {/* <Image draggable="false" src={lp.coverImg ? lp.coverImg : defaultCoverImg} /> */}
                 <CardMedia
-                    // component="img"
                     className={classes.media}
                     src={lp.coverImg}
                     image={lp.coverImg ? lp.coverImg : defaultCoverImg}
-                    // onError={(e) => { e.target.onerror = null; e.target.src = defaultCoverImg }}
                     title={lp.title + ' cover'}
                 />
             </CardActionArea >

@@ -22,7 +22,6 @@ function* userList({ payload }) {
         const errorMsg = error.response && error.response.data.message ?
             error.response.data.message : error.message
         yield put(socialActions.userListFail(errorMsg))
-        alert(JSON.stringify(error))
         yield put(showAlert('error', { messageKey: 'userList.fail' }))
     }
 }

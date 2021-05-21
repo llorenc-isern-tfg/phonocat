@@ -5,6 +5,7 @@ import { composeWithDevTools } from 'redux-devtools-extension'
 import { lpCollectionReducer, lpAddReducer, lpDetailsReducer, lpEditReducer } from './reducers/lpReducers'
 import { userLoginReducer, userProfileReducer } from './reducers/userReducers'
 import { userListReducer, userDetailReducer } from './reducers/socialReducers'
+import { listedItemsReducer } from './reducers/marketReducers'
 import { alertReducer } from './reducers/alertReducers'
 import { persistStore, persistReducer } from 'redux-persist'
 import storage from 'redux-persist/lib/storage'
@@ -26,7 +27,8 @@ const reducers = combineReducers({
     userProfile: userProfileReducer,
     userList: userListReducer,
     userDetail: userDetailReducer,
-    alerts: alertReducer
+    lpsForSale: listedItemsReducer,
+    alerts: alertReducer,
 })
 
 // const rootReducer = (state, action) => {

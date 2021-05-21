@@ -16,13 +16,13 @@ import { useDispatch } from 'react-redux'
 import { lpUploadCoverRequest } from '../../actions/lpActions'
 import Container from '@material-ui/core/Container'
 import { Link } from 'react-router-dom'
+import Image from 'material-ui-image'
 
 const useStyles = makeStyles((theme) => ({
     coverImg: {
         height: 'auto',
         maxWidth: '100%',
-        maxHeight: '400px',
-        backgroundColor: theme.palette.primary[200]
+        maxHeight: '400px'
     },
     infoBox: {
         padding: theme.spacing(2),
@@ -156,9 +156,17 @@ const UploadLpCover = ({ lpProps }) => {
                     <Typography gutterBottom className={classes.row}>
                         {t('lpCover.suggested')}
                     </Typography>
-                    <Grid item xs={12}>
-                        {cover && <img src={cover} className={classes.coverImg} />}
-                    </Grid>
+                    {/* {cover &&
+                        <Image src={cover} imageStyle={{
+                            height: 'auto',
+                            maxWidth: '100%',
+                            maxHeight: '400px',
+                        }} draggable="false" />} */}
+                    {cover &&
+                        <Grid item xs={12}>
+                            <img src={cover} className={classes.coverImg} />
+                        </Grid>
+                    }
                     <Grid item xs={12} className={classes.row}>
                         <Button variant="contained" color="default" className={classes.button}
                             onClick={() => setSuggestCover(false)}>

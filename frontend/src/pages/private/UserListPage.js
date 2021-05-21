@@ -19,7 +19,7 @@ import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import { withStyles } from '@material-ui/core/styles'
 import { Link } from 'react-router-dom'
 import _ from 'lodash'
-import i18n from 'i18next'
+
 
 import { userListRequest, userListClear } from '../../actions/socialActions'
 import { truncateString } from '../../utils/utils'
@@ -67,15 +67,13 @@ const UserListPage = () => {
     //Quan es renderitza el component per primera vegada, carreguem el llistat de lps
     useEffect(() => {
         loadMore()
+        //netejem el llistat al sortir de la pàgina
         return () => dispatch(userListClear())
     }, [])
 
     const [scrollableUsers, setScrollableUsers] = useState([])
 
     useEffect(() => {
-        console.log('USE EFFECT ')
-        console.log(users)
-        console.log(pagination)
         if (users)
             setScrollableUsers(users)
     }, [users])

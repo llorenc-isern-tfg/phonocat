@@ -92,7 +92,8 @@ const DropImage = ({ label, onUpload, discardAction, maxFiles, onDropHandle }) =
                 })
                 setSelectedFiles(files)
             }
-            onDropHandle(acceptedFiles)
+            if (onDropHandle)
+                onDropHandle(acceptedFiles)
         }
     })
 

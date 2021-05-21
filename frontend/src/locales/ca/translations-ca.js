@@ -79,7 +79,7 @@ export const TRANSLATIONS_CA = {
             title: 'Vols posar aquest LP en venda?',
             priceInput: 'Indica a quin preu t\'agradaria vendre\'l',
             uploadPictures: 'Adjunta imatges on es vegi l\'estat del teu LP',
-            forSale: 'Aquest LP està anunciat en venda per {{ammount}} €',
+            forSale: 'Aquest LP està anunciat en venda per ',
             publish: 'Publica l\'anunci de venda',
             unpublish: 'Retira l\'anunci',
             listedSuccess: 'l\'anunci s\'ha publicat satisfactòriament',
@@ -109,7 +109,7 @@ export const TRANSLATIONS_CA = {
     },
     lpDelete: {
         title: 'Eliminar el LP?',
-        message: 'Les dades d\'aquest LP s\'esborraran permanentment',
+        message: 'Les dades del teu LP "{{lpTitle}}" s\'esborraran permanentment',
         success: 'L\'àlbum s\'ha esborrat',
         fail: 'No s\'ha pogut esborrar el LP'
     },
@@ -119,7 +119,7 @@ export const TRANSLATIONS_CA = {
         success: 'Les dades s\'han desat correctament',
         fail: 'No s\'han pogut desar les dades correctament',
         editCover: 'Modifica la portada',
-        nonEditable: 'Aquest LP no es pot modificar perquè està anunciat en venda. Si el vols modificar retira l\'anunci'
+        nonEditable: 'Si vols modificar les dades d\'aquest LP, retira primer l\'anunci de venda'
     },
     form: {
         save: 'Desa',
@@ -199,5 +199,27 @@ export const TRANSLATIONS_CA = {
         unpublish: 'Retira',
         unlistedSuccess: 'l\'anunci s\'ha retirat',
         unlistedFail: 'No s\'ha pogut retirar l\'anunci'
+    },
+    listedItems: {
+        tableTitle: 'LPs en venda',
+        wantedPrice: 'Preu',
+        detail: 'Veure detall',
+        published: 'Publicat',
+        filter: {
+            title: 'Filtra els resultats',
+            message: 'Pots filtrar per gènere i/o rang de preus',
+            filter: 'Filtra',
+            clear: 'Neteja',
+            close: 'Surt',
+            priceRange: 'Rang de preus',
+            genreActive: 'gènere: {{genre}}',
+            priceActive: 'preu: {{min}} - {{max}} €'
+        },
+        emptyTable: 'Actualment No hi ha LPs en venda',
+        emptyResults: 'No hi ha resultats amb els filtres seleccionats'
+    },
+    pagination: {
+        rowsPerPage: 'Reg. per pàgina',
+        of: 'de'
     }
 };

@@ -259,9 +259,10 @@ const UserDetailPage = ({ match }) => {
                         <Grid container spacing={3} style={{ marginBottom: 5 }}>
                             <Grid item xs={12} sm={6} md={5} lg={5}>
                                 <Card className={classes.coverCard} elevation={4}>
-                                    <CardMedia className={classes.coverCardMedia}
+                                    {/* <CardMedia className={classes.coverCardMedia}
                                         image={lp.coverImg ? lp.coverImg : defaultCoverImg}
-                                    />
+                                    /> */}
+                                    <Image src={lp.coverImg ? lp.coverImg : defaultCoverImg} />
                                 </Card>
                             </Grid>
                             <Grid container spacing={2} item xs={12} sm={6} md={7} lg={7} >
@@ -360,7 +361,20 @@ const UserDetailPage = ({ match }) => {
                                 <Grid item xs={12}>
                                     <Paper elevation={0} className={classes.sellLpBox}>
                                         <Typography variant="h6" gutterBottom>
-                                            {lp.listedItem ? t('lpDetail.sell.forSale', { ammount: lp.listedItem.wantedPrice }) : t('lpDetail.sell.title')}
+                                            {lp.listedItem ?
+                                                <React.Fragment>
+                                                    {t('lpDetail.sell.forSale')}
+                                                    <NumberFormat
+                                                        value={lp.listedItem.wantedPrice} displayType={'text'}
+                                                        thousandSeparator={i18n.t('currency.thousandSeparator')}
+                                                        decimalSeparator={i18n.t('currency.decimalSeparator')}
+                                                        decimalScale={2}
+                                                        fixedDecimalScale
+                                                        suffix="€"
+                                                    />
+                                                </React.Fragment>
+                                                :
+                                                t('lpDetail.sell.title')}
                                         </Typography>
                                         <Grid container spacing={3}>
                                             <Grid item xs={12} sm={6}>
@@ -389,9 +403,12 @@ const UserDetailPage = ({ match }) => {
                                             </Grid>
                                             {lp.listedItem ?
                                                 <Grid item xs={12} container spacing={1}>
+                                                    {lp.listedItem.pictures.length > 0 && <Grid item xs={12}>
+                                                        <Typography variant="body2">Imatges de l'anunci</Typography>
+                                                    </Grid>}
                                                     {
-                                                        lp.listedItem.pictures.map((picture) =>
-                                                            <Grid item xs={6} sm={6} md={4} lg={3}>
+                                                        lp.listedItem.pictures.map((picture, i) =>
+                                                            <Grid item xs={6} sm={6} md={4} lg={3} key={`picture_${i}`}>
                                                                 <Image src={picture} />
                                                             </Grid>
                                                         )
@@ -451,9 +468,6 @@ const UserDetailPage = ({ match }) => {
             }
             <ConfirmationDialog dialogProps={unlistDialogProps} />
         </React.Fragment >
-
-
-        //TODO: import mirar https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat
     )
 }
 

@@ -51,7 +51,7 @@ const LpCollectionPage = () => {
     const deleteDialogProps = {
         open: openDeleteDialog,
         title: t('lpDelete.title'),
-        message: t('lpDelete.message', selectedLp.title),
+        message: t('lpDelete.message', { lpTitle: selectedLp.title }),
         confirmButtonMsg: t('form.delete'),
         confirmButtonColor: 'secondary',
         handleConfirm: () => deleteLp(selectedLp._id),

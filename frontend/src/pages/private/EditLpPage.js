@@ -81,7 +81,7 @@ const EditLpPage = ({ match }) => {
     const [loadingCover, setLoadingCover] = useState(false)
     const [coverImg, setCoverImg] = useState()
 
-    const [disableForm, setDisableForm] = useState()
+    const [disableForm, setDisableForm] = useState(false)
 
     useEffect(() => {
         dispatch(lpDetailsRequest(lpId))
@@ -93,7 +93,7 @@ const EditLpPage = ({ match }) => {
             setCoverImg(lp.coverImg)
         }
 
-        setDisableForm(lp && "listedItem" in lp)
+        setDisableForm(Boolean(lp && lp.listedItem))
 
     }, [lp])
 

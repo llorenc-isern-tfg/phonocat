@@ -18,3 +18,12 @@ export const unlistLpForSaleService = (userInfo, id) => {
             }
         })
 }
+
+export const getListedItemsService = (userInfo, params) => {
+    return api.get('listedItems', {
+        params,
+        headers: {
+            'Authorization': authToken(userInfo),
+        }
+    })
+}

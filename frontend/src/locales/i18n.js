@@ -12,6 +12,8 @@ import { COUNTRIES_CA } from "./ca/countries-ca"
 
 import { YUP_CA } from './ca/yup-ca'
 
+import { TIMEAGO_CA } from './ca/timeago-ca'
+
 i18n
     .use(LanguageDetector)
     .use(initReactI18next)
@@ -21,7 +23,8 @@ i18n
                 translation: TRANSLATIONS_CA,
                 select: SELECTS_CA,
                 country: COUNTRIES_CA,
-                yup: YUP_CA
+                yup: YUP_CA,
+                timeago: TIMEAGO_CA
             },
             es: {
                 translation: TRANSLATIONS_ES
@@ -29,6 +32,9 @@ i18n
             en: {
                 translation: TRANSLATIONS_EN
             }
+        },
+        interpolation: {
+            escapeValue: false,
         }
     });
 

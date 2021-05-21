@@ -1,5 +1,5 @@
 import _ from 'lodash'
-import { followUserRequest } from '../actions/socialActions'
+
 import {
     USER_LIST_REQUEST, USER_LIST_SUCCESS, USER_LIST_FAIL, USER_LIST_CLEAR,
     USER_DETAIL_REQUEST, USER_DETAIL_SUCCESS, USER_DETAIL_FAIL,

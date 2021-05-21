@@ -19,6 +19,7 @@ import NotFoundPage from './pages/public/NotFoundPage'
 import UserProfilePage from './pages/private/UserProfilePage'
 import UserListPage from './pages/private/UserListPage'
 import UserDetailPage from './pages/private/UserDetailPage'
+import ListedItemsPage from './pages/private/ListedItemsPage'
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -58,6 +59,7 @@ const App = () => {
                             <PrivateRoute path='/profile' exact component={UserProfilePage} />
                             <PrivateRoute path='/users' exact component={UserListPage} />
                             <PrivateRoute path='/users/:username' exact component={UserDetailPage} />
+                            <PrivateRoute path='/listedItems' exact component={ListedItemsPage} />
                             <Route component={NotFoundPage} />
                         </Switch>
                     </main>

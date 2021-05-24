@@ -10,6 +10,7 @@ import marketRoutes from './routes/market-routes.js'
 import { errorHandler, notFoundHandler } from './middleware/error-middleware.js'
 import { JwtStrategy } from './middleware/auth-jwt-middleware.js'
 import { GoogleStrategy } from './middleware/auth-google-middleware.js'
+import path from 'path'
 
 createDBConnection()
 

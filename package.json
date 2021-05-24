@@ -2,6 +2,10 @@
   "name": "phonocat",
   "version": "1.0.0",
   "description": "Phonocat - Disc collection app",
+  "engines": {
+    "node": "15.x",
+    "npm": "7.x"
+  },
   "main": "server.js",
   "type": "module",
   "scripts": {

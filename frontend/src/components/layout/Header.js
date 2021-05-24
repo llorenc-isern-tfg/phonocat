@@ -12,7 +12,6 @@ import AccountCircleIcon from '@material-ui/icons/AccountCircle'
 import LogoutIcon from '@material-ui/icons/PowerSettingsNew'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import TranslateIcon from '@material-ui/icons/Translate'
-import ExitToAppOutlinedIcon from '@material-ui/icons/ExitToAppOutlined'
 import MenuItem from '@material-ui/core/MenuItem'
 import Menu from '@material-ui/core/Menu'
 import { makeStyles } from '@material-ui/core/styles'
@@ -21,15 +20,20 @@ import ListItemIcon from '@material-ui/core/ListItemIcon'
 import ListItemText from '@material-ui/core/ListItemText'
 import { useTranslation } from "react-i18next"
 import { Link } from 'react-router-dom'
-import i18n from "i18next";
+import i18n from "i18next"
+import ListItem from '@material-ui/core/ListItem'
+import Collapse from '@material-ui/core/Collapse'
+import ExpandLess from '@material-ui/icons/ExpandLess'
+import ExpandMore from '@material-ui/icons/ExpandMore'
 
 import LoginDialog from '../../pages/public/LoginDialog'
 import RegisterDialog from '../../pages/public/RegisterDialog'
 import { logout } from '../../actions/userActions'
 import languages from '../../constants/languages'
+import { LOGIN_DIALOG_ID, REGISTER_DIALOG_ID } from '../../constants/constants'
+import { Hidden } from '@material-ui/core'
 
-const LOGIN_DIALOG_ID = 'LOGIN'
-const REGISTER_DIALOG_ID = 'REGISTER'
+
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -54,7 +58,8 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-const Header = () => {
+const Header = ({ handleDrawerOpen, handleDrawerClose, openDrawer,
+    handleCloseDialog, handleChangeDialog, openDialog }) => {
 
     const dispatch = useDispatch()
 
@@ -74,25 +79,15 @@ const Header = () => {
         i18n.changeLanguage(language)
     }, [language])
 
-    const [openDialog, setOpenDialog] = useState(null)
+    // const [openDialog, setOpenDialog] = useState(null)
 
-    var [profileMenu, setProfileMenu] = useState(null)
+    const [profileMenu, setProfileMenu] = useState(null)
 
-    var [languageMenu, setLanguageMenu] = useState(null)
+    const [languageMenu, setLanguageMenu] = useState(null)
 
-    const openLoginDialog = () => {
-        handleCloseDialog()
-        setOpenDialog(LOGIN_DIALOG_ID)
-    }
+    const [mobilePublicMenu, setMobilePublicMenu] = useState(null)
 
-    const openRegisterDialog = () => {
-        handleCloseDialog()
-        setOpenDialog(REGISTER_DIALOG_ID)
-    }
-
-    const handleCloseDialog = () => {
-        setOpenDialog(null)
-    }
+    const [openLanguage, setOpenLanguage] = useState(false)
 
     const handleCloseUserMenu = () => {
         setProfileMenu(null)
@@ -107,6 +102,11 @@ const Header = () => {
         handleCloseUserMenu()
     }
 
+    const handleCloseMobilePublicMenu = () => {
+        setMobilePublicMenu(null)
+        setOpenLanguage(false)
+    }
+
 
     const { t } = useTranslation();
 
@@ -115,7 +115,8 @@ const Header = () => {
             <AppBar position="fixed" className={classes.appBar}>
                 <Toolbar>
                     {userInfo &&
-                        <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
+                        <IconButton onClick={openDrawer ? handleDrawerClose : handleDrawerOpen}
+                            edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
                             <MenuIcon />
                         </IconButton>
                     }
@@ -126,39 +127,89 @@ const Header = () => {
                     {!userInfo ?
                         (  //Usuari no identificat
                             <div>
-                                <Button startIcon={<TranslateIcon />} endIcon={<ExpandMoreIcon />}
-                                    color="inherit" onClick={e => setLanguageMenu(e.currentTarget)}
-                                    className={classes.languageButton}>
-                                    {languages.find(lang => lang.code === language).name}
-                                </Button>
-                                <Menu
-                                    id="language-menu"
-                                    open={Boolean(languageMenu)}
-                                    anchorEl={languageMenu}
-                                    onClose={handleCloseLanguageMenu}
-                                    getContentAnchorEl={null}
-                                    anchorOrigin={{
-                                        vertical: 'bottom',
-                                        horizontal: 'center',
-                                    }}
-                                    transformOrigin={{
-                                        vertical: 'top',
-                                        horizontal: 'center',
-                                    }}
-                                >
-                                    {languages.map((lang) => (
-                                        <MenuItem key={lang.code} onClick={() => {
-                                            setLanguage(lang.code)
-                                            handleCloseLanguageMenu()
-                                        }} >
-                                            <ListItemText primary={lang.name} />
-                                        </MenuItem>
-                                    ))
-                                    }
+                                <Hidden smDown>
+                                    <Button startIcon={<TranslateIcon />} endIcon={<ExpandMoreIcon />}
+                                        color="inherit" onClick={e => setLanguageMenu(e.currentTarget)}
+                                        className={classes.languageButton}>
+                                        {languages.find(lang => lang.code === language).name}
+                                    </Button>
+                                    <Menu
+                                        id="language-menu"
+                                        open={Boolean(languageMenu)}
+                                        anchorEl={languageMenu}
+                                        onClose={handleCloseLanguageMenu}
+                                        getContentAnchorEl={null}
+                                        anchorOrigin={{
+                                            vertical: 'bottom',
+                                            horizontal: 'center',
+                                        }}
+                                        transformOrigin={{
+                                            vertical: 'top',
+                                            horizontal: 'center',
+                                        }}
+                                    >
+                                        {languages.map((lang) => (
+                                            <MenuItem key={lang.code} onClick={() => {
+                                                setLanguage(lang.code)
+                                                handleCloseLanguageMenu()
+                                            }} >
+                                                <ListItemText primary={lang.name} />
+                                            </MenuItem>
+                                        ))
+                                        }
 
-                                </Menu>
-                                <Button startIcon={<LockOpenIcon />} color="inherit" onClick={openLoginDialog}>LOGIN</Button>
-                                <Button color="inherit" onClick={openRegisterDialog}>{t('registerForm.signup').toUpperCase()}</Button>
+                                    </Menu>
+                                    <Button startIcon={<LockOpenIcon />} color="inherit" onClick={() => handleChangeDialog(LOGIN_DIALOG_ID)}>LOGIN</Button>
+                                    <Button color="inherit" onClick={() => handleChangeDialog(REGISTER_DIALOG_ID)}>{t('registerForm.signup').toUpperCase()}</Button>
+                                </Hidden>
+                                <Hidden smUp>
+                                    <IconButton
+                                        aria-label="account of current user"
+                                        aria-controls="menu-appbar"
+                                        aria-haspopup="true"
+                                        onClick={e => setMobilePublicMenu(e.currentTarget)}
+                                        color="inherit"
+                                    >
+                                        <MenuIcon />
+                                    </IconButton>
+                                    <Menu
+                                        id="profile-menu"
+                                        open={Boolean(mobilePublicMenu)}
+                                        anchorEl={mobilePublicMenu}
+                                        onClose={handleCloseMobilePublicMenu}
+                                        getContentAnchorEl={null}
+                                        anchorOrigin={{
+                                            vertical: 'bottom',
+                                            horizontal: 'center',
+                                        }}
+                                        transformOrigin={{
+                                            vertical: 'top',
+                                            horizontal: 'center',
+                                        }}
+                                    >
+                                        <MenuItem onClick={() => { handleChangeDialog(LOGIN_DIALOG_ID); handleCloseMobilePublicMenu() }}>
+                                            <ListItemText primary={'LOGIN'} />
+                                        </MenuItem>
+                                        <MenuItem onClick={() => { handleChangeDialog(REGISTER_DIALOG_ID); handleCloseMobilePublicMenu() }}>
+                                            <ListItemText primary={t('registerForm.signup').toUpperCase()} />
+                                        </MenuItem>
+                                        <ListItem button onClick={() => setOpenLanguage(!openLanguage)}>
+                                            <ListItemText primary={t('generic.language').toUpperCase()} />
+                                            {openLanguage ? <ExpandLess /> : <ExpandMore />}
+                                        </ListItem>
+                                        <Collapse in={openLanguage} timeout="auto" unmountOnExit>
+                                            {languages.map((lang) => (
+                                                <MenuItem key={lang.code} onClick={() => {
+                                                    setLanguage(lang.code)
+                                                    handleCloseMobilePublicMenu()
+                                                }} >
+                                                    <ListItemText primary={lang.name} />
+                                                </MenuItem>
+                                            ))
+                                            }
+                                        </Collapse>
+                                    </Menu>
+                                </Hidden>
                             </div>
                         ) :
                         ( // Usuari identificat
@@ -208,10 +259,9 @@ const Header = () => {
                     }
                 </Toolbar>
             </AppBar>
-            <LoginDialog open={openDialog === LOGIN_DIALOG_ID} onClose={handleCloseDialog} />
-            <RegisterDialog open={openDialog === REGISTER_DIALOG_ID} onClose={handleCloseDialog} selectedLanguage={language} />
+            <LoginDialog open={openDialog === LOGIN_DIALOG_ID} onClose={handleCloseDialog} onChangeDialog={handleChangeDialog} />
+            <RegisterDialog open={openDialog === REGISTER_DIALOG_ID} onClose={handleCloseDialog} selectedLanguage={language} onChangeDialog={handleChangeDialog} />
         </React.Fragment >
-        //TODO: afegir dialog registre una vegada desenvolupat 
 
     )
 }

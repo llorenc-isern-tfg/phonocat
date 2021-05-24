@@ -1,18 +1,37 @@
 export const TRANSLATIONS_CA = {
     generic: {
-        fail: 'S\'ha produït un error, intenta-ho més tard'
+        fail: 'S\'ha produït un error, intenta-ho més tard',
+        language: 'Idioma'
     },
     landingPage: {
         mainInfo: {
             title: 'Et donem la benvinguda a Phonocat',
-            description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
+            description: 'A aquest portal podràs enregistrar la teva col·lecció de discos, compartir-la amb altres usuaris i molt més!',
             imgText: 'Imatge decorativa'
-        }
+        },
+        share: 'Comparteix',
+        share1: 'Mostra la teva col·lecció',
+        share2: 'Connecta amb altres usuaris',
+        share3: 'Descobreix nova música',
+        catalogue: 'Cataloga',
+        catalogue1: 'Enregistra la teva col·lecció',
+        catalogue2: 'Revisa els teus àlbums',
+        catalogue3: 'Autocompleta les seves dades',
+        sell: 'Ven',
+        sell1: 'Anuncia els teus vinils',
+        sell2: 'Consulta discos en venda',
+        sell3: 'Fes ofertes',
+        join: 'Uneix-te a Phonocat',
+    },
+    footer: {
+        title: 'Phonocat',
+        desc: 'TFG 2021 - Llorenç Isern Martín',
+        desc2: 'Grau en enginyeria informàtica UOC',
     },
     loginForm: {
         email: 'Correu electrònic',
         password: 'Contrasenya',
-        signin: 'Identifícat',
+        signin: 'Identifica\'t',
         forgotPassword: 'No recordes la contrasenya?',
         signup: 'Encara no t\'has registrat?',
         fail: 'No s\'ha trobat cap usuari amb aquest email o password',
@@ -22,9 +41,11 @@ export const TRANSLATIONS_CA = {
         username: 'Nom d\'usuari',
         signup: 'Registra\'t',
         passwordConfirm: 'Confirma la contrasenya',
-        login: 'Ja tens un compte? Identifícat',
-        passwordConstrain: 'Introdueix una contrasenya de com a mínim {{min}} caracters',
-        differentPasswords: 'Les contrasenyes no coincideixen'
+        login: 'Ja tens un compte? Identifica\'t',
+        passwordConstrain: 'Introdueix una contrasenya de com a mínim {{min}} caràcters',
+        differentPasswords: 'Les contrasenyes no coincideixen',
+        duplicateUserName: 'Ja existeix un usuari amb aquest nom, escull un altre',
+        userAlreadyExists: 'Ja existeix un usuari registrat amb aquest correu electrònic'
     },
     sideMenu: {
         home: 'Inici',
@@ -41,7 +62,7 @@ export const TRANSLATIONS_CA = {
     },
     addLP: {
         title: 'Afegeix un nou LP',
-        searchAlbum: 'Cerca un album',
+        searchAlbum: 'Cerca un àlbum',
         completeAlbumData: 'Completa els detalls',
         addPictures: 'Afegeix una portada',
         saved: 'EL teu LP s\'ha desat correctament!',
@@ -65,11 +86,11 @@ export const TRANSLATIONS_CA = {
         releaseYear: 'Any',
         releaseCountry: 'País',
         numDiscs: 'Nº de discs',
-        condition: 'Condició de la teva copia',
+        condition: 'Condició de la teva còpia',
         weight: 'Qualitat del vinil',
         channel: 'Canal d\'audio',
         rating: 'Puntua aquest àlbum',
-        comment: 'Resenya',
+        comment: 'Ressenya',
         checkPublic: 'Vols que aquest LP sigui visible per la resta d\'usuaris?',
         visibility: 'Visibilitat',
         public: 'pública',
@@ -85,10 +106,10 @@ export const TRANSLATIONS_CA = {
             listedSuccess: 'l\'anunci s\'ha publicat satisfactòriament',
             listedFail: 'No s\'ha pogut publicar l\'anunci'
         },
-        changeVisibilityForSell: 'Si vols posar en venta aquest disc fes la seva visibilitat pública'
+        changeVisibilityForSell: 'Si vols posar en venda aquest disc fes la seva visibilitat pública'
     },
     lpCover: {
-        almostThere: 'Ja casi està! Només falta afegir una imatge de la portada que t\'ajudarà a identificar el teu LP.',
+        almostThere: 'Ja quasi està! Només falta afegir una imatge de la portada que t\'ajudarà a identificar el teu LP.',
         notMandatory: 'Si no vols associar cap imatge fes click a "Surt"',
         suggested: 'Hem trobat aquesta caràtula basant-nos en la teva cerca. Vols associar-la al teu LP?',
         notFound: 'No hem trobat cap caràtula amb les dades del teu LP',
@@ -105,7 +126,8 @@ export const TRANSLATIONS_CA = {
     lpCollection: {
         public: 'Públic',
         private: 'Privat',
-        nonEditable: 'Retira l`\anunci de venda per poder modificar el LP'
+        nonEditable: 'Retira l`\anunci de venda per poder modificar el LP',
+        empty: 'Encara no has afegit cap LP. Comença a enregistrar la teva col·lecció!'
     },
     lpDelete: {
         title: 'Eliminar el LP?',
@@ -132,8 +154,8 @@ export const TRANSLATIONS_CA = {
         exit: 'Surt'
     },
     dropImage: {
-        dragFile: 'Arrosega un fitxer o fes click per seleccionar-lo',
-        dragFile_plural: 'Arrosega un màxim de {{count}} fitxers o fes click per seleccionar-los',
+        dragFile: 'Arrossega un fitxer o fes click per seleccionar-lo',
+        dragFile_plural: 'Arrossega un màxim de {{count}} fitxers o fes click per seleccionar-los',
         invalidFile: 'Selecciona un fitxer de tipus imatge',
         invalidFile_plural: 'Selecciona com a màxim {{max}} fitxers de tipus imatge'
     },
@@ -164,7 +186,7 @@ export const TRANSLATIONS_CA = {
         bio: 'Presentació',
         registerDate: 'Data de registre',
         address: 'Adreça',
-        country: 'Pais',
+        country: 'País',
         region: 'Provincia',
         city: 'Municipi',
         postalCode: 'Codi postal',
@@ -217,6 +239,53 @@ export const TRANSLATIONS_CA = {
         },
         emptyTable: 'Actualment No hi ha LPs en venda',
         emptyResults: 'No hi ha resultats amb els filtres seleccionats'
+    },
+    listedItemDetail: {
+        condition: 'Condició de la còpia',
+        unknown: 'Desconegut',
+        unknown_female: 'Desconeguda',
+        pictures: 'Imatges de l\'anunci',
+        publishedBy: 'Disc anunciat per {{name}}',
+        makeOffer1: 'Aquest LP està anunciat per',
+        makeOffer2: 'fes la teva oferta!',
+        offerLabel: 'Indica quin preu vols pagar',
+        sendOffer: 'Envia la teva oferta',
+        nOffers: "{{count}} usuari ha fet una oferta per aquest LP",
+        nOffers_plural: "{{count}} usuaris han fet una oferta per aquest LP",
+        nOffers_interval: "(0){Cap usuari ha fet encara una oferta per aquest LP}",
+        seeOffers: 'Veure ofertes',
+        offerMade: 'Has fet una oferta per aquest LP per un import de {{ammount}} €',
+        offerSuccess: 'La teva oferta s\'ha enviat'
+    },
+    offer: {
+        status: {
+            pending: 'Pendent d\'aprobació',
+            accepted: 'Acceptada',
+            rejected: 'Rebutjada'
+        },
+        rate: 'Valora aquesta transacció',
+        rateButton: 'Envia',
+        rateSuccess: 'La transacció s\'ha valorat correctament'
+    },
+    receivedOffers: {
+        title: 'Ofertes rebudes',
+        listedFor: 'Anunciat per {{price}} €',
+        buyingOfferFor: '{{username}} ha fet una oferta per {{price}} €',
+        accept: 'Accepta',
+        reject: 'Rebutja',
+        empty: 'No has rebut cap oferta',
+        offerRejected: 'Has rebutjat l\'oferta',
+        offerAccepted: 'Has acceptat l\'oferta'
+    },
+    sendedOffers: {
+        title: 'Ofertes realitzades',
+        sendedFor: 'Has fet una oferta per {{price}} €',
+        inStatus: {
+            pending: 'La teva oferta es troba pendent d\'acceptació',
+            accepted: 'La teva oferta ha estat acceptada!',
+            rejected: 'La teva oferta ha estat rebutjada',
+        },
+        empty: 'No has fet cap oferta'
     },
     pagination: {
         rowsPerPage: 'Reg. per pàgina',

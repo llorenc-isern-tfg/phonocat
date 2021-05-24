@@ -118,7 +118,7 @@ const UserDetailPage = (props) => {
     const auth = useSelector((state) => state.auth)
     const { userInfo } = auth
 
-    const isLoggedUser = username == userInfo.username
+    const isLoggedUser = username === userInfo.username
 
     useEffect(() => {
         const isFollowing = user && user.followers.find(follower => follower.username === userInfo.username)
@@ -147,7 +147,6 @@ const UserDetailPage = (props) => {
         if (isWidthUp('lg', props.width)) {
             cols = 4
         }
-        console.log(cols)
         return cols
     }
 

@@ -1,5 +1,4 @@
 import React from 'react'
-import Box from '@material-ui/core/DialogTitle';
 import MuiDialogTitle from '@material-ui/core/DialogTitle';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
@@ -21,7 +20,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const DialogTitle = (props) => {
-    const { children, onClose, ...other } = props;
+    const { children, onClose, subtitle, ...other } = props;
     const classes = useStyles()
     return (
         <MuiDialogTitle disableTypography className={classes.root} {...other}>
@@ -31,14 +30,17 @@ const DialogTitle = (props) => {
                     <CloseIcon />
                 </IconButton>
             )}
+            {subtitle &&
+                <Typography variant="subtitle1" align="center">{subtitle}</Typography>
+            }
         </MuiDialogTitle>
     )
 }
 
-const DialogTitleWithClose = ({ title, onClose }) => {
-    const { t } = useTranslation();
+const DialogTitleWithClose = ({ title, subtitle, backgroundColor, onClose }) => {
+
     return (
-        <DialogTitle id="login-dialog-title" onClose={onClose}>
+        <DialogTitle id="login-dialog-title" onClose={onClose} subtitle={subtitle}>
             {title}
         </DialogTitle>
     )

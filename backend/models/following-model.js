@@ -17,7 +17,7 @@ const followingSchema = mongoose.Schema({
 })
 
 //Index per evitar duplicats
-followingSchema.index({ follower: 1, followed: 1 }, { unique: true });
+followingSchema.index({ follower: 1, followed: 1 }, { unique: true })
 
 const Following = mongoose.model('Following', followingSchema)
 

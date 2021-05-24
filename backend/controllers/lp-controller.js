@@ -11,13 +11,12 @@ import {
 } from '../utils/utils.js'
 
 /**
- * @description Add LP to user collection
+ * @description Afegir LP a la col·lecció
  * @route POST /users/{username}/lps/
- * @access Public
+ * @access Autenticat
  */
 const addLP = asyncHandler(async (req, res) => {
 
-    console.log(JSON.stringify(req.body))
     const lp = new Lp({
         ...req.body,
         owner: req.user._id
@@ -43,16 +42,17 @@ const addLP = asyncHandler(async (req, res) => {
 });
 
 /**
- * @description Get LP list from user collection
+ * @description Obtenir col·lecció de LPs
  * @route GET /users/{username}/lps
- * @access Authenticated. If not logged in as requested user, only public LPs are returned
+ * @access Autenticat. Si no es l'usuari propietari nomes es retornen els discos publics
  */
 const getLPs = asyncHandler(async (req, res) => {
     const paramUser = await User.findOne({ username: req.params.username })
     if (paramUser) {
         let lps = await Lp.find({ owner: paramUser.id })
+            .sort('-createdAt')
             .populate('artist')
-            .populate({ path: 'listedItem', select: 'wantedPrice -lp' })
+            .populate({ path: 'listedItem', select: 'wantedPrice status -lp', populate: { path: 'numPendingOffers' } })
         if (req.user.id !== paramUser.id) {
             lps = lps.filter((lp) => {
                 lp.isPublic
@@ -67,7 +67,8 @@ const getLPs = asyncHandler(async (req, res) => {
                 coverImg: lp.coverImg,
                 artist: lp.artist.name,
                 isPublic: lp.isPublic,
-                isForSale: lp.listedItem ? true : false
+                isForSale: (lp.listedItem && lp.listedItem.status === 'available') ? true : false,
+                listedItem: lp.listedItem
             })
         });
         res.send(lpsSummary)
@@ -78,12 +79,11 @@ const getLPs = asyncHandler(async (req, res) => {
 })
 
 /**
- * @description Get specific LP from user
+ * @description Obtenir detall d'un LP
  * @route GET /users/{username}/lps{id}
- * @access Authenticated. Logged in as LP owner if LP is not public
+ * @access Autenticat com a propietari del LP
  */
 const getLP = asyncHandler(async (req, res) => {
-    console.log('ID: ' + req.params.id)
     const lp = await Lp.findById(req.params.id)
         .populate('artist')
         .populate({ path: 'listedItem', select: 'wantedPrice pictures -lp' })
@@ -101,9 +101,9 @@ const getLP = asyncHandler(async (req, res) => {
 })
 
 /**
- * @description Edit LP
+ * @description Editar LP
  * @route PATCH /users/{username}/lps{id}
- * @access Authenticated as LP owner
+ * @access Autenticat com a propietari del LP
  */
 const editLP = asyncHandler(async (req, res) => {
     const lp = await Lp.findById(req.params.id)
@@ -136,9 +136,9 @@ const editLP = asyncHandler(async (req, res) => {
 })
 
 /**
- * @description Delete LP
+ * @description Esborrar LP
  * @route DELETE /users/{username}/lps{id}
- * @access Authenticated as LP owner
+ * @access Autenticat com a propietari del LP
  */
 const deleteLP = asyncHandler(async (req, res) => {
     const lp = await Lp.findById(req.params.id)
@@ -160,9 +160,9 @@ const deleteLP = asyncHandler(async (req, res) => {
 
 
 /**
- * @description Get external album data
+ * @description Obtenir dades externes d'un LP
  * @route DELETE /album/search
- * @access Authenticated 
+ * @access Autenticat
  */
 const getExternalData = asyncHandler(async (req, res) => {
     const filters = req.query;
@@ -215,18 +215,17 @@ const getExternalData = asyncHandler(async (req, res) => {
             throw new Error('Didn\t find any results')
         }
     } else {
-        res.status(401)
+        res.status(400)
         throw new Error('Inform at least the album title')
     }
 })
 
 /**
- * @description Upload LP cover accepts file or url
+ * @description Pujar una portada d'un LP, accepta fitxer o URL
  * @route DELETE /users/{username}/lps{id}
- * @access Authenticated as LP owner
+ * @access Autenticat com a propietari del LP
  */
 const uploadLPCover = asyncHandler(async (req, res) => {
-    console.log(JSON.stringify(req.body))
     //només pot pujar la portada el propietari del lp
     const lp = await Lp.findById(req.params.id)
     if (lp) {

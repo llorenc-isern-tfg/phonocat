@@ -199,9 +199,6 @@ const LpForm = ({ lpData = {}, actions, handleSubmit, disableForm = false }) => 
                             name="numDiscs"
                             type="number"
                             label={t('lpDetail.numDiscs')}
-                            // InputLabelProps={{
-                            //     shrink: true
-                            // }}
                             value={formik.values.numDiscs}
                             onChange={formik.handleChange}
                             InputProps={{ inputProps: { min: 1, max: 10 } }}

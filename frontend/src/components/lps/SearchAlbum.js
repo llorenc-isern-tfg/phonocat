@@ -105,7 +105,7 @@ const SearchAlbum = ({ onSearchResultSelected, handleNext }) => {
         return (
             <Grid container alignItems="center" id={uuidv4()}>
                 <Grid item>
-                    <Avatar variant="square" variant="rounded" alt={option.name} src={option.image[0]['#text']} className={classes.albumThumb}>
+                    <Avatar variant="rounded" alt={option.name} src={option.image[0]['#text']} className={classes.albumThumb}>
                         <AlbumIcon />
                     </Avatar>
                 </Grid>

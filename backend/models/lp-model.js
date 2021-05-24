@@ -2,20 +2,7 @@ import mongoose from 'mongoose'
 import mongoosePaginate from 'mongoose-paginate-v2'
 
 import trackSchema from './track-schema.js'
-
-const reviewSchema = mongoose.Schema({
-    rating: {
-        type: Number,
-        min: 0,
-        max: 5,
-    },
-    comment: {
-        type: String
-    }
-
-}, {
-    timestamps: true
-})
+import reviewSchema from './reviewSchema.js'
 
 const lpSchema = mongoose.Schema({
     owner: {

@@ -11,6 +11,5 @@ export default function* rootSaga() {
         fork(lpSaga),
         fork(socialSaga),
         fork(marketSaga)
-        // fork(alertSaga)
     ]);
 }

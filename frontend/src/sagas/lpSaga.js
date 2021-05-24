@@ -28,7 +28,8 @@ function* autocomplete({ payload }) {
         const errorMsg = error.response && error.response.data.message ?
             error.response.data.message : error.message
         yield put(lpActions.lpAutocompleteSearchFail(errorMsg))
-        yield put(showAlert('error', { messageKey: 'lastFm.searchAlbum.unavailable' }))
+        if (!error.response || error.response.status !== 401)
+            yield put(showAlert('error', { messageKey: 'lastFm.searchAlbum.unavailable' }))
     }
 }
 
@@ -47,11 +48,11 @@ function* preload({ payload }) {
         yield put(lpActions.lpPreloadExternalDataSuccess({ searchResult, preloadedData }))
         yield put(showAlert('success', { messageKey: 'searchAlbum.preloadDataComplete' }))
     } catch (error) {
-        //TODO: comprovar 401
         const errorMsg = error.response && error.response.data.message ?
             error.response.data.message : error.message
         yield put(lpActions.lpPreloadExternalDataFail(errorMsg, searchResult))
-        yield put(showAlert('warning', { messageKey: 'searchAlbum.preloadDataNotFound' }))
+        if (!error.response || error.response.status !== 401)
+            yield put(showAlert('warning', { messageKey: 'searchAlbum.preloadDataNotFound' }))
     }
 }
 
@@ -67,7 +68,8 @@ function* addLp({ payload }) {
         const errorMsg = error.response && error.response.data.message ?
             error.response.data.message : error.message
         yield put(lpActions.lpAddFail(errorMsg))
-        yield put(showAlert('error', { messageKey: 'addLP.fail' }))
+        if (!error.response || error.response.status !== 401)
+            yield put(showAlert('error', { messageKey: 'addLP.fail' }))
     }
 }
 
@@ -81,7 +83,8 @@ function* lpCollection() {
         const errorMsg = error.response && error.response.data.message ?
             error.response.data.message : error.message
         yield put(lpActions.lpCollectionFail(errorMsg))
-        yield put(showAlert('error', { messageKey: 'lpCollection.error' }))
+        if (!error.response || error.response.status !== 401)
+            yield put(showAlert('error', { messageKey: 'generic.fail' }))
     }
 }
 
@@ -97,7 +100,8 @@ function* deleteLp({ payload }) {
         const errorMsg = error.response && error.response.data.message ?
             error.response.data.message : error.message
         yield put(lpActions.lpDeleteFail(errorMsg))
-        yield put(showAlert('error', { messageKey: 'lpDelete.fail' }))
+        if (!error.response || error.response.status !== 401)
+            yield put(showAlert('error', { messageKey: 'lpDelete.fail' }))
     }
 }
 
@@ -114,7 +118,8 @@ function* addLpCover({ payload }) {
         const errorMsg = error.response && error.response.data.message ?
             error.response.data.message : error.message
         yield put(lpActions.lpUploadCoverFail(errorMsg))
-        yield put(showAlert('error', { messageKey: 'lpCover.uploadFail' }))
+        if (!error.response || error.response.status !== 401)
+            yield put(showAlert('error', { messageKey: 'generic.fail' }))
     }
 }
 
@@ -146,7 +151,8 @@ function* editLpCover({ payload }) {
         const errorMsg = error.response && error.response.data.message ?
             error.response.data.message : error.message
         yield put(lpActions.lpEditCoverFail(errorMsg))
-        yield put(showAlert('error', { messageKey: 'lpCover.uploadFail' }))
+        if (!error.response || error.response.status !== 401)
+            yield put(showAlert('error', { messageKey: 'generic.fail' }))
     }
 }
 
@@ -163,7 +169,8 @@ function* editLp({ payload }) {
         const errorMsg = error.response && error.response.data.message ?
             error.response.data.message : error.message
         yield put(lpActions.lpEditFail(errorMsg))
-        yield put(showAlert('error', { messageKey: 'lpEdit.fail' }))
+        if (!error.response || error.response.status !== 401)
+            yield put(showAlert('error', { messageKey: 'lpEdit.fail' }))
     }
 }
 

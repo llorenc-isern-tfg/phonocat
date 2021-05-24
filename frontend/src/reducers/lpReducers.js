@@ -12,6 +12,8 @@ import {
     LP_EDIT_REQUEST, LP_EDIT_FAIL, LP_EDIT_SUCCESS,
 } from '../constants/lpActionTypes'
 
+import { USER_LOGGGED_OUT } from '../constants/userActionTypes'
+
 import {
     LIST_LP_FORSALE_REQUEST, LIST_LP_FORSALE_SUCCESS, LIST_LP_FORSALE_FAIL,
     UNLIST_LP_FORSALE_REQUEST, UNLIST_LP_FORSALE_SUCCESS, UNLIST_LP_FORSALE_FAIL
@@ -31,6 +33,8 @@ export const lpCollectionReducer = (state = {}, action) => {
             return { ...state, loading: false, lps: state.lps.filter(lp => lp._id !== action.payload) }
         case LP_DELETE_FAIL:
             return { ...state, loading: false }
+        case USER_LOGGGED_OUT:
+            return {}
         default:
             return state
     }
@@ -76,6 +80,8 @@ export const lpAddReducer = (state = lpAddInitialState, action) => {
             return { ...state, status: { loading: false, type: action.type, moveStep: true }, cover: action.payload }
         case LP_ADD_COVER_FAIL:
             return { ...state, status: { loading: false, type: action.type }, cover: { error: action.payload } }
+        case USER_LOGGGED_OUT:
+            return lpAddInitialState
         default:
             return state
     }
@@ -108,6 +114,7 @@ export const lpDetailsReducer = (state = {}, action) => {
         case UNLIST_LP_FORSALE_FAIL:
             return { ...state, listsForSale: { error: action.payload, loading: false } }
         case LP_DETAILS_CLEAR:
+        case USER_LOGGGED_OUT:
             return {}
         default:
             return state
@@ -130,6 +137,8 @@ export const lpEditReducer = (state = {}, action) => {
             return { ...state, status: { loading: false, type: action.type }, lp: action.payload }
         case LP_EDIT_FAIL:
             return { ...state, status: { loading: false, type: action.type }, errpr: action.payload }
+        case USER_LOGGGED_OUT:
+            return {}
         default:
             return state
     }

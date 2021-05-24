@@ -19,7 +19,8 @@ import SpeakerGroupIcon from '@material-ui/icons/SpeakerGroup'
 import VisibilityIcon from '@material-ui/icons/Visibility'
 import VisibilityOffIcon from '@material-ui/icons/VisibilityOff'
 import InfoIcon from '@material-ui/icons/Info'
-import { Card, CardMedia } from '@material-ui/core'
+import Card from '@material-ui/core/Card'
+import ConditionIcon from '../../components/lps/ConditionIcon'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import { useTranslation } from "react-i18next"
 import { useSelector, useDispatch } from 'react-redux'
@@ -34,7 +35,6 @@ import Image from 'material-ui-image'
 import { lpDetailsRequest, lpDetailsClear } from '../../actions/lpActions'
 import { listLpForSaleRequest, unlistLpForSaleRequest } from '../../actions/marketActions'
 import defaultCoverImg from '../../images/lp_cover_default.png'
-import ConditionIcon from '../../components/lps/ConditionIcon'
 import TrackList from '../../components/lps/TrackList'
 import DropImage from '../../components/shared/DropImage'
 import yupMessages from '../../locales/yupMessages'
@@ -203,7 +203,7 @@ const UserDetailPage = ({ match }) => {
 
     const handlePublish = async () => {
         try {
-            const validateResult = await listLpFormSchema.validate({ wantedPrice: ammount })
+            await listLpFormSchema.validate({ wantedPrice: ammount })
             var formData = new FormData()
             formData.append('wantedPrice', ammount)
             uploadPictures.map(file => formData.append('image', file))
@@ -217,7 +217,6 @@ const UserDetailPage = ({ match }) => {
                 )
             )
         } catch (err) {
-            console.log(err)
             setAmmountError(err.message)
             return
         }

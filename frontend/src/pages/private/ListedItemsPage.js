@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useTranslation } from "react-i18next"
 import { useSelector, useDispatch } from 'react-redux'
-import { makeStyles, useTheme } from '@material-ui/core/styles'
+import { makeStyles } from '@material-ui/core/styles'
 import Container from '@material-ui/core/Container'
 import Table from '@material-ui/core/Table'
 import TableBody from '@material-ui/core/TableBody'
@@ -16,12 +16,10 @@ import Typography from '@material-ui/core/Typography'
 import Paper from '@material-ui/core/Paper'
 import IconButton from '@material-ui/core/IconButton'
 import Tooltip from '@material-ui/core/Tooltip'
-import CircularProgress from '@material-ui/core/CircularProgress'
 import FilterListIcon from '@material-ui/icons/FilterList'
 import i18n from 'i18next'
 import NumberFormat from 'react-number-format'
 import Avatar from '@material-ui/core/Avatar'
-import Grid from '@material-ui/core/Grid'
 import FirstPageIcon from '@material-ui/icons/FirstPage'
 import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft'
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight'
@@ -37,6 +35,7 @@ import defaultCoverImg from '../../images/lp_cover_default.png'
 import { Button } from '@material-ui/core'
 import timeagoMessages from '../../locales/timeagoMessages'
 import FilterListedItemsDialog from '../../components/market/FilterListedItemsDialog'
+import ListedItemDetailDialog from '../../components/market/ListedItemDetailDialog'
 
 const useStyles = makeStyles((theme) => ({
     title: {
@@ -51,10 +50,10 @@ const useStyles = makeStyles((theme) => ({
             marginBottom: theme.spacing(6),
         },
     },
-    cover: {
-        display: 'inline-block',
-        marginRight: theme.spacing(2)
-    },
+    // cover: {
+    //     display: 'inline-block',
+    //     marginRight: theme.spacing(2)
+    // },
     table: {
         minWidth: 400,
     },
@@ -88,6 +87,7 @@ const EnhancedTableHead = (props) => {
     return (
         <TableHead>
             <TableRow>
+                <TableCell padding="checkbox" />
                 {headCells.map((headCell) => (
                     <TableCell
                         key={headCell.id}
@@ -117,7 +117,7 @@ const useStylesPagination = makeStyles((theme) => ({
 }));
 
 const CustomTablePagination = (props) => {
-    const classes = useStylesPagination();
+    const classes = useStylesPagination()
     const { page, onChangePage, pagination, loading } = props
 
     const handleFirstPageButtonClick = (event) => {
@@ -173,8 +173,10 @@ const ListedItemsPage = () => {
     const [order, setOrder] = useState(DEFAULT_ORDER)
     const [sortBy, setSortBy] = useState(DEFAULT_SORT_BY)
 
-    const [openFilterDialog, setOpenFilterDialog] = useState(false);
-    const [filterOps, setFilterOps] = useState({});
+    const [openDialog, setOpenDialog] = useState()
+    const [filterOps, setFilterOps] = useState({})
+
+    const [selectedItem, setSelectedItem] = useState({})
 
     const { t } = useTranslation()
 
@@ -201,7 +203,6 @@ const ListedItemsPage = () => {
             fetchParams.minPrice = filterParams.priceRange[0]
             fetchParams.maxPrice = filterParams.priceRange[1]
         }
-        console.log(fetchParams)
 
         dispatch(getListedItemsRequest(fetchParams))
     }
@@ -217,18 +218,18 @@ const ListedItemsPage = () => {
         setSortBy(property)
     }
 
-    const onCloseFilterHandler = () => {
-        setOpenFilterDialog(false)
+    const onCloseDialogHandler = () => {
+        setOpenDialog(null)
     }
 
     const onClearFilterHandler = () => {
-        onCloseFilterHandler()
+        onCloseDialogHandler()
         fetchListedItems(0, pagination.limit, sortBy, order, {})
         setFilterOps({})
     }
 
     const onFilterHandler = (newFilterOps) => {
-        onCloseFilterHandler()
+        onCloseDialogHandler()
         fetchListedItems(0, pagination.limit, sortBy, order, newFilterOps)
         setFilterOps(newFilterOps)
     }
@@ -246,8 +247,8 @@ const ListedItemsPage = () => {
     }
 
     const filterDialogProps = {
-        open: openFilterDialog,
-        handleClose: onCloseFilterHandler,
+        open: openDialog === 'filterDialog',
+        handleClose: onCloseDialogHandler,
         handleClear: onClearFilterHandler,
         handleFilter: onFilterHandler,
         filterOps: filterOps,
@@ -256,6 +257,17 @@ const ListedItemsPage = () => {
             leastExpensive: Math.floor(filterHelper.leastExpensive),
             mostExpensive: Math.ceil(filterHelper.mostExpensive)
         } : {}
+    }
+
+    const listedItemDialogProps = {
+        open: openDialog === 'itemDialog',
+        listedItem: selectedItem,
+        handleClose: onCloseDialogHandler
+    }
+
+    const handleOpenListedItemDialog = (listedItem) => {
+        setSelectedItem(listedItem)
+        setOpenDialog('itemDialog')
     }
 
     return (
@@ -274,13 +286,13 @@ const ListedItemsPage = () => {
                             <Chip className={classes.filterChip} onDelete={handleDeletePriceFilter}
                                 label={t('listedItems.filter.priceActive', { min: filterOps.priceRange[0], max: filterOps.priceRange[1] })} />}
                         <Tooltip arrow title={t('listedItems.filter.filterTooltip')}>
-                            <IconButton aria-label={t('listedItems.filterTooltip')} onClick={() => setOpenFilterDialog(true)}>
+                            <IconButton aria-label={t('listedItems.filterTooltip')} onClick={() => setOpenDialog('filterDialog')}>
                                 <FilterListIcon />
                             </IconButton>
                         </Tooltip>
                     </Toolbar>
                     {loading && <LinearProgress color="secondary" />}
-                    <Table className={classes.table} aria-label="custom pagination table">
+                    <Table size="small" className={classes.table} aria-label="custom pagination table">
                         {listedItems.length > 0 ?
                             <React.Fragment>
                                 <EnhancedTableHead
@@ -294,16 +306,14 @@ const ListedItemsPage = () => {
                                         listedItems.map((listedItem) => (
                                             <TableRow key={listedItem._id}>
                                                 <TableCell component="th" scope="row">
-                                                    <Grid container direction="row" alignItems="center">
-                                                        <Grid item>
-                                                            <Avatar src={listedItem.lp.coverImg ? listedItem.lp.coverImg : defaultCoverImg}
-                                                                variant="rounded"
-                                                                className={classes.cover} />
-                                                        </Grid>
-                                                        <Grid item>
-                                                            {listedItem.lp.title}
-                                                        </Grid>
-                                                    </Grid>
+                                                    <IconButton onClick={() => handleOpenListedItemDialog(listedItem)}>
+                                                        <Avatar src={listedItem.lp.coverImg ? listedItem.lp.coverImg : defaultCoverImg}
+                                                            variant="rounded"
+                                                            className={classes.cover} />
+                                                    </IconButton>
+                                                </TableCell>
+                                                <TableCell component="th" scope="row">
+                                                    {listedItem.lp.title}
                                                 </TableCell>
                                                 <TableCell>
                                                     {listedItem.lp.artist.name}
@@ -325,7 +335,9 @@ const ListedItemsPage = () => {
                                                     />
                                                 </TableCell>
                                                 <TableCell align="right">
-                                                    <Button size="small" color="primary">{t('listedItems.detail')}</Button>
+                                                    <Button size="small" color="primary" onClick={() => handleOpenListedItemDialog(listedItem)}>
+                                                        {t('listedItems.detail')}
+                                                    </Button>
                                                 </TableCell>
                                             </TableRow>
                                         ))
@@ -335,7 +347,7 @@ const ListedItemsPage = () => {
                                     <TableRow>
                                         <TablePagination
                                             rowsPerPageOptions={[]}
-                                            colSpan={5}
+                                            colSpan={7}
                                             count={pagination.totalItems}
                                             rowsPerPage={DEFAULT_ROWS_PER_PAGE}
                                             labelRowsPerPage={t('pagination.rowsPerPage')}
@@ -345,7 +357,6 @@ const ListedItemsPage = () => {
                                                 native: true,
                                             }}
                                             onChangePage={handleChangePage}
-                                            onChangeRowsPerPage={() => alert('asdas')}
                                             ActionsComponent={(subprops) => <CustomTablePagination {...subprops} loading={loading} pagination={pagination} />}
                                             labelDisplayedRows={({ from, to, count }) => `${from}-${to} ${t('pagination.of')} ${count}`}
                                         />
@@ -357,7 +368,7 @@ const ListedItemsPage = () => {
                                 <TableBody>
                                     <TableRow>
                                         <TableCell align="center">
-                                            {!loading && <Typography variant="h6">{filterOps ? t('listedItems.emptyResults') : t('listedItems.emptyTable')}</Typography>}
+                                            {!loading && <Typography variant="subtitle2">{filterOps ? t('listedItems.emptyResults') : t('listedItems.emptyTable')}</Typography>}
                                         </TableCell>
                                     </TableRow>
                                 </TableBody>
@@ -365,7 +376,8 @@ const ListedItemsPage = () => {
                         }
                     </Table>
                 </TableContainer>
-                {listedItems && !loading && <FilterListedItemsDialog dialogProps={filterDialogProps} />}
+                {listedItems && !loading && (openDialog === 'filterDialog') && <FilterListedItemsDialog dialogProps={filterDialogProps} />}
+                {selectedItem && !loading && (openDialog === 'itemDialog') && <ListedItemDetailDialog dialogProps={listedItemDialogProps} />}
             </Container>
         </React.Fragment >
     )

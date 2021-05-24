@@ -1,16 +1,17 @@
 import { createStore, combineReducers, applyMiddleware } from 'redux'
-import thunk from 'redux-thunk'
 import createSagaMiddleware from 'redux-saga'
 import { composeWithDevTools } from 'redux-devtools-extension'
 import { lpCollectionReducer, lpAddReducer, lpDetailsReducer, lpEditReducer } from './reducers/lpReducers'
 import { userLoginReducer, userProfileReducer } from './reducers/userReducers'
 import { userListReducer, userDetailReducer } from './reducers/socialReducers'
-import { listedItemsReducer } from './reducers/marketReducers'
+import {
+    listedItemsReducer, listedItemOfferReducer,
+    receivedOffersReducer, sendedOffersReducer
+} from './reducers/marketReducers'
 import { alertReducer } from './reducers/alertReducers'
 import { persistStore, persistReducer } from 'redux-persist'
 import storage from 'redux-persist/lib/storage'
 import rootSaga from './sagas'
-import { USER_LOGGGED_OUT } from './constants/userActionTypes'
 
 const authPersistConfig = {
     key: 'auth',
@@ -28,19 +29,14 @@ const reducers = combineReducers({
     userList: userListReducer,
     userDetail: userDetailReducer,
     lpsForSale: listedItemsReducer,
+    listedItemOffer: listedItemOfferReducer,
+    receivedOffers: receivedOffersReducer,
+    sendedOffers: sendedOffersReducer,
     alerts: alertReducer,
 })
 
-// const rootReducer = (state, action) => {
-//     if (action.type === USER_LOGGGED_OUT) {
-//         // storage.removeItem('persist:auth')
-//         return reducers(undefined, action)
-//     }
-//     return reducers(state, action)
-// }
-
 const saga = createSagaMiddleware()
-const middlewares = [saga, thunk]
+const middlewares = [saga]
 
 export const store = createStore(reducers, composeWithDevTools(applyMiddleware(...middlewares)))
 saga.run(rootSaga)

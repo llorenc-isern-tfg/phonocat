@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect } from 'react'
 import Grid from '@material-ui/core/Grid'
 import Typography from '@material-ui/core/Typography'
 import { makeStyles } from '@material-ui/core/styles'
@@ -88,7 +88,6 @@ const UserListPage = () => {
     }
 
     const renderUser = (user) => {
-        let expandUser = false
         return (
             <ListItem alignItems="flex-start" key={user._id} button divider
                 component={Link} to={`/users/${user.username}`}>

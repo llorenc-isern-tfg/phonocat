@@ -16,7 +16,7 @@ import { useDispatch } from 'react-redux'
 import { lpUploadCoverRequest } from '../../actions/lpActions'
 import Container from '@material-ui/core/Container'
 import { Link } from 'react-router-dom'
-import Image from 'material-ui-image'
+// import Image from 'material-ui-image'
 
 const useStyles = makeStyles((theme) => ({
     coverImg: {
@@ -164,7 +164,7 @@ const UploadLpCover = ({ lpProps }) => {
                         }} draggable="false" />} */}
                     {cover &&
                         <Grid item xs={12}>
-                            <img src={cover} className={classes.coverImg} />
+                            <img alt="cover" src={cover} className={classes.coverImg} />
                         </Grid>
                     }
                     <Grid item xs={12} className={classes.row}>
@@ -205,7 +205,7 @@ const UploadLpCover = ({ lpProps }) => {
                             component={Link} to="/lp/collection/">
                             {t('form.exit')}
                         </Button>
-                        <Button variant="contained" color="primary" disabled={acceptedFiles.length == 0} startIcon={<UploadIcon />} className={classes.button}
+                        <Button variant="contained" color="primary" disabled={acceptedFiles.length === 0} startIcon={<UploadIcon />} className={classes.button}
                             onClick={uploadFileCover}>
                             {t('lpCover.upload')}
                         </Button>

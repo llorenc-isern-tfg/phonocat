@@ -7,7 +7,7 @@ import * as utils from '../utils/utils.js'
 import { normalizeImageFormat, uploadImageBufferCloud } from '../utils/utils.js'
 
 /**
- * @description Register user
+ * @description Registrar usuari
  * @route POST /users
  * @access Public
  */
@@ -15,22 +15,23 @@ const registerUser = asyncHandler(async (req, res) => {
   const { email, username } = req.body
   const emailExists = await User.findOne({ email })
   if (emailExists) {
-    res.status(400)
-    throw new Error('User already exists')
+    res.status(409)
+    throw new Error('User email already exists')
   }
 
-  const nameExists = await User.findOne({ username })
+  const nameExists = await User.findOne({ username: new RegExp(`^${username}$`, 'i') })
   if (nameExists) {
-    res.status(400)
+    console.log('name exists')
+    res.status(409)
     throw new Error('User name already exists')
   }
-  console.log(req.body)
+
   const user = new User(req.body)
-  console.log(user)
   try {
     await user.save()
 
     res.send({
+      id: user._id,
       username: user.username,
       email: user.email,
       picture: user.picture,
@@ -44,12 +45,11 @@ const registerUser = asyncHandler(async (req, res) => {
 })
 
 /**
- * @description Auth user and get JWT token
+ * @description Autenticar usuari i obtenir token JWT
  * @route POST /users/login
  * @access Public
  */
 const authUserJWT = asyncHandler(async (req, res) => {
-  console.log(req.body)
   const { email, password } = req.body
   const user = await User.findOne({ email })
 
@@ -57,6 +57,7 @@ const authUserJWT = asyncHandler(async (req, res) => {
     const token = utils.createToken(user._id)
 
     res.send({
+      id: user._id,
       username: user.username,
       email: user.email,
       picture: user.picture,
@@ -70,7 +71,7 @@ const authUserJWT = asyncHandler(async (req, res) => {
 })
 
 /**
- * @description Auth user with google and get JWT token
+ * @description Autenticar usuari amb google passport i obtenir token JWT 
  * @route POST /users/login
  * @access Public
  */
@@ -79,8 +80,6 @@ const authUserGoogle = asyncHandler(async (req, res) => {
   if (user) {
     const token = utils.createToken(user._id)
     res.send({ user, token })
-    console.log('TOKEN: ' + token)
-    // res.redirect(`http://localhost:3000/?username=${user.username}&email=${user.email}&token=${token}`);
   } else {
     res.status(401)
     throw new Error('Unauthorized')
@@ -88,7 +87,7 @@ const authUserGoogle = asyncHandler(async (req, res) => {
 })
 
 /**
- * @description Login user with google token and get JWT token
+ * @description Autenticar usuari amb google auth lib i obtenir token JWT 
  * @route POST /users/login
  * @access Public
  */
@@ -100,8 +99,6 @@ const loginUserGoogle = asyncHandler(async (req, res) => {
     idToken: id_token,
     audience: process.env.GOOGLE_OAUTH_CLIENT_ID
   })
-
-  console.log(ticket.getPayload())
 
   const { sub, email, given_name, picture } = ticket.getPayload()
 
@@ -122,6 +119,7 @@ const loginUserGoogle = asyncHandler(async (req, res) => {
   }
 
   res.send({
+    id: googleUser._id,
     username: googleUser.username,
     email: googleUser.email,
     picture: googleUser.picture,
@@ -132,9 +130,9 @@ const loginUserGoogle = asyncHandler(async (req, res) => {
 })
 
 /**
- * @description Get user profile
+ * @description Obtenir perfil d'usuari
  * @route GET /users/profile/{username}
- * @access Authenticated. If not logged in as requested user, only public data is returned
+ * @access Autenticat. Si no es l'usuari autenticat nomes es retornen dades publiques
  */
 const getUserProfile = asyncHandler(async (req, res) => {
   const paramUser = await User.findOne({ username: req.params.username })
@@ -147,12 +145,11 @@ const getUserProfile = asyncHandler(async (req, res) => {
 })
 
 /**
- * @description Edit user profile
+ * @description Editar perfil d'usuari
  * @route PATCH /users/profile/{username}
- * @access Authenticated as requested user
+ * @access Autenticat com a l'usuari a editar
  */
 const editUserProfile = asyncHandler(async (req, res) => {
-  console.log(req.body)
   const paramUser = await User.findOne({ username: req.params.username })
   if (paramUser) {
     if (req.user.id == paramUser.id) {
@@ -171,9 +168,9 @@ const editUserProfile = asyncHandler(async (req, res) => {
 })
 
 /**
- * @description Upload LP cover accepts file or url
- * @route DELETE /users/{username}/lps{id}
- * @access Authenticated as LP owner
+ * @description Pujar una imatge de perfil
+ * @route DELETE /users/{username}/picture
+ * @access Autenticat com a l'usuari a modificar
  */
 const uploadProfilePicture = asyncHandler(async (req, res) => {
 

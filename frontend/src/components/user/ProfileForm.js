@@ -3,11 +3,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import Grid from '@material-ui/core/Grid'
 import Typography from '@material-ui/core/Typography'
 import TextField from '@material-ui/core/TextField'
-import FormControlLabel from '@material-ui/core/FormControlLabel'
-import Checkbox from '@material-ui/core/Checkbox'
-import InputLabel from '@material-ui/core/InputLabel'
 import MenuItem from '@material-ui/core/MenuItem'
-import Switch from '@material-ui/core/Switch'
 import MomentUtils from '@date-io/moment'
 import Autocomplete from '@material-ui/lab/Autocomplete'
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from "@material-ui/pickers"
@@ -15,9 +11,6 @@ import { useTranslation } from "react-i18next"
 import { useFormik } from 'formik'
 import * as yup from 'yup'
 import { setLocale } from 'yup'
-import PublicIcon from '@material-ui/icons/Public'
-import VpnLockIcon from '@material-ui/icons/VpnLock'
-import Rating from '@material-ui/lab/Rating'
 import _ from 'lodash'
 import MuiPhoneNumber from 'material-ui-phone-number'
 import moment from 'moment';
@@ -131,7 +124,7 @@ const ProfileForm = ({ userData = {}, actions, handleSubmit }) => {
                                     // regions={'europe'}
                                     name="phoneNumber"
                                     label={t('profile.phoneNumber')}
-                                    localization={{}}//TODO: traduir paisos
+                                    localization={{}}
                                     value={formik.values.phoneNumber}
                                     onChange={(phoneNumber) => formik.setFieldValue("phoneNumber", phoneNumber)}
                                 />

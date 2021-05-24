@@ -10,6 +10,7 @@ import { useTranslation } from "react-i18next"
 import { useSelector, useDispatch } from 'react-redux'
 import Backdrop from '@material-ui/core/Backdrop'
 import CircularProgress from '@material-ui/core/CircularProgress'
+import Hidden from '@material-ui/core/Hidden'
 
 import { lpPreloadExternalData, lpPreloadExternalDataClear } from '../../actions/lpActions'
 import SearchAlbum from '../../components/lps/SearchAlbum'
@@ -79,7 +80,6 @@ const AddLpPage = () => {
 
     //Quan la precàrrega finalitza mostrem el formulari
     useEffect(() => {
-        console.log('add lp status change: ' + status.type)
         if (status && status.moveStep) {
 
             if (activeStepIndex < formSteps.length - 1)
@@ -123,16 +123,18 @@ const AddLpPage = () => {
                     <Typography component="h1" variant="h4" align="center">
                         {t('addLP.title')}
                     </Typography>
-                    <Stepper activeStep={activeStepIndex} className={classes.stepper}>
-                        {steps.map((label) => (
-                            <Step key={label}>
-                                <StepLabel>{label}</StepLabel>
-                            </Step>
-                        ))}
-                    </Stepper>
-                    {/* //TODO: afegir stepper reduït per versio mobil */}
+                    <Hidden smDown>
+                        <Stepper activeStep={activeStepIndex} className={classes.stepper} variant="dots">
+                            {steps.map((label) => (
+                                <Step key={label}>
+                                    <StepLabel>
+                                        {label}
+                                    </StepLabel>
+                                </Step>
+                            ))}
+                        </Stepper>
+                    </Hidden>
                     <React.Fragment>
-
                         {getStepContent(formSteps[activeStepIndex])}
                     </React.Fragment>
                 </Paper>

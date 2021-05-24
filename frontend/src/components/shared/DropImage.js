@@ -103,7 +103,6 @@ const DropImage = ({ label, onUpload, discardAction, maxFiles, onDropHandle }) =
     }, [selectedFiles])
 
     const renderPreview = (i) => {
-        // console.log(preview, i)
         return selectedFiles[i] && < React.Fragment key={i} >
             <Card className={classes.preview}>
                 <CardMedia
@@ -161,7 +160,7 @@ const DropImage = ({ label, onUpload, discardAction, maxFiles, onDropHandle }) =
                 {onUpload &&
                     <Grid item xs={12} className={classes.row}>
                         {discardAction}
-                        <Button variant="contained" color="primary" disabled={acceptedFiles.length == 0} startIcon={<UploadIcon />} className={classes.button}
+                        <Button variant="contained" color="primary" disabled={acceptedFiles.length === 0} startIcon={<UploadIcon />} className={classes.button}
                             onClick={uploadFiles}>
                             {t('lpCover.upload')}
                         </Button>

@@ -2,7 +2,7 @@ import React from 'react'
 import Button from '@material-ui/core/Button'
 import Card from '@material-ui/core/Card'
 import CardActions from '@material-ui/core/CardActions'
-import CardMedia from '@material-ui/core/CardMedia'
+// import CardMedia from '@material-ui/core/CardMedia'
 import CardActionArea from '@material-ui/core/CardActionArea'
 import CardHeader from '@material-ui/core/CardHeader'
 import Badge from '@material-ui/core/Badge'
@@ -16,7 +16,6 @@ import { Link } from 'react-router-dom'
 import Image from 'material-ui-image'
 
 import defaultCoverImg from '../../images/lp_cover_default.png'
-import { Tooltip } from '@material-ui/core'
 
 const useStyles = makeStyles((theme) => ({
     cardGrid: {
@@ -33,7 +32,7 @@ const useStyles = makeStyles((theme) => ({
     },
     media: {
         paddingTop: '75%',
-        backgroundColor: theme.palette.primary[200]
+        // backgroundColor: theme.palette.primary[200]
     },
     cartButtons: {
         flexGrow: 1
@@ -51,21 +50,14 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-const truncateText = (text, limit = 25) => {
-
-}
-
 const LpCard = ({ lp, onDelete }) => {
 
     const { t } = useTranslation()
 
     const classes = useStyles()
 
-    const tooltipMsg = ''// t(lp.isPublic ? 'lpCollection.public' : 'lpCollection.private')
-
     return (
         <Card className={classes.card}>
-            {/* <Tooltip title={tooltipMsg} aria-label={tooltipMsg} placement="top" arrow> */}
             <CardActionArea component={Link} to={`/lp/collection/${lp._id}`}>
                 <CardHeader classes={{
                     root: classes.headerRoot,
@@ -80,15 +72,14 @@ const LpCard = ({ lp, onDelete }) => {
                     subheader={lp.artist}
                     subheaderTypographyProps={{ display: 'block', noWrap: true }}
                 />
-                {/* <Image draggable="false" src={lp.coverImg ? lp.coverImg : defaultCoverImg} /> */}
-                <CardMedia
+                <Image draggable="false" src={lp.coverImg ? lp.coverImg : defaultCoverImg} />
+                {/* <CardMedia
                     className={classes.media}
                     src={lp.coverImg}
                     image={lp.coverImg ? lp.coverImg : defaultCoverImg}
                     title={lp.title + ' cover'}
-                />
+                /> */}
             </CardActionArea >
-            {/* </Tooltip> */}
             <CardActions className={classes.cartButtons}>
                 <Button component={Link} to={`/lp/collection/${lp._id}/edit`}
                     size="small" color="primary" variant="outlined" >
@@ -99,8 +90,8 @@ const LpCard = ({ lp, onDelete }) => {
                     {t('form.delete')}
                 </Button>
                 {lp.isForSale &&
-                    <IconButton size="small" color="primary" style={{ marginLeft: 'auto' }}>
-                        <Badge color="secondary" badgeContent={lp.numReceivedOffers}>
+                    <IconButton size="small" component={Link} to="/myOffers/" color="primary" style={{ marginLeft: 'auto' }}>
+                        <Badge color="secondary" badgeContent={lp.listedItem.numPendingOffers}>
                             <OfferIcon />
                         </Badge>
                     </IconButton>

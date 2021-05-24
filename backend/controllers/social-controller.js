@@ -9,7 +9,7 @@ import Following from '../models/following-model.js'
 /**
  * @description Obtenir llistat d'usuaris
  * @route GET /users/{username}
- * @access Autenticat. Nomès es retornen les dades públiques dels usuaris
+ * @access Autenticat. Nomes es retornen les dades públiques dels usuaris
  */
 const getUsers = asyncHandler(async (req, res) => {
 
@@ -61,9 +61,9 @@ const getUsers = asyncHandler(async (req, res) => {
 })
 
 /**
- * @description Get user detail: profile public data and owned lps
+ * @description Obtenir detall d'usuari, dades de perfil i discos publics
  * @route GET /users/{username}/
- * @access Authenticated.
+ * @access Autenticat.
  */
 const getUserDetail = asyncHandler(async (req, res) => {
     const paramUser = await User.findOne({ username: req.params.username })
@@ -90,9 +90,9 @@ const getUserDetail = asyncHandler(async (req, res) => {
 })
 
 /**
- * @description Follow user
+ * @description Seguir usuari
  * @route POST /users/{username}/follow
- * @access Authenticated as requested user
+ * @access Autenticat
  */
 const followUser = asyncHandler(async (req, res) => {
     const paramUser = await User.findOne({ username: req.params.username })
@@ -122,9 +122,9 @@ const followUser = asyncHandler(async (req, res) => {
 })
 
 /**
- * @description Unfollow user
+ * @description Deixar de seguir usuari
  * @route DELETE /users/{username}/follow
- * @access Authenticated as requested user
+ * @access Autenticat
  */
 const unfollowUser = asyncHandler(async (req, res) => {
     const paramUser = await User.findOne({ username: req.params.username })

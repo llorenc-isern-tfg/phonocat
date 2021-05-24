@@ -100,7 +100,6 @@ const FilterListedItemsDialog = ({ dialogProps }) => {
                             max={filterHelper.mostExpensive}
                             onChange={handlePriceRangeChange}
                             valueLabelDisplay="auto"
-                            valueLabelDisplay="auto"
                             aria-labelledby="range-slider"
                             getAriaValueText={(value) => `${value} €`}
                         />

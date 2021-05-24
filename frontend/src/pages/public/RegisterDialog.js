@@ -8,8 +8,6 @@ import Dialog from '@material-ui/core/Dialog'
 import DialogContent from '@material-ui/core/DialogContent'
 import Grid from '@material-ui/core/Grid'
 import LockOpenIcon from '@material-ui/icons/LockOpen'
-import IconButton from '@material-ui/core/IconButton'
-import InputAdornment from '@material-ui/core/InputAdornment'
 import { makeStyles } from '@material-ui/core/styles'
 import { useTranslation } from "react-i18next"
 import { useFormik } from 'formik'
@@ -21,7 +19,7 @@ import ButtonSpinner from '../../components/shared/ButtonSpinner'
 import DialogTitleWithClose from '../../components/shared/DialogTitleWithClose'
 import { registerRequest } from '../../actions/userActions'
 import yupMessages from '../../locales/yupMessages'
-import { USERNAME_MIN_LENGTH, PASSWORD_MIN_LENGTH } from '../../constants/constants'
+import { USERNAME_MIN_LENGTH, PASSWORD_MIN_LENGTH, LOGIN_DIALOG_ID } from '../../constants/constants'
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -47,23 +45,21 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 
-const RegisterDialog = ({ open, onClose, selectedLanguage }) => {
+const RegisterDialog = ({ open, onClose, selectedLanguage, onChangeDialog }) => {
 
     const { t } = useTranslation();
     setLocale(yupMessages)
 
 
     const auth = useSelector((state) => state.auth)
-    const { userInfo, loading, error } = auth
-
-    const [showPassword, setShowPassword] = useState(false)
+    const { userInfo, loading } = auth
 
     const dispatch = useDispatch()
 
     const classes = useStyles();
 
     const loginSchema = yup.object().shape({
-        username: yup.string().required().min(USERNAME_MIN_LENGTH),
+        username: yup.string().required().min(USERNAME_MIN_LENGTH).matches(/^(\d|\w)+$/, t('yup:noSpecialChars')),
         email: yup.string().email().required(),
         password: yup.string().required().min(PASSWORD_MIN_LENGTH),
         password2: yup.string().required().oneOf([yup.ref('password'), null], t('registerForm.differentPasswords'))
@@ -94,6 +90,11 @@ const RegisterDialog = ({ open, onClose, selectedLanguage }) => {
     const handleClose = () => {
         onClose()
         //timeout per evitar efecte grafic quan es resetejen els missatges d'error i encara no s'ha tancat la pantalla modal
+        setTimeout(formik.resetForm, 200)
+    }
+
+    const handleChange = (dialogId) => {
+        onChangeDialog(dialogId)
         setTimeout(formik.resetForm, 200)
     }
 
@@ -178,7 +179,7 @@ const RegisterDialog = ({ open, onClose, selectedLanguage }) => {
                         </Button>
                         <Grid container justify="flex-end">
                             <Grid item>
-                                <Link href="#" variant="body2">
+                                <Link href="#" onClick={() => handleChange(LOGIN_DIALOG_ID)} variant="body2">
                                     {t('registerForm.login')}
                                 </Link>
                             </Grid>

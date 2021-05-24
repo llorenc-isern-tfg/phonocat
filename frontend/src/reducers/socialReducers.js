@@ -8,6 +8,8 @@ import {
     USER_DETAIL_CLEAR
 } from '../constants/socialActionTypes'
 
+import { USER_LOGGGED_OUT } from '../constants/userActionTypes'
+
 const userListInitialState = {
     users: []
 }
@@ -25,6 +27,8 @@ export const userListReducer = (state = userListInitialState, action) => {
             return { ...state, loading: false, error: action.payload }
         case USER_LIST_CLEAR:
             return { users: [] }
+        case USER_LOGGGED_OUT:
+            return userListInitialState
         default:
             return state
     }
@@ -64,6 +68,7 @@ export const userDetailReducer = (state = {}, action) => {
         case USER_UNFOLLOW_FAIL:
             return { ...state, followingStatus: { ...state.followingStatus, loading: false } }
         case USER_DETAIL_CLEAR:
+        case USER_LOGGGED_OUT:
             return {}
         default:
             return state

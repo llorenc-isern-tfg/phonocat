@@ -50,7 +50,6 @@ export const normalizeImageFormat = async (inputBuffer) => {
 }
 
 export const findExternalGenre = (genre) => {
-    console.log('GENRE: ' + genre)
     switch (genre) {
         case 'Blues':
         case 'Classical':
@@ -78,7 +77,6 @@ export const findExternalGenre = (genre) => {
 
 //Utilitat per relacionar alguns països de fonts externes amb formats estranys
 export const findReleaseCountry = (country) => {
-    console.log('COUNTRY: ' + country)
     switch (country) {
         case 'UK':
         case 'UK & Europe':
@@ -95,4 +93,9 @@ export const findReleaseCountry = (country) => {
         default:
             return ''
     }
+}
+
+export const validateEurCurrency = (ammount) => {
+    const regex = /^[0-9]+(\.[0-9]{1,2})?$/
+    return regex.test(ammount)
 }

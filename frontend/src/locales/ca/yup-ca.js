@@ -8,5 +8,6 @@ export const YUP_CA = {
     type: {
         date: 'data',
         number: 'numèric'
-    }
+    },
+    noSpecialChars: 'Aquest camp no pot incloure espais ni caràcters especials'
 }

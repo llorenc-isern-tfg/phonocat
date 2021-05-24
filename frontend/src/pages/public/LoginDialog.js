@@ -18,6 +18,7 @@ import { useFormik } from 'formik'
 import * as yup from 'yup'
 import { setLocale } from 'yup'
 import GoogleLogin from 'react-google-login'
+import { REGISTER_DIALOG_ID } from '../../constants/constants'
 
 
 import ButtonSpinner from '../../components/shared/ButtonSpinner'
@@ -50,14 +51,14 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 
-const LoginDialog = ({ open, onClose }) => {
+const LoginDialog = ({ open, onClose, onChangeDialog }) => {
 
     const { t } = useTranslation();
     setLocale(yupMessages)
 
 
     const auth = useSelector((state) => state.auth)
-    const { userInfo, loading, error } = auth
+    const { userInfo, loading } = auth
 
     const [showPassword, setShowPassword] = useState(false)
 
@@ -94,7 +95,6 @@ const LoginDialog = ({ open, onClose }) => {
     }
 
     const handleClickShowPassword = () => {
-        console.log(showPassword)
         setShowPassword(!showPassword)
     }
 
@@ -105,6 +105,11 @@ const LoginDialog = ({ open, onClose }) => {
     const onGoogleAuthSuccess = (res) => {
         dispatch(googleLoginRequest({ id_token: res.tokenObj.id_token }))
         handleClose()
+    }
+
+    const handleChange = (dialogId) => {
+        onChangeDialog(dialogId)
+        setTimeout(formik.resetForm, 200)
     }
 
     return (
@@ -185,14 +190,9 @@ const LoginDialog = ({ open, onClose }) => {
                             cookiePolicy={'single_host_origin'}
                         >{loading && <ButtonSpinner />}</GoogleLogin>
                         {/* </Link> */}
-                        <Grid container>
-                            <Grid item xs>
-                                <Link href="#" variant="body2">
-                                    {t('loginForm.forgotPassword')}
-                                </Link>
-                            </Grid>
+                        <Grid container justify="flex-end">
                             <Grid item>
-                                <Link href="#" variant="body2">
+                                <Link href="#" onClick={() => handleChange(REGISTER_DIALOG_ID)} variant="body2">
                                     {t('loginForm.signup')}
                                 </Link>
                             </Grid>

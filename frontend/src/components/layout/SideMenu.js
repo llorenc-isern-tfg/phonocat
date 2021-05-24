@@ -7,17 +7,16 @@ import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
 import ListItemIcon from '@material-ui/core/ListItemIcon'
 import ListItemText from '@material-ui/core/ListItemText'
-import Typography from '@material-ui/core/Typography'
-import HomeIcon from '@material-ui/icons/Home'
 import AccountCircleIcon from '@material-ui/icons/AccountCircle'
 import AlbumIcon from '@material-ui/icons/Album'
 import AddBoxIcon from '@material-ui/icons/AddBox'
 import LocalOfferIcon from '@material-ui/icons/LocalOffer';
 import ShoppingBasketIcon from '@material-ui/icons/ShoppingBasket'
 import GroupIcon from '@material-ui/icons/Group'
-import ChatIcon from '@material-ui/icons/Chat'
+import ArrowBackIcon from '@material-ui/icons/ArrowBack'
+import IconButton from '@material-ui/core/IconButton'
 import { makeStyles, useTheme } from '@material-ui/core/styles'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { useTranslation } from "react-i18next"
 import { Link, useLocation } from 'react-router-dom'
 import clsx from 'clsx'
@@ -65,8 +64,8 @@ const useStyles = makeStyles((theme) => ({
             duration: theme.transitions.duration.leavingScreen,
         }),
         overflowX: "hidden",
-        width: theme.spacing(7) + 40,
-        [theme.breakpoints.down("sm")]: {
+        width: theme.spacing(5) + 40,
+        [theme.breakpoints.down("xs")]: {
             width: drawerWidth,
         },
     },
@@ -77,12 +76,6 @@ const sideMenu = [
 
         header: undefined,
         menuItems: [
-            {
-                id: 'home',
-                to: '/home',
-                icon: <HomeIcon />,
-                textKey: 'sideMenu.home',
-            },
             {
                 id: 'profile',
                 to: '/profile',
@@ -121,7 +114,7 @@ const sideMenu = [
             },
             {
                 id: 'offers',
-                to: '/listedItems/offers',
+                to: '/myOffers',
                 icon: <LocalOfferIcon />,
                 textKey: 'sideMenu.offers'
             },
@@ -148,7 +141,7 @@ sideMenu.forEach((section) => {
     )
 })
 
-const SideMenu = () => {
+const SideMenu = ({ handleDrawerOpen, handleDrawerClose, openDrawer }) => {
 
     const { t } = useTranslation();
 
@@ -157,8 +150,6 @@ const SideMenu = () => {
 
     const auth = useSelector((state) => state.auth)
     const { userInfo } = auth
-
-    const [mobileOpen, setMobileOpen] = useState(false);
 
     const location = useLocation()
 
@@ -184,17 +175,46 @@ const SideMenu = () => {
                                 <List>
                                     {
                                         section.header && (
-                                            <ListItem>
-                                                <ListItemText primary={t(section.header)} />
-                                            </ListItem>
+                                            !openDrawer ?
+                                                <Hidden smUp>
+                                                    <ListItem>
+                                                        <ListItemText primary={t(section.header)} />
+                                                    </ListItem>
+                                                </Hidden>
+                                                :
+                                                <ListItem>
+                                                    <ListItemText primary={t(section.header)} />
+                                                </ListItem>
                                         )
                                     }
                                     {section.menuItems.map((menuItem) => {
                                         return (
-                                            <ListItem button key={menuItem.id} component={Link} selected={menuItem.id === selected} to={menuItem.to}>
-                                                <ListItemIcon>{menuItem.icon}</ListItemIcon>
-                                                <ListItemText primary={t(menuItem.textKey)} />
-                                            </ListItem>
+                                            <React.Fragment key={menuItem.id} >
+                                                <Hidden smUp>
+                                                    <ListItem button component={Link} selected={menuItem.id === selected} to={menuItem.to} onClick={handleDrawerClose}>
+                                                        <ListItemIcon>{menuItem.icon}</ListItemIcon>
+                                                        {!openDrawer ?
+                                                            <Hidden smUp>
+                                                                <ListItemText primary={t(menuItem.textKey)} />
+                                                            </Hidden>
+                                                            :
+                                                            <ListItemText primary={t(menuItem.textKey)} />
+                                                        }
+                                                    </ListItem>
+                                                </Hidden>
+                                                <Hidden smDown>
+                                                    <ListItem button key={menuItem.id} component={Link} selected={menuItem.id === selected} to={menuItem.to} >
+                                                        <ListItemIcon>{menuItem.icon}</ListItemIcon>
+                                                        {!openDrawer ?
+                                                            <Hidden smUp>
+                                                                <ListItemText primary={t(menuItem.textKey)} />
+                                                            </Hidden>
+                                                            :
+                                                            <ListItemText primary={t(menuItem.textKey)} />
+                                                        }
+                                                    </ListItem>
+                                                </Hidden>
+                                            </React.Fragment>
                                         )
                                     })
                                     }
@@ -207,41 +227,6 @@ const SideMenu = () => {
                 }
             </React.Fragment>
         )
-
-        /* //     /* <ListItem button key={'home'} component={Link} selected={selected} to={'/app'}>
-            //     <ListItemIcon><HomeIcon /></ListItemIcon>
-    //     <ListItemText primary={t('sideMenu.home')} />
-    // </ListItem>
-    // <Divider className={classes.divider} />
-    // <Typography className={classes.sectionTitle}>{t('sideMenu.lps')}</Typography>
-    // <ListItem button key={'sideMenu.lpCollection'} component={Link} selected={selected} to={'/app/lps'}>
-            //     <ListItemIcon><AlbumIcon /></ListItemIcon>
-    //     <ListItemText primary={t('sideMenu.lpCollection')} />
-    // </ListItem>
-    // <ListItem button key={'sideMenu.addLP'} component={Link} selected={selected} to={'/app/lps/new'}>
-            //     <ListItemIcon><AddBoxIcon /></ListItemIcon>
-    //     <ListItemText primary={t('sideMenu.addLP')} />
-    // </ListItem>
-    // <Divider className={classes.divider} />
-    // <Typography className={classes.sectionTitle}>{t('sideMenu.market')}</Typography>
-    // <ListItem button key={'sideMenu.listedItems'}>
-            //     <ListItemIcon><LocalOfferIcon /></ListItemIcon>
-    //     <ListItemText primary={t('sideMenu.listedItems')} />
-    // </ListItem>
-    // <ListItem button key={'sideMenu.offers'}>
-            //     <ListItemIcon><ShoppingBasketIcon /></ListItemIcon>
-    //     <ListItemText primary={t('sideMenu.offers')} />
-    // </ListItem>
-    // <Divider className={classes.divider} />
-    // <Typography className={classes.sectionTitle}>{t('sideMenu.social')}</Typography>
-    // <ListItem button key={'sideMenu.users'}>
-            //     <ListItemIcon><GroupIcon /></ListItemIcon>
-    //     <ListItemText primary={t('sideMenu.users')} />
-    // </ListItem>
-    // <ListItem button key={'sideMenu.conversations'}>
-            //     <ListItemIcon><ChatIcon /></ListItemIcon>
-    //     <ListItemText primary={t('sideMenu.conversations')} />
-    // </ListItem> */
     }
 
     const handleDrawerToggle = () => {
@@ -254,12 +239,12 @@ const SideMenu = () => {
     return (
         userInfo ? (
             <div>
-                {/* <Hidden smUp>
+                <Hidden smUp>
                     <Drawer
                         variant="temporary"
                         anchor={theme.direction === 'rtl' ? 'right' : 'left'}
-                        open={mobileOpen}
-                        onClose={handleDrawerToggle}
+                        open={openDrawer}
+                        onClose={handleDrawerClose}
                         classes={{
                             paper: classes.drawerPaper,
                         }}
@@ -267,26 +252,32 @@ const SideMenu = () => {
                             keepMounted: true, // Better open performance on mobile.
                         }}
                     >
-                        <Toolbar />
+                        <Toolbar >
+                            <IconButton
+                                onClick={handleDrawerClose}
+                            >
+                                <ArrowBackIcon />
+                            </IconButton>
+                        </Toolbar>
                         <div className={classes.drawerContainer}>
                             {renderDrawer()}
                         </div>
                     </Drawer>
-                </Hidden> */}
+                </Hidden>
                 <Hidden xsDown>
                     <Drawer
                         className={clsx(classes.drawer, {
-                            [classes.drawerOpen]: open,
-                            [classes.drawerClose]: !open,
+                            [classes.drawerOpen]: openDrawer,
+                            [classes.drawerClose]: !openDrawer,
                         })}
                         classes={{
                             paper: clsx({
-                                [classes.drawerOpen]: open,
-                                [classes.drawerClose]: !open,
+                                [classes.drawerOpen]: openDrawer,
+                                [classes.drawerClose]: !openDrawer,
                             }),
                         }}
                         variant="permanent"
-                        open={open}
+                        open={openDrawer}
                     >
                         <Toolbar />
                         <div className={classes.drawerContainer}>

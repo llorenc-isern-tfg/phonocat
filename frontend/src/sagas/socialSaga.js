@@ -37,7 +37,8 @@ function* userDetail({ payload }) {
         const errorMsg = error.response && error.response.data.message ?
             error.response.data.message : error.message
         yield put(socialActions.getUserDetailFail(errorMsg))
-        yield put(showAlert('error', { messageKey: 'userDetail.fail' }))
+        if (!error.response || error.response.status !== 401)
+            yield put(showAlert('error', { messageKey: 'userDetail.fail' }))
     }
 }
 
@@ -54,7 +55,8 @@ function* followUser({ payload }) {
         const errorMsg = error.response && error.response.data.message ?
             error.response.data.message : error.message
         yield put(socialActions.followUserFail(errorMsg))
-        yield put(showAlert('error', { messageKey: 'generic.fail' }))
+        if (!error.response || error.response.status !== 401)
+            yield put(showAlert('error', { messageKey: 'generic.fail' }))
     }
 }
 
@@ -71,7 +73,8 @@ function* unfollowUser({ payload }) {
         const errorMsg = error.response && error.response.data.message ?
             error.response.data.message : error.message
         yield put(socialActions.unfollowUserFail(errorMsg))
-        yield put(showAlert('error', { messageKey: 'generic.fail' }))
+        if (!error.response || error.response.status !== 401)
+            yield put(showAlert('error', { messageKey: 'generic.fail' }))
     }
 }
 

@@ -1,8 +1,9 @@
-import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import Paper from '@material-ui/core/Paper';
-import Typography from '@material-ui/core/Typography';
-import Grid from '@material-ui/core/Grid';
+import React, { useEffect } from 'react'
+import { makeStyles } from '@material-ui/core/styles'
+import Paper from '@material-ui/core/Paper'
+import Typography from '@material-ui/core/Typography'
+import Grid from '@material-ui/core/Grid'
+import Slider from "react-slick"
 
 const useStyles = makeStyles((theme) => ({
     mainInfo: {
@@ -32,27 +33,48 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
+var settings = {
+    dots: false,
+    arrows: false,
+    infinite: true,
+    autoplaySpeed: 5000,
+    fade: true,
+    cssEase: 'linear',
+    autoplay: true
+}
+
 const MainInfo = (props) => {
     const classes = useStyles();
     const { mainInfo } = props;
-
     return (
-        <Paper className={classes.mainInfo} style={{ backgroundImage: `url(${mainInfo.image})` }}>
-            {<img style={{ display: 'none' }} src={mainInfo.image} alt={mainInfo.imageText} />}
-            <div className={classes.overlay} />
-            <Grid container>
-                <Grid item md={6}>
-                    <div className={classes.mainInfoContent}>
-                        <Typography component="h1" variant="h3" color="inherit" gutterBottom>
-                            {mainInfo.title}
-                        </Typography>
-                        <Typography variant="h5" color="inherit" paragraph>
-                            {mainInfo.description}
-                        </Typography>
-                    </div>
-                </Grid>
-            </Grid>
-        </Paper>
+        <Slider {...settings}>
+            {mainInfo.images.map((image, i) =>
+                <div key={i}>
+                    <Paper className={classes.mainInfo} style={{ backgroundImage: `url(${image})` }}>
+                        <React.Fragment>
+                            {<img style={{ display: 'none' }} src={mainInfo.image} alt={mainInfo.imageText} />}
+                            <div className={classes.overlay} />
+                            <Grid container>
+                                <Grid item md={6}>
+                                    <div className={classes.mainInfoContent}>
+                                        <Typography component="h1" variant="h3" color="inherit" gutterBottom>
+                                            {mainInfo.title}
+                                        </Typography>
+                                        <Typography variant="h5" color="inherit" paragraph>
+                                            {mainInfo.description}
+                                        </Typography>
+                                    </div>
+                                </Grid>
+                                <Grid item md={6}>
+                                    {mainInfo.actions}
+                                </Grid>
+                            </Grid>
+                        </React.Fragment>
+                    </Paper>
+
+                </div>
+            )}
+        </Slider>
     );
 }
 

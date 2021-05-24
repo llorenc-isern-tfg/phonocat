@@ -5,7 +5,8 @@ import {
     USER_LOGOUT, GOOGLE_LOGIN_REQUEST,
     USER_PROFILE_REQUEST,
     USER_UPLOAD_PICTURE_REQUEST,
-    USER_EDIT_PROFILE_REQUEST
+    USER_EDIT_PROFILE_REQUEST,
+    USER_SESSION_EXPIRED
 } from '../constants/userActionTypes'
 
 import {
@@ -23,14 +24,19 @@ function* register({ payload }) {
         const user = payload
         const { data } = yield call(registerService, user)
         yield put(userActions.registerSuccess(data))
-        history.push('/home')
         yield put(showAlert('success', { messageKey: 'session.welcome', params: { username: data.username } }))
     } catch (error) {
         const errorMsg = error.response && error.response.data.message ?
             error.response.data.message : error.message
         yield put(userActions.loginFail(errorMsg))
-        yield put(showAlert('error', { messageKey: 'registerForm.fail' }))
-        //TODO: diferenciar error usuari nom duplicat
+        if (error.response && error.response.status === 409) {
+            if (errorMsg === 'User email already exists')
+                yield put(showAlert('error', { messageKey: 'registerForm.userAlreadyExists' }))
+            if (errorMsg === 'User name already exists')
+                yield put(showAlert('error', { messageKey: 'registerForm.duplicateUserName' }))
+        } else {
+            yield put(showAlert('error', { messageKey: 'registerForm.fail' }))
+        }
     }
 }
 
@@ -39,7 +45,6 @@ function* login({ payload }) {
         const credentials = payload
         const { data } = yield call(loginService, credentials)
         yield put(userActions.loginSuccess(data))
-        history.push('/home')
         yield put(showAlert('success', { messageKey: 'session.welcome', params: { username: data.username } }))
     } catch (error) {
         const errorMsg = error.response && error.response.data.message ?
@@ -54,7 +59,6 @@ function* googleLogin({ payload }) {
         const id_token = payload
         const { data } = yield call(googleLoginService, id_token)
         yield put(userActions.googleLoginSuccess(data))
-        history.push('/home')
         yield put(showAlert('success', { messageKey: 'session.welcome', params: { username: data.username } }))
     } catch (error) {
         const errorMsg = error.response && error.response.data.message ?
@@ -90,7 +94,8 @@ function* uploadProfilePicture({ payload }) {
         const errorMsg = error.response && error.response.data.message ?
             error.response.data.message : error.message
         yield put(userActions.uploadProfilePictureFail(errorMsg))
-        yield put(showAlert('error', { messageKey: 'profile.pictureFail' }))
+        if (!error.response || error.response.status !== 401)
+            yield put(showAlert('error', { messageKey: 'generic.fail' }))
     }
 }
 
@@ -105,16 +110,26 @@ function* updateUserProfile({ payload }) {
         const errorMsg = error.response && error.response.data.message ?
             error.response.data.message : error.message
         yield put(userActions.editProfileFail(errorMsg))
-        yield put(showAlert('error', { messageKey: 'editProfile.fail' }))
+        if (!error.response || error.response.status !== 401)
+            yield put(showAlert('error', { messageKey: 'editProfile.fail' }))
     }
 }
 
 function* logout() {
     yield put(userActions.loggedOut())
-    //TODO: esborrar estat de tots els reducers
     yield persistor.purge()
     history.push('/')
 }
+
+function* onSessionExpired() {
+    try {
+        yield put(userActions.logout())
+        yield put(showAlert('warning', { messageKey: 'session.expired' }, 5000))
+    } catch (error) {
+        console.log(error)
+    }
+}
+
 
 function* watchRegister() {
     yield takeEvery(USER_REGISTER_REQUEST, register)
@@ -144,6 +159,10 @@ function* watchUpdateUserProfile() {
     yield takeEvery(USER_EDIT_PROFILE_REQUEST, updateUserProfile)
 }
 
+function* watchSessionExpired() {
+    yield takeEvery(USER_SESSION_EXPIRED, onSessionExpired)
+}
+
 export function* userSaga() {
     yield all([
         watchRegister(),
@@ -152,6 +171,7 @@ export function* userSaga() {
         watchGoogleLogin(),
         watchUserProfile(),
         watchUploadProfilePicture(),
-        watchUpdateUserProfile()
+        watchUpdateUserProfile(),
+        watchSessionExpired()
     ])
 }

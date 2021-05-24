@@ -5,15 +5,35 @@ import { makeStyles } from '@material-ui/core/styles'
 import Container from '@material-ui/core/Container'
 import { useTranslation } from "react-i18next"
 import { useSelector, useDispatch } from 'react-redux'
+import Fab from '@material-ui/core/Fab'
+import AddIcon from '@material-ui/icons/Add'
+import { Link } from 'react-router-dom'
 
 import LpCard from '../../components/lps/LpCard'
 import { lpCollectionRequest, lpDeleteRequest } from '../../actions/lpActions'
 import ConfirmationDialog from '../../components/shared/ConfirmationDialog'
+import { Paper } from '@material-ui/core'
+import { CircularProgress } from '@material-ui/core'
 
 const useStyles = makeStyles((theme) => ({
     cardGrid: {
         paddingTop: theme.spacing(8),
         paddingBottom: theme.spacing(8),
+    },
+    paper: {
+        marginTop: theme.spacing(3),
+        marginBottom: theme.spacing(3),
+        padding: theme.spacing(2),
+        [theme.breakpoints.up(600 + theme.spacing(3) * 2)]: {
+            marginTop: theme.spacing(6),
+            marginBottom: theme.spacing(6),
+            padding: theme.spacing(3),
+        },
+    },
+    highlightBox: {
+        padding: theme.spacing(2),
+        backgroundColor: theme.palette.primary[50],
+        marginBottom: theme.spacing(2)
     }
 }));
 
@@ -68,18 +88,40 @@ const LpCollectionPage = () => {
     return (
         <React.Fragment>
             <Container className={classes.cardGrid} maxWidth="xl">
-                <Grid container spacing={4}>
-                    {
-                        lps && lps.length > 0 ?
-                            lps.map((lp) => (
-                                <Grid item key={lp._id} xs={12} sm={6} md={4} lg={3} xl={2}>
-                                    <LpCard lp={lp} onDelete={onDeleteHandler} />
+                {
+                    lps && lps.length > 0 ?
+                        <Grid container spacing={4}>
+                            <React.Fragment>
+                                {lps.map((lp) => (
+                                    <Grid item key={lp._id} xs={12} sm={6} md={4} lg={3} xl={2}>
+                                        <LpCard lp={lp} onDelete={onDeleteHandler} />
+                                    </Grid>
+                                ))
+                                }
+                            </React.Fragment>
+
+                        </Grid>
+                        :
+                        <Container maxWidth="md">
+                            {!loading ?
+                                <Paper className={classes.paper}>
+                                    <Paper elevation={0} className={classes.highlightBox}>
+                                        <Typography variant="h6" align="center" gutterBottom>{t('lpCollection.empty')}</Typography>
+                                    </Paper>
+                                    <Grid container justify="center">
+                                        <Fab component={Link} size="large" to="/lp/new"
+                                            color="primary" aria-label="add">
+                                            <AddIcon />
+                                        </Fab>
+                                    </Grid>
+                                </Paper>
+                                :
+                                <Grid container justify="center">
+                                    <CircularProgress />
                                 </Grid>
-                            ))
-                            :
-                            !loading && <Typography>No s'han trobat LPs</Typography>
-                    }
-                </Grid>
+                            }
+                        </Container>
+                }
             </Container>
             <ConfirmationDialog dialogProps={deleteDialogProps} />
         </React.Fragment>

@@ -1,7 +1,6 @@
 import React from 'react'
 import AudiotrackIcon from '@material-ui/icons/Audiotrack'
 import { makeStyles } from '@material-ui/core/styles'
-import ListItemIcon from '@material-ui/core/ListItemIcon'
 import Table from '@material-ui/core/Table'
 import TableBody from '@material-ui/core/TableBody'
 import TableCell from '@material-ui/core/TableCell'

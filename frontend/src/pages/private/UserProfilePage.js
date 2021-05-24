@@ -64,11 +64,8 @@ const UserProfilePage = () => {
 
     const dispatch = useDispatch()
 
-    const auth = useSelector((state) => state.auth)
-    const { userInfo } = auth
-
     const userProfile = useSelector((state) => state.userProfile)
-    const { status, user, editCover } = userProfile
+    const { user, editCover } = userProfile
 
     const [loadingPicture, setLoadingPicture] = useState(false)
     const [pictureImg, setpictureImg] = useState()

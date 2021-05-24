@@ -1,5 +1,4 @@
 import mongoose from 'mongoose'
-import mongoosePaginate from 'mongoose-paginate-v2'
 import aggregatePaginate from 'mongoose-aggregate-paginate-v2'
 
 const MAX_PICTURES = 4
@@ -19,9 +18,25 @@ const listedItemSchema = mongoose.Schema({
         {
             type: String
         }
-    ]
+    ],
+    status: {
+        type: String,
+        default: 'available',
+        enum: ['available', 'reserved', 'sold', 'withdrawn']
+    },
 }, {
-    timestamps: true
+    timestamps: true,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true }
+})
+
+//fem un virtual amb el num d'ofertes pendents
+listedItemSchema.virtual('numPendingOffers', {
+    ref: 'Offer',
+    localField: '_id',
+    foreignField: 'listedItem',
+    match: { status: 'pending' },
+    count: true
 })
 
 listedItemSchema.pre('validate', function (next) {
@@ -42,8 +57,10 @@ export const aggregatedListedItems = (sort = {}, filter = {}) => ListedItem.aggr
     { $unwind: "$lp.artist" },
     { $lookup: { from: "users", localField: "lp.owner", foreignField: "_id", as: "lp.owner" } },
     { $unwind: "$lp.owner" },
+    { $lookup: { from: "offers", localField: "_id", foreignField: "listedItem", as: "offers" } },
     { $sort: { ...sort } },
     { $match: { ...filter } },
+    { $match: { status: 'available' } },
     {
         $project: {
             _id: 1,
@@ -51,17 +68,18 @@ export const aggregatedListedItems = (sort = {}, filter = {}) => ListedItem.aggr
             pictures: 1,
             createdAt: 1,
             lp: {
-                coverImg: 1,
-                title: 1,
-                artist: 1,
-                genre: 1,
-                condition: 1,
+                coverImg: 1, title: 1, artist: 1, genre: 1,
+                condition: 1, weight: 1, channel: 1, numDiscs: 1,
                 owner: {
-                    username: 1,
-                    country: 1,
-                    picture: 1
+                    username: 1, country: 1, picture: 1
                 }
-            }
+            },
+            offers: {
+                status: 1,
+                buyer: 1,
+                suggestedPrice: 1
+            },
+            status: 1
         }
     }
 ])

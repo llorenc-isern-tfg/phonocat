@@ -11,7 +11,6 @@ const opts = {
 const GoogleStrategy = new Strategy(
   opts, asyncHandler(
     async (accessToken, refreshToken, profile, done) => {
-      console.log('profile: ' + JSON.stringify(profile))
 
       let googleUser = await User.findOne({ googleId: profile.id })
       if (googleUser) {

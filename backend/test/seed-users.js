@@ -35,8 +35,9 @@ export const closeConnection = async () => {
     mongooseConn.close()
 }
 
-const locales = ['az', 'ar', 'cz', 'de', 'de_AT', 'de_CH', 'en', 'en_AU', 'en_AU_ocker', 'en_BORK', 'en_CA', 'en_GB', 'en_IE', 'en_IND', 'en_US', 'en_ZA', 'es', 'es_MX', 'fa', 'fi', 'fr', 'fr_CA', 'fr_CH', 'ge', 'hy', 'hr', 'id_ID', 'it', 'ja', 'ko', 'nb_NO', 'ne', 'nl', 'nl_BE', 'pl', 'pt_BR', 'pt_PT', 'ro', 'ru', 'sk', 'sv', 'tr', 'uk', 'vi', 'zh_CN', 'zh_TW']
+const locales = ['de', 'en_GB', 'en_US', 'es', 'fr', 'it', 'nl', 'pl', 'pt_PT']
 
+const supportedLanguages = ['ca', 'es', 'en']
 // createDBConnection()
 
 //Aquest script serveix per generar usuaris de mentida per provar funcionalitats de l'aplicació
@@ -54,6 +55,7 @@ const seedUsers = async () => {
             faker.setLocale(locales[Math.floor(Math.random() * locales.length)])
             const email = faker.internet.email()
             const password = faker.internet.password()
+            var randomIndex = Math.floor(Math.random() * supportedLanguages.length)
             console.log('CREDENCIALS: ', email, password)
             let user = new User({
                 username: faker.internet.userName(),
@@ -63,7 +65,8 @@ const seedUsers = async () => {
                 phoneNumber: faker.phone.phoneNumber(),
                 picture: faker.image.avatar(),
                 country: faker.address.countryCode(),
-                bio: faker.lorem.sentences()
+                bio: faker.lorem.sentences(),
+                language: supportedLanguages[randomIndex]
             })
 
             try {

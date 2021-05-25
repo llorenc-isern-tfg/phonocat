@@ -124,7 +124,7 @@ const AddLpPage = () => {
                         {t('addLP.title')}
                     </Typography>
                     <Hidden mdDown>
-                        <Stepper activeStep={activeStepIndex} className={classes.stepper} variant="dots">
+                        <Stepper activeStep={activeStepIndex} className={classes.stepper}>
                             {steps.map((label) => (
                                 <Step key={label}>
                                     <StepLabel>

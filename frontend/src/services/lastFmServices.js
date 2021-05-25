@@ -1,7 +1,6 @@
 import axios from 'axios'
 
 export const searchAlbumsService = (albumTitle) => {
-    alert(process.env.REACT_APP_LASTFM_URL)
     return axios.get(process.env.REACT_APP_LASTFM_URL, {
         params: {
             api_key: process.env.REACT_APP_LASTFM_KEY,

@@ -56,10 +56,11 @@ const useStyles = makeStyles((theme) => ({
     languageButton: {
         marginRight: 25
     }
-}));
+}))
 
 const Header = ({ handleDrawerOpen, handleDrawerClose, openDrawer,
     handleCloseDialog, handleChangeDialog, openDialog }) => {
+
 
     const dispatch = useDispatch()
 
@@ -68,7 +69,7 @@ const Header = ({ handleDrawerOpen, handleDrawerClose, openDrawer,
     const auth = useSelector((state) => state.auth)
     const { userInfo } = auth
 
-    const [language, setLanguage] = useState(auth.userInfo ? auth.userInfo.language : 'ca')
+    const [language, setLanguage] = useState(auth.userInfo ? auth.userInfo.language : (i18n.language ? i18n.language : 'ca'))
 
     useEffect(() => {
         if (userInfo)

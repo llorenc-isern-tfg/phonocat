@@ -254,8 +254,8 @@ const ListedItemsPage = () => {
         filterOps: filterOps,
         filterHelper: filterHelper ? {
             ...filterHelper,
-            leastExpensive: Math.floor(filterHelper.leastExpensive),
-            mostExpensive: Math.ceil(filterHelper.mostExpensive)
+            leastExpensive: isNaN(filterHelper.leastExpensive) ? 0 : Math.floor(filterHelper.leastExpensive),
+            mostExpensive: isNaN(filterHelper.mostExpensive) ? 0 : Math.ceil(filterHelper.mostExpensive)
         } : {}
     }
 
@@ -368,7 +368,7 @@ const ListedItemsPage = () => {
                                 <TableBody>
                                     <TableRow>
                                         <TableCell align="center">
-                                            {!loading && <Typography variant="subtitle2">{filterOps ? t('listedItems.emptyResults') : t('listedItems.emptyTable')}</Typography>}
+                                            {!loading && <Typography variant="subtitle2">{(filterOps && filterOps.genre || filterOps.priceRange) ? t('listedItems.emptyResults') : t('listedItems.emptyTable')}</Typography>}
                                         </TableCell>
                                     </TableRow>
                                 </TableBody>

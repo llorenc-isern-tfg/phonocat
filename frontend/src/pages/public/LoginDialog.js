@@ -103,7 +103,6 @@ const LoginDialog = ({ open, onClose, onChangeDialog }) => {
     }
 
     const onGoogleAuthSuccess = (res) => {
-        alert(JSON.stringify(res))
         dispatch(googleLoginRequest({ id_token: res.tokenObj.id_token }))
         handleClose()
     }

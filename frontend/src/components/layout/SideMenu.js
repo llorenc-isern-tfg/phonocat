@@ -221,12 +221,6 @@ const SideMenu = ({ handleDrawerOpen, handleDrawerClose, openDrawer }) => {
         )
     }
 
-    const handleDrawerToggle = () => {
-        alert('toggle')
-    }
-
-    const open = true
-
 
     return (
         userInfo ? (

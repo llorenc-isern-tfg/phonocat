@@ -119,7 +119,6 @@ const RegisterDialog = ({ open, onClose, selectedLanguage, onChangeDialog }) => 
                             margin="normal"
                             fullWidth
                             label={t('registerForm.username')}
-                            autoFocus
                             value={formik.values.username}
                             onChange={formik.handleChange}
                             error={formik.touched.username && Boolean(formik.errors.username)}
@@ -129,6 +128,7 @@ const RegisterDialog = ({ open, onClose, selectedLanguage, onChangeDialog }) => 
                             required
                             id="email"
                             name="email"
+                            type="email"
                             variant="outlined"
                             margin="normal"
                             fullWidth

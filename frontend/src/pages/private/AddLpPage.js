@@ -123,7 +123,7 @@ const AddLpPage = () => {
                     <Typography component="h1" variant="h4" align="center">
                         {t('addLP.title')}
                     </Typography>
-                    <Hidden smDown>
+                    <Hidden mdDown>
                         <Stepper activeStep={activeStepIndex} className={classes.stepper} variant="dots">
                             {steps.map((label) => (
                                 <Step key={label}>

@@ -176,7 +176,7 @@ const SideMenu = ({ handleDrawerOpen, handleDrawerClose, openDrawer }) => {
                                     {
                                         section.header && (
                                             !openDrawer ?
-                                                <Hidden smUp>
+                                                <Hidden mdUp>
                                                     <ListItem>
                                                         <ListItemText primary={t(section.header)} />
                                                     </ListItem>
@@ -190,27 +190,19 @@ const SideMenu = ({ handleDrawerOpen, handleDrawerClose, openDrawer }) => {
                                     {section.menuItems.map((menuItem) => {
                                         return (
                                             <React.Fragment key={menuItem.id} >
-                                                <Hidden smUp>
+                                                <Hidden mdUp>
                                                     <ListItem button component={Link} selected={menuItem.id === selected} to={menuItem.to} onClick={handleDrawerClose}>
                                                         <ListItemIcon>{menuItem.icon}</ListItemIcon>
-                                                        {!openDrawer ?
-                                                            <Hidden smUp>
-                                                                <ListItemText primary={t(menuItem.textKey)} />
-                                                            </Hidden>
-                                                            :
-                                                            <ListItemText primary={t(menuItem.textKey)} />
-                                                        }
+                                                        <ListItemText primary={t(menuItem.textKey)} />
                                                     </ListItem>
                                                 </Hidden>
                                                 <Hidden smDown>
                                                     <ListItem button key={menuItem.id} component={Link} selected={menuItem.id === selected} to={menuItem.to} >
                                                         <ListItemIcon>{menuItem.icon}</ListItemIcon>
-                                                        {!openDrawer ?
-                                                            <Hidden smUp>
-                                                                <ListItemText primary={t(menuItem.textKey)} />
-                                                            </Hidden>
-                                                            :
+                                                        {openDrawer ?
                                                             <ListItemText primary={t(menuItem.textKey)} />
+                                                            :
+                                                            null
                                                         }
                                                     </ListItem>
                                                 </Hidden>
@@ -239,7 +231,7 @@ const SideMenu = ({ handleDrawerOpen, handleDrawerClose, openDrawer }) => {
     return (
         userInfo ? (
             <div>
-                <Hidden smUp>
+                <Hidden mdUp>
                     <Drawer
                         variant="temporary"
                         anchor={theme.direction === 'rtl' ? 'right' : 'left'}
@@ -249,7 +241,7 @@ const SideMenu = ({ handleDrawerOpen, handleDrawerClose, openDrawer }) => {
                             paper: classes.drawerPaper,
                         }}
                         ModalProps={{
-                            keepMounted: true, // Better open performance on mobile.
+                            keepMounted: true,
                         }}
                     >
                         <Toolbar >
@@ -264,7 +256,7 @@ const SideMenu = ({ handleDrawerOpen, handleDrawerClose, openDrawer }) => {
                         </div>
                     </Drawer>
                 </Hidden>
-                <Hidden xsDown>
+                <Hidden smDown>
                     <Drawer
                         className={clsx(classes.drawer, {
                             [classes.drawerOpen]: openDrawer,

@@ -59,5 +59,6 @@ i18n
         },
         interpolation: {
             escapeValue: false,
-        }
+        },
+        supportedLngs: ["ca", "es", "en"]
     })

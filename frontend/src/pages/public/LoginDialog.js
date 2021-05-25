@@ -132,9 +132,9 @@ const LoginDialog = ({ open, onClose, onChangeDialog }) => {
                             variant="outlined"
                             margin="normal"
                             fullWidth
+                            type="email"
                             label={t('loginForm.email')}
                             autoComplete="email"
-                            autoFocus
                             value={formik.values.email}
                             onChange={formik.handleChange}
                             error={formik.touched.email && Boolean(formik.errors.email)}

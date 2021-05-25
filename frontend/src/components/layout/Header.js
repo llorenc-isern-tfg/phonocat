@@ -58,6 +58,11 @@ const useStyles = makeStyles((theme) => ({
     }
 }))
 
+const matchBrowserLanguage = (browserLanguage) => {
+    console.log(browserLanguage)
+    return ['ca', 'es', 'en'].includes(browserLanguage) ? browserLanguage : 'ca'
+}
+
 const Header = ({ handleDrawerOpen, handleDrawerClose, openDrawer,
     handleCloseDialog, handleChangeDialog, openDialog }) => {
 
@@ -69,7 +74,7 @@ const Header = ({ handleDrawerOpen, handleDrawerClose, openDrawer,
     const auth = useSelector((state) => state.auth)
     const { userInfo } = auth
 
-    const [language, setLanguage] = useState(auth.userInfo ? auth.userInfo.language : (i18n.language ? i18n.language : 'ca'))
+    const [language, setLanguage] = useState(auth.userInfo ? auth.userInfo.language : matchBrowserLanguage(i18n.languages[0]))
 
     useEffect(() => {
         if (userInfo)
@@ -107,7 +112,6 @@ const Header = ({ handleDrawerOpen, handleDrawerClose, openDrawer,
         setMobilePublicMenu(null)
         setOpenLanguage(false)
     }
-
 
     const { t } = useTranslation();
 
@@ -163,7 +167,7 @@ const Header = ({ handleDrawerOpen, handleDrawerClose, openDrawer,
                                     <Button startIcon={<LockOpenIcon />} color="inherit" onClick={() => handleChangeDialog(LOGIN_DIALOG_ID)}>LOGIN</Button>
                                     <Button color="inherit" onClick={() => handleChangeDialog(REGISTER_DIALOG_ID)}>{t('registerForm.signup').toUpperCase()}</Button>
                                 </Hidden>
-                                <Hidden smUp>
+                                <Hidden mdUp>
                                     <IconButton
                                         aria-label="account of current user"
                                         aria-controls="menu-appbar"

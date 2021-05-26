@@ -93,23 +93,25 @@ const OffersPage = () => {
                                 </Grid>
                             </Grid>
                         </Box>
-                        <Divider className={classes.titleDivider} />
                         {groupedOffers.length > 0 ?
-                            <List className={classes.root}>
+                            <List className={classes.root} style={{ paddingTop: 0 }}>
                                 {groupedOffers.map((lpOffers, index) => <ReceivedOffersByLp lpOffers={lpOffers} key={lpOffers.listedItem._id} />)}
                             </List>
                             :
-                            <Grid container direction="column"
-                                justify="center"
-                                alignItems="center">
-                                <Grid item xs>
-                                    {loading ?
-                                        <CircularProgress />
-                                        :
-                                        <Typography variant="subtitle2"> {t('receivedOffers.empty')}</Typography>
-                                    }
+                            <React.Fragment>
+                                <Divider className={classes.titleDivider} />
+                                <Grid container direction="column"
+                                    justify="center"
+                                    alignItems="center">
+                                    <Grid item xs>
+                                        {loading ?
+                                            <CircularProgress />
+                                            :
+                                            <Typography variant="subtitle2"> {t('receivedOffers.empty')}</Typography>
+                                        }
+                                    </Grid>
                                 </Grid>
-                            </Grid>
+                            </React.Fragment>
                         }
                     </Paper>
                 </Grid>
@@ -127,23 +129,25 @@ const OffersPage = () => {
                                 </Grid>
                             </Grid>
                         </Box>
-                        <Divider className={classes.titleDivider} />
                         {sendedOffers.length > 0 ?
-                            <List className={classes.root}>
+                            <List className={classes.root} style={{ paddingTop: 0 }}>
                                 {sendedOffers.map((sendedOffer, index) => <SendedOffer offer={sendedOffer} key={sendedOffer._id} />)}
                             </List>
                             :
-                            <Grid container direction="column"
-                                justify="center"
-                                alignItems="center">
-                                <Grid item xs>
-                                    {loadingSended ?
-                                        <CircularProgress />
-                                        :
-                                        <Typography variant="subtitle2"> {t('sendedOffers.empty')}</Typography>
-                                    }
+                            <React.Fragment>
+                                <Divider className={classes.titleDivider} />
+                                <Grid container direction="column"
+                                    justify="center"
+                                    alignItems="center">
+                                    <Grid item xs>
+                                        {loadingSended ?
+                                            <CircularProgress />
+                                            :
+                                            <Typography variant="subtitle2"> {t('sendedOffers.empty')}</Typography>
+                                        }
+                                    </Grid>
                                 </Grid>
-                            </Grid>
+                            </React.Fragment>
                         }
                     </Paper>
                 </Grid>

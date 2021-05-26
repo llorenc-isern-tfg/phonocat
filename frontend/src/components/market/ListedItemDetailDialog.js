@@ -69,7 +69,7 @@ const ListedItemDetailDialog = ({ dialogProps }) => {
     const [ammount, setAmmount] = useState()
     const [ammountError, setAmmountError] = useState()
 
-    const getExistingUserOffer = () => listedItem.offers.find((of) => of.buyer === userInfo.id)
+    const getExistingUserOffer = () => listedItem.offers.find((of) => of.buyer === userInfo.id && of.status === 'pending')
 
     useEffect(() => {
         if (offer && offer.listedItem === listedItem._id) {
@@ -120,15 +120,7 @@ const ListedItemDetailDialog = ({ dialogProps }) => {
         >
             <DialogTitleWithClose title={lp.title} subtitle={lp.artist.name}
                 onClose={handleClose} />
-            {/* <DialogTitle id="alert-dialog-title" disableTypography>
-                <Typography variant="h5" align="center">{lp.title}</Typography>
-                <IconButton aria-label="close" className={classes.closeButton} onClick={handleClose}>
-                    <CloseIcon />
-                </IconButton>
-                <Typography variant="subtitle1" color="textSecondary" align="center" gutterBottom>
-                    {lp.artist.name}
-                </Typography>
-            </DialogTitle> */}
+
             <DialogContent dividers>
                 <Grid container spacing={3} style={{ marginBottom: 5 }}>
                     <Grid item xs={12} sm={3}  >
@@ -277,103 +269,6 @@ const ListedItemDetailDialog = ({ dialogProps }) => {
                         </Grid>
                     </React.Fragment>
                 }
-
-                {/* {lp.isPublic ?
-                        <Grid item xs={12}>
-                            <Paper elevation={0} className={classes.sellLpBox}>
-                                <Typography variant="h6" gutterBottom>
-                                    {lp.listedItem ?
-                                        <React.Fragment>
-                                            {t('lpDetail.sell.forSale')}
-                                            <NumberFormat
-                                                value={lp.listedItem.wantedPrice} displayType={'text'}
-                                                thousandSeparator={i18n.t('currency.thousandSeparator')}
-                                                decimalSeparator={i18n.t('currency.decimalSeparator')}
-                                                decimalScale={2}
-                                                fixedDecimalScale
-                                                suffix="€"
-                                            />
-                                        </React.Fragment>
-                                        :
-                                        t('lpDetail.sell.title')}
-                                </Typography>
-                                <Grid container spacing={3}>
-                                    <Grid item xs={12} sm={6}>
-                                        {lp.listedItem ?
-                                            null
-                                            :
-                                            <TextField
-                                                variant="outlined"
-                                                required
-                                                style={{
-                                                    backgroundColor: 'white'
-                                                }}
-                                                label={t('lpDetail.sell.priceInput')}
-                                                value={ammount}
-                                                fullWidth
-                                                onChange={handleChangeAmmount}
-                                                name="ammount"
-                                                id="ammount"
-                                                InputProps={{
-                                                    inputComponent: NumberFormatCustom,
-                                                }}
-                                                error={ammountError ? true : false}
-                                                helperText={ammountError}
-                                            />
-                                        }
-                                    </Grid>
-                                    {lp.listedItem ?
-                                        <Grid item xs={12} container spacing={1}>
-                                            {lp.listedItem.pictures.length > 0 && <Grid item xs={12}>
-                                                <Typography variant="body2">Imatges de l'anunci</Typography>
-                                            </Grid>}
-                                            {
-                                                lp.listedItem.pictures.map((picture, i) =>
-                                                    <Grid item xs={6} sm={6} md={4} lg={3} key={`picture_${i}`}>
-                                                        <Image src={picture} />
-                                                    </Grid>
-                                                )
-                                            }
-                                        </Grid>
-                                        :
-                                        <Grid item xs={12}>
-                                            <DropImage label={t('lpDetail.sell.uploadPictures')} maxFiles={4} onDropHandle={handleOnDropPictures} />
-                                        </Grid>
-                                    }
-                                    <Grid item xs={12}>
-                                        {lp.listedItem ?
-                                            <Button
-                                                startIcon={<UnpublishIcon />}
-                                                variant="contained"
-                                                color="secondary"
-                                                onClick={() => setOpenUnlistDialog(true)}
-                                                disabled={listsForSale && listsForSale.loading}
-                                            >
-                                                {t('lpDetail.sell.unpublish')}
-                                            </Button>
-                                            :
-                                            <Button
-                                                startIcon={<PublishIcon />}
-                                                variant="contained"
-                                                color="primary"
-                                                onClick={handlePublish}
-                                                disabled={listsForSale && listsForSale.loading}
-                                            >
-                                                {listsForSale && listsForSale.loading && <ButtonSpinner />}
-                                                {t('lpDetail.sell.publish')}
-                                            </Button>
-                                        }
-                                    </Grid>
-                                </Grid>
-                            </Paper>
-                        </Grid>
-                        :
-                        <Grid item xs={12}>
-                            <Typography variant="body2">
-                                <InfoIcon fontSize="small" className={classes.labelIcon} />{t('lpDetail.changeVisibilityForSell')}
-                            </Typography>
-                        </Grid>
-                    } */}
             </DialogContent>
         </Dialog >
     )

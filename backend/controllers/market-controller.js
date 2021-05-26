@@ -201,10 +201,11 @@ const makeOffer = asyncHandler(async (req, res) => {
             throw new Error('Permission denied')
         }
 
-        //Validem que l'usuari no hagi fet ja una oferta per aquest article
+        //Validem que l'usuari no hagi fet ja una oferta per aquest article que estigui aprovada o pendent
         const existingOffer = await Offer.findOne({
             listedItem: listedItem.id,
-            buyer: req.user.id
+            buyer: req.user.id,
+            status: { "$in": ['pending', 'accepted'] }
         })
         if (existingOffer) {
             res.status(405)
@@ -347,10 +348,10 @@ const acceptOffer = asyncHandler(async (req, res) => {
         //Rebutjem la resta d'ofertes pendents
         await Offer.updateMany({ listedItem: offer.listedItem._id }, { "$set": { "status": 'rejected' } })
 
-        await offer.populate({ path: 'listedItem', populate: { path: 'lp' } }).execPopulate()
+        await offer.populate('listedItem').execPopulate()
 
-        offer.listedItem.lp.status = 'reserved'
-        await offer.listedItem.lp.save()
+        offer.listedItem.status = 'reserved'
+        await offer.listedItem.save()
 
         //Desem el nou estat de la oferta
         offer.status = 'accepted'

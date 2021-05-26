@@ -68,11 +68,11 @@ const DEFAULT_ORDER = 'desc'
 
 
 const headCells = [
-    { id: 'lp.title', numeric: false, disablePadding: false, label: i18n.t('lpDetail.albumTitle') },
-    { id: 'lp.artist.name', numeric: false, disablePadding: false, label: i18n.t('lpDetail.artist') },
-    { id: 'lp.genre', numeric: false, disablePadding: false, label: i18n.t('lpDetail.genre') },
-    { id: 'createdAt', numeric: false, disablePadding: false, label: i18n.t('listedItems.published') },
-    { id: 'wantedPrice', numeric: true, disablePadding: false, label: i18n.t('listedItems.wantedPrice') },
+    { id: 'lp.title', numeric: false, disablePadding: false, label: 'lpDetail.albumTitle' },
+    { id: 'lp.artist.name', numeric: false, disablePadding: false, label: 'lpDetail.artist' },
+    { id: 'lp.genre', numeric: false, disablePadding: false, label: 'lpDetail.genre' },
+    { id: 'createdAt', numeric: false, disablePadding: false, label: 'listedItems.published' },
+    { id: 'wantedPrice', numeric: true, disablePadding: false, label: 'listedItems.wantedPrice' },
     { id: 'showItem', numeric: false, disablePadding: true },
 ]
 
@@ -100,7 +100,7 @@ const EnhancedTableHead = (props) => {
                             direction={sortBy === headCell.id ? order : 'asc'}
                             onClick={createSortHandler(headCell.id)}
                         >
-                            {headCell.label}
+                            {i18n.t(headCell.label)}
                         </TableSortLabel>
                     </TableCell>
                 ))}

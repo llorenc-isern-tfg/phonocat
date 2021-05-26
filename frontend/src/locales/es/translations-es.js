@@ -252,6 +252,9 @@ export const TRANSLATIONS_ES = {
         nOffers: "{{count}} usuario ha hecho una oferta por este LP",
         nOffers_plural: "{{count}} usuarios han hecho una oferta por este LP",
         nOffers_interval: "(0){Ningún usuario ha hecho una oferta por este LP}",
+        nOffers_owner: "{{count}} usuario ha hecho una oferta por tu LP",
+        nOffers_owner_plural: "{{count}} usuarios han hecho una oferta por tu LP",
+        nOffers_owner_interval: "(0){Ningún usuario ha hecho una oferta por tu LP}",
         seeOffers: 'Ver ofertas',
         offerMade: 'Has hecho una oferta para este LP por un importe de {{ammount}} €',
         offerSuccess: 'Tu oferta se ha enviado'

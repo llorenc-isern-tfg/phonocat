@@ -253,6 +253,9 @@ export const TRANSLATIONS_CA = {
         nOffers: "{{count}} usuari ha fet una oferta per aquest LP",
         nOffers_plural: "{{count}} usuaris han fet una oferta per aquest LP",
         nOffers_interval: "(0){Cap usuari ha fet encara una oferta per aquest LP}",
+        nOffers_owner: "{{count}} usuari ha fet una oferta pel teu LP",
+        nOffers_owner_plural: "{{count}} usuaris han fet una oferta pel teu LP",
+        nOffers_owner_interval: "(0){Cap usuari ha fet encara una oferta pel teu LP}",
         seeOffers: 'Veure ofertes',
         offerMade: 'Has fet una oferta per aquest LP per un import de {{ammount}} €',
         offerSuccess: 'La teva oferta s\'ha enviat'

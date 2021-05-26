@@ -252,6 +252,9 @@ export const TRANSLATIONS_EN = {
         nOffers: "{{count}} user has bid for this LP",
         nOffers_plural: "{{count}} users have bid for this LP",
         nOffers_interval: "(0){No users have bid for this LP yet}",
+        nOffers_owner: "{{count}} user has bid for your LP",
+        nOffers_owner_plural: "{{count}} users have bid for your LP",
+        nOffers_owner_interval: "(0){No users have bid for your LP yet}",
         seeOffers: 'View offers',
         offerMade: 'You have bid for this LP for an amount of {{ammount}} €',
         offerSuccess: 'Your offer has been submitted'

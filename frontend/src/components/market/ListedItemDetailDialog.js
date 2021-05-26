@@ -187,10 +187,10 @@ const ListedItemDetailDialog = ({ dialogProps }) => {
                                 {userOwnsLp() ?
                                     <>
                                         <Typography variant="subtitle2" gutterBottom>{t('session.welcome', { username: userInfo.username })}</Typography>
-                                        <Typography variant="subtitle2" gutterBottom>{t('listedItemDetail.nOffers_interval', { postProcess: 'interval', count: listedItem.offers.length })}</Typography>
+                                        <Typography variant="subtitle2" gutterBottom>{t('listedItemDetail.nOffers_owner_interval', { postProcess: 'interval', count: listedItem.offers.length })}</Typography>
                                         <Button
                                             component={Link}
-                                            to="/offers"
+                                            to="/myOffers"
                                             color="primary"
                                             onClick={handleMakeOffer}
                                             disabled={loading}
@@ -203,6 +203,17 @@ const ListedItemDetailDialog = ({ dialogProps }) => {
                                     userOffer ?
                                         <>
                                             <Typography variant="subtitle2" gutterBottom>{t('listedItemDetail.offerMade', { ammount: userOffer.suggestedPrice })}</Typography>
+                                            <Typography variant="subtitle2" color="textSecondary" gutterBottom>{t(`sendedOffers.inStatus.${userOffer.status}`)}</Typography>
+                                            <Button
+                                                component={Link}
+                                                to="/myOffers"
+                                                color="primary"
+                                                onClick={handleMakeOffer}
+                                                disabled={loading}
+                                            >
+                                                {loading && <ButtonSpinner />}
+                                                {t('listedItemDetail.seeOffers')}
+                                            </Button>
                                         </>
                                         :
                                         <>

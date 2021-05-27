@@ -192,7 +192,6 @@ const ListedItemDetailDialog = ({ dialogProps }) => {
                                             component={Link}
                                             to="/myOffers"
                                             color="primary"
-                                            onClick={handleMakeOffer}
                                             disabled={loading}
                                         >
                                             {loading && <ButtonSpinner />}
@@ -208,7 +207,6 @@ const ListedItemDetailDialog = ({ dialogProps }) => {
                                                 component={Link}
                                                 to="/myOffers"
                                                 color="primary"
-                                                onClick={handleMakeOffer}
                                                 disabled={loading}
                                             >
                                                 {loading && <ButtonSpinner />}

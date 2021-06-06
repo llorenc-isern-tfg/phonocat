@@ -13,7 +13,7 @@ EXEC_ENV = development
 PORT = 5000
 MONGO_URI = connexió a una instancia de MongoDb
 
-JWT_SECRET = clau secreat
+JWT_SECRET = clau secreta per a encriptar JWT
 JWT_EXPIRATION_TIME = temps expiració token
 
 GOOGLE_OAUTH_CLIENT_ID = clau propia google auth
@@ -23,7 +23,7 @@ DISCOGS_API_URL = https://api.discogs.com
 DISCOGS_API_KEY = clau propia discogs
 DISCOGS_API_SECRET = secret propi google auth
 
-CLOUDINARY_CLOUD_NAME = nom cloudinaty
+CLOUDINARY_CLOUD_NAME = identificador cloudinary
 CLOUDINARY_API_KEY = key cloudinary
 CLOUDINARY_API_SECRET = secret cloudinary
 ```
